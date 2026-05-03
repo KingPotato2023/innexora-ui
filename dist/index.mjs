@@ -1,10 +1,11 @@
 "use client";
-import * as React21 from 'react';
+import * as React16 from 'react';
 import { useState, useEffect, useTransition, useOptimistic, useRef, useCallback } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Check, ChevronDown, X, Clock, CalendarDays, ArrowLeft, ChevronRight, Menu, Minus, TrendingUp, TrendingDown, Info, ArrowUpRight, ChevronLeft, AlertTriangle, ArrowLeftRight } from 'lucide-react';
@@ -24,8 +25,6 @@ import { format } from 'date-fns';
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
-
-// src/primitives/button.tsx
 var buttonVariants = cva(
   "relative inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-paper-100 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:h-3.5 [&_svg]:w-3.5 [&_svg]:shrink-0",
   {
@@ -49,15 +48,15 @@ var buttonVariants = cva(
     defaultVariants: { variant: "default", size: "default" }
   }
 );
-var Button = React21.forwardRef(
+var Button = React16.forwardRef(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return /* @__PURE__ */ React21.createElement(Comp, { className: cn(buttonVariants({ variant, size, className })), ref, ...props });
+    return /* @__PURE__ */ jsx(Comp, { className: cn(buttonVariants({ variant, size, className })), ref, ...props });
   }
 );
 Button.displayName = "Button";
-var Input = React21.forwardRef(
-  ({ className, type, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var Input = React16.forwardRef(
+  ({ className, type, ...props }, ref) => /* @__PURE__ */ jsx(
     "input",
     {
       type,
@@ -71,8 +70,8 @@ var Input = React21.forwardRef(
   )
 );
 Input.displayName = "Input";
-var Textarea = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var Textarea = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
     "textarea",
     {
       ref,
@@ -88,9 +87,9 @@ Textarea.displayName = "Textarea";
 var labelVariants = cva(
   "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 );
-var Label = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(LabelPrimitive.Root, { ref, className: cn(labelVariants(), className), ...props }));
+var Label = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(LabelPrimitive.Root, { ref, className: cn(labelVariants(), className), ...props }));
 Label.displayName = LabelPrimitive.Root.displayName;
-var Checkbox = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var Checkbox = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   CheckboxPrimitive.Root,
   {
     ref,
@@ -98,9 +97,9 @@ var Checkbox = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__
       "peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
       className
     ),
-    ...props
-  },
-  /* @__PURE__ */ React21.createElement(CheckboxPrimitive.Indicator, { className: cn("flex items-center justify-center text-current") }, /* @__PURE__ */ React21.createElement(Check, { className: "h-3 w-3" }))
+    ...props,
+    children: /* @__PURE__ */ jsx(CheckboxPrimitive.Indicator, { className: cn("flex items-center justify-center text-current"), children: /* @__PURE__ */ jsx(Check, { className: "h-3 w-3" }) })
+  }
 ));
 Checkbox.displayName = CheckboxPrimitive.Root.displayName;
 
@@ -125,9 +124,7 @@ function avatarColorClass(seed) {
   }
   return PALETTE[Math.abs(hash) % PALETTE.length];
 }
-
-// src/primitives/avatar.tsx
-var Avatar = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var Avatar = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   AvatarPrimitive.Root,
   {
     ref,
@@ -136,9 +133,9 @@ var Avatar = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ *
   }
 ));
 Avatar.displayName = AvatarPrimitive.Root.displayName;
-var AvatarImage = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(AvatarPrimitive.Image, { ref, className: cn("aspect-square h-full w-full", className), ...props }));
+var AvatarImage = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(AvatarPrimitive.Image, { ref, className: cn("aspect-square h-full w-full", className), ...props }));
 AvatarImage.displayName = AvatarPrimitive.Image.displayName;
-var AvatarFallback = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var AvatarFallback = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   AvatarPrimitive.Fallback,
   {
     ref,
@@ -165,25 +162,27 @@ function BrandedAvatar({
   const initials = initialsOf(name);
   const src = imageUrl && imageUrl.length > 0 ? imageUrl : avatarUrl(name, size * 2);
   const fallbackBg = avatarColorClass(name);
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsxs(
     "span",
     {
       className: `relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-semibold text-white ${fallbackBg}`,
       style: { width: size, height: size },
-      "aria-hidden": "true"
-    },
-    /* @__PURE__ */ React21.createElement("span", { className: "absolute inset-0 flex items-center justify-center" }, initials),
-    /* @__PURE__ */ React21.createElement(
-      "img",
-      {
-        src,
-        alt: "",
-        width: size,
-        height: size,
-        loading: "lazy",
-        className: "relative h-full w-full object-cover"
-      }
-    )
+      "aria-hidden": "true",
+      children: [
+        /* @__PURE__ */ jsx("span", { className: "absolute inset-0 flex items-center justify-center", children: initials }),
+        /* @__PURE__ */ jsx(
+          "img",
+          {
+            src,
+            alt: "",
+            width: size,
+            height: size,
+            loading: "lazy",
+            className: "relative h-full w-full object-cover"
+          }
+        )
+      ]
+    }
   );
 }
 function OwnerCell({
@@ -191,9 +190,12 @@ function OwnerCell({
   imageUrl
 }) {
   if (!name || name === "\u2014") {
-    return /* @__PURE__ */ React21.createElement("span", { className: "text-neutral-400" }, "\u2014");
+    return /* @__PURE__ */ jsx("span", { className: "text-neutral-400", children: "\u2014" });
   }
-  return /* @__PURE__ */ React21.createElement("div", { className: "flex items-center gap-2 min-w-0" }, /* @__PURE__ */ React21.createElement(BrandedAvatar, { name, imageUrl }), /* @__PURE__ */ React21.createElement("span", { className: "truncate" }, name));
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 min-w-0", children: [
+    /* @__PURE__ */ jsx(BrandedAvatar, { name, imageUrl }),
+    /* @__PURE__ */ jsx("span", { className: "truncate", children: name })
+  ] });
 }
 var badgeVariants = cva(
   "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors",
@@ -210,9 +212,9 @@ var badgeVariants = cva(
   }
 );
 function Badge({ className, variant, ...props }) {
-  return /* @__PURE__ */ React21.createElement("div", { className: cn(badgeVariants({ variant }), className), ...props });
+  return /* @__PURE__ */ jsx("div", { className: cn(badgeVariants({ variant }), className), ...props });
 }
-var Separator = React21.forwardRef(({ className, orientation = "horizontal", ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var Separator = React16.forwardRef(({ className, orientation = "horizontal", ...props }, ref) => /* @__PURE__ */ jsx(
   "div",
   {
     ref,
@@ -227,7 +229,7 @@ var Separator = React21.forwardRef(({ className, orientation = "horizontal", ...
 ));
 Separator.displayName = "Separator";
 function Skeleton({ className, ...props }) {
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       className: cn("animate-pulse rounded-md bg-neutral-200", className),
@@ -235,18 +237,23 @@ function Skeleton({ className, ...props }) {
     }
   );
 }
-
-// src/primitives/empty-state.tsx
 function EmptyState({
   icon,
   title,
   description,
   action
 }) {
-  return /* @__PURE__ */ React.createElement("div", { className: "card p-10 flex flex-col items-center text-center gap-4" }, icon && /* @__PURE__ */ React.createElement("div", { className: "h-12 w-12 rounded-full bg-paper-200 ring-1 ring-ink/10 text-ink/55 inline-flex items-center justify-center" }, icon), /* @__PURE__ */ React.createElement("div", { className: "space-y-1.5 max-w-md" }, /* @__PURE__ */ React.createElement("div", { className: "font-display font-semibold text-[18px] leading-tight text-ink-900 tracking-[-0.015em]" }, title), description && /* @__PURE__ */ React.createElement("div", { className: "text-sm text-ink/60" }, description)), action && /* @__PURE__ */ React.createElement("div", { className: "mt-1" }, action));
+  return /* @__PURE__ */ jsxs("div", { className: "card p-10 flex flex-col items-center text-center gap-4", children: [
+    icon && /* @__PURE__ */ jsx("div", { className: "h-12 w-12 rounded-full bg-paper-200 ring-1 ring-ink/10 text-ink/55 inline-flex items-center justify-center", children: icon }),
+    /* @__PURE__ */ jsxs("div", { className: "space-y-1.5 max-w-md", children: [
+      /* @__PURE__ */ jsx("div", { className: "font-display font-semibold text-[18px] leading-tight text-ink-900 tracking-[-0.015em]", children: title }),
+      description && /* @__PURE__ */ jsx("div", { className: "text-sm text-ink/60", children: description })
+    ] }),
+    action && /* @__PURE__ */ jsx("div", { className: "mt-1", children: action })
+  ] });
 }
-var Card = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var Card = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
     "div",
     {
       ref,
@@ -256,28 +263,26 @@ var Card = React21.forwardRef(
   )
 );
 Card.displayName = "Card";
-var CardHeader = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("div", { ref, className: cn("flex flex-col space-y-1.5 p-6", className), ...props })
+var CardHeader = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("flex flex-col space-y-1.5 p-6", className), ...props })
 );
 CardHeader.displayName = "CardHeader";
-var CardTitle = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("div", { ref, className: cn("font-semibold leading-none tracking-tight", className), ...props })
+var CardTitle = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("font-semibold leading-none tracking-tight", className), ...props })
 );
 CardTitle.displayName = "CardTitle";
-var CardDescription = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("div", { ref, className: cn("text-sm text-muted-foreground", className), ...props })
+var CardDescription = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("text-sm text-muted-foreground", className), ...props })
 );
 CardDescription.displayName = "CardDescription";
-var CardContent = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("div", { ref, className: cn("p-6 pt-0", className), ...props })
+var CardContent = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("p-6 pt-0", className), ...props })
 );
 CardContent.displayName = "CardContent";
-var CardFooter = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("div", { ref, className: cn("flex items-center p-6 pt-0", className), ...props })
+var CardFooter = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("flex items-center p-6 pt-0", className), ...props })
 );
 CardFooter.displayName = "CardFooter";
-
-// src/primitives/status-badge.tsx
 var TONE_CLASS = {
   neutral: "bg-ink/[0.06] text-ink/80 ring-ink/12",
   muted: "bg-ink/[0.04] text-ink/55 ring-ink/10",
@@ -292,13 +297,15 @@ function StatusBadge({
   tone = "neutral",
   dot = false
 }) {
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsxs(
     "span",
     {
-      className: `inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.06em] ring-1 ring-inset ${TONE_CLASS[tone]}`
-    },
-    dot && /* @__PURE__ */ React.createElement("span", { className: `h-1.5 w-1.5 rounded-full ${dotColor(tone)}`, "aria-hidden": "true" }),
-    children
+      className: `inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.06em] ring-1 ring-inset ${TONE_CLASS[tone]}`,
+      children: [
+        dot && /* @__PURE__ */ jsx("span", { className: `h-1.5 w-1.5 rounded-full ${dotColor(tone)}`, "aria-hidden": "true" }),
+        children
+      ]
+    }
   );
 }
 function dotColor(tone) {
@@ -496,8 +503,6 @@ function auditActionTone(action) {
       return "neutral";
   }
 }
-
-// src/selection/pill-group.tsx
 var basePillClass = "inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium ring-1 transition-all bg-white text-neutral-500 ring-neutral-200 hover:bg-neutral-50 hover:text-neutral-700 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-1 peer-focus-visible:ring-brand-indigo-400 peer-checked:shadow-sm peer-checked:ring-2 ";
 function PillGroup({
   name,
@@ -507,36 +512,38 @@ function PillGroup({
   required,
   onValueChange
 }) {
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       role: "radiogroup",
       "aria-label": name,
-      className: "flex flex-wrap gap-2 mt-1"
-    },
-    options.map((opt, i) => /* @__PURE__ */ React.createElement(
-      "label",
-      {
-        key: opt.value,
-        className: "select-none " + (disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer")
-      },
-      /* @__PURE__ */ React.createElement(
-        "input",
+      className: "flex flex-wrap gap-2 mt-1",
+      children: options.map((opt, i) => /* @__PURE__ */ jsxs(
+        "label",
         {
-          type: "radio",
-          name,
-          value: opt.value,
-          defaultChecked: defaultValue === opt.value,
-          disabled,
-          required: required && i === 0,
-          onChange: (e) => {
-            if (e.currentTarget.checked) onValueChange?.(opt.value);
-          },
-          className: "peer sr-only"
-        }
-      ),
-      /* @__PURE__ */ React.createElement("span", { className: basePillClass + opt.selectedClass }, opt.label)
-    ))
+          className: "select-none " + (disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"),
+          children: [
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                type: "radio",
+                name,
+                value: opt.value,
+                defaultChecked: defaultValue === opt.value,
+                disabled,
+                required: required && i === 0,
+                onChange: (e) => {
+                  if (e.currentTarget.checked) onValueChange?.(opt.value);
+                },
+                className: "peer sr-only"
+              }
+            ),
+            /* @__PURE__ */ jsx("span", { className: basePillClass + opt.selectedClass, children: opt.label })
+          ]
+        },
+        opt.value
+      ))
+    }
   );
 }
 var buttonPillBase = "relative inline-flex items-center rounded-full px-3 h-7 text-[11.5px] font-medium transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-paper-100 focus-visible:ring-brand-teal-500/45 ";
@@ -551,35 +558,35 @@ function PillButtons({
   ariaLabel,
   variant = "color"
 }) {
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       role: "radiogroup",
       "aria-label": ariaLabel,
-      className: "flex flex-wrap gap-1.5"
-    },
-    options.map((opt) => {
-      const selected = opt.value === value;
-      const activeClass = variant === "filter" ? selected ? FILTER_SELECTED : FILTER_UNSELECTED : selected ? COLOR_SELECTED : COLOR_UNSELECTED;
-      return /* @__PURE__ */ React.createElement(
-        "button",
-        {
-          key: opt.value,
-          type: "button",
-          role: "radio",
-          "aria-checked": selected,
-          onClick: () => onChange(opt.value),
-          className: buttonPillBase + activeClass
-        },
-        opt.label
-      );
-    })
+      className: "flex flex-wrap gap-1.5",
+      children: options.map((opt) => {
+        const selected = opt.value === value;
+        const activeClass = variant === "filter" ? selected ? FILTER_SELECTED : FILTER_UNSELECTED : selected ? COLOR_SELECTED : COLOR_UNSELECTED;
+        return /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            role: "radio",
+            "aria-checked": selected,
+            onClick: () => onChange(opt.value),
+            className: buttonPillBase + activeClass,
+            children: opt.label
+          },
+          opt.value
+        );
+      })
+    }
   );
 }
 var Select = SelectPrimitive.Root;
 var SelectGroup = SelectPrimitive.Group;
 var SelectValue = SelectPrimitive.Value;
-var SelectTrigger = React21.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var SelectTrigger = React16.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs(
   SelectPrimitive.Trigger,
   {
     ref,
@@ -587,13 +594,15 @@ var SelectTrigger = React21.forwardRef(({ className, children, ...props }, ref) 
       "group flex h-10 w-full items-center justify-between whitespace-nowrap rounded-md border border-ink/15 bg-white/90 px-3 text-sm text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] placeholder:text-ink/40 transition-all duration-200 hover:border-ink/25 focus:outline-none focus:ring-2 focus:ring-brand-teal-500/35 focus:border-brand-teal-600 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
       className
     ),
-    ...props
-  },
-  children,
-  /* @__PURE__ */ React21.createElement(SelectPrimitive.Icon, { asChild: true }, /* @__PURE__ */ React21.createElement(ChevronDown, { className: "h-4 w-4 text-ink/55 transition-transform duration-200 group-data-[state=open]:rotate-180" }))
+    ...props,
+    children: [
+      children,
+      /* @__PURE__ */ jsx(SelectPrimitive.Icon, { asChild: true, children: /* @__PURE__ */ jsx(ChevronDown, { className: "h-4 w-4 text-ink/55 transition-transform duration-200 group-data-[state=open]:rotate-180" }) })
+    ]
+  }
 ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
-var SelectContent = React21.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ React21.createElement(SelectPrimitive.Portal, null, /* @__PURE__ */ React21.createElement(
+var SelectContent = React16.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ jsx(SelectPrimitive.Portal, { children: /* @__PURE__ */ jsx(
   SelectPrimitive.Content,
   {
     ref,
@@ -603,21 +612,21 @@ var SelectContent = React21.forwardRef(({ className, children, position = "poppe
       className
     ),
     position,
-    ...props
-  },
-  /* @__PURE__ */ React21.createElement(
-    SelectPrimitive.Viewport,
-    {
-      className: cn(
-        "p-1.5",
-        position === "popper" && "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
-      )
-    },
-    children
-  )
-)));
+    ...props,
+    children: /* @__PURE__ */ jsx(
+      SelectPrimitive.Viewport,
+      {
+        className: cn(
+          "p-1.5",
+          position === "popper" && "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+        ),
+        children
+      }
+    )
+  }
+) }));
 SelectContent.displayName = SelectPrimitive.Content.displayName;
-var SelectItem = React21.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var SelectItem = React16.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs(
   SelectPrimitive.Item,
   {
     ref,
@@ -625,14 +634,14 @@ var SelectItem = React21.forwardRef(({ className, children, ...props }, ref) => 
       "relative flex w-full cursor-default select-none items-center rounded-sm py-2 pl-8 pr-2 text-sm text-ink/85 outline-none transition-colors focus:bg-brand-teal-500/[0.06] focus:text-ink data-[state=checked]:text-ink data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     ),
-    ...props
-  },
-  /* @__PURE__ */ React21.createElement("span", { className: "absolute left-2 flex h-3.5 w-3.5 items-center justify-center text-brand-teal-600" }, /* @__PURE__ */ React21.createElement(SelectPrimitive.ItemIndicator, null, /* @__PURE__ */ React21.createElement(Check, { className: "h-3.5 w-3.5" }))),
-  /* @__PURE__ */ React21.createElement(SelectPrimitive.ItemText, null, children)
+    ...props,
+    children: [
+      /* @__PURE__ */ jsx("span", { className: "absolute left-2 flex h-3.5 w-3.5 items-center justify-center text-brand-teal-600", children: /* @__PURE__ */ jsx(SelectPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5" }) }) }),
+      /* @__PURE__ */ jsx(SelectPrimitive.ItemText, { children })
+    ]
+  }
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
-
-// src/selection/hidden-form-select.tsx
 var EMPTY_SENTINEL = "__empty";
 function HiddenFormSelect({
   name,
@@ -654,21 +663,27 @@ function HiddenFormSelect({
     setValue(real);
     onChange?.(real);
   };
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Select, { value: internal, onValueChange: handleChange, disabled }, /* @__PURE__ */ React.createElement(
-    SelectTrigger,
-    {
-      className,
-      "aria-invalid": ariaInvalid ? true : void 0
-    },
-    /* @__PURE__ */ React.createElement(SelectValue, { placeholder })
-  ), /* @__PURE__ */ React.createElement(SelectContent, null, options.map((opt) => /* @__PURE__ */ React.createElement(
-    SelectItem,
-    {
-      key: opt.value === "" ? EMPTY_SENTINEL : opt.value,
-      value: opt.value === "" ? EMPTY_SENTINEL : opt.value
-    },
-    opt.label
-  )))), /* @__PURE__ */ React.createElement("input", { type: "hidden", name, value }));
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsxs(Select, { value: internal, onValueChange: handleChange, disabled, children: [
+      /* @__PURE__ */ jsx(
+        SelectTrigger,
+        {
+          className,
+          "aria-invalid": ariaInvalid ? true : void 0,
+          children: /* @__PURE__ */ jsx(SelectValue, { placeholder })
+        }
+      ),
+      /* @__PURE__ */ jsx(SelectContent, { children: options.map((opt) => /* @__PURE__ */ jsx(
+        SelectItem,
+        {
+          value: opt.value === "" ? EMPTY_SENTINEL : opt.value,
+          children: opt.label
+        },
+        opt.value === "" ? EMPTY_SENTINEL : opt.value
+      )) })
+    ] }),
+    /* @__PURE__ */ jsx("input", { type: "hidden", name, value })
+  ] });
 }
 var wrapperClass = "inline-flex items-center gap-0.5 rounded-md border border-neutral-200 bg-white p-0.5 shadow-sm";
 var segmentBase = "px-3 py-1.5 text-xs font-medium rounded transition-all whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo-400";
@@ -680,23 +695,23 @@ function SegmentedControlLinks({
   hrefFor,
   ariaLabel
 }) {
-  return /* @__PURE__ */ React.createElement("div", { role: "tablist", "aria-label": ariaLabel, className: wrapperClass }, options.map((opt) => {
+  return /* @__PURE__ */ jsx("div", { role: "tablist", "aria-label": ariaLabel, className: wrapperClass, children: options.map((opt) => {
     const selected = opt.value === value;
-    return /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ jsx(
       Link6,
       {
-        key: opt.value,
         href: hrefFor(opt.value),
         role: "tab",
         "aria-selected": selected,
         className: [
           segmentBase,
           selected ? segmentActive : segmentInactive
-        ].join(" ")
+        ].join(" "),
+        children: opt.label
       },
-      opt.label
+      opt.value
     );
-  }));
+  }) });
 }
 function weekStart(d) {
   const dt = new Date(d);
@@ -707,9 +722,9 @@ function weekStart(d) {
   return dt;
 }
 function NavChevron({ orientation }) {
-  if (orientation === "right") return /* @__PURE__ */ React21.createElement(ChevronRight, { className: "h-3.5 w-3.5" });
-  if (orientation === "down") return /* @__PURE__ */ React21.createElement(ChevronDown, { className: "h-3.5 w-3.5" });
-  return /* @__PURE__ */ React21.createElement(ChevronLeft, { className: "h-3.5 w-3.5" });
+  if (orientation === "right") return /* @__PURE__ */ jsx(ChevronRight, { className: "h-3.5 w-3.5" });
+  if (orientation === "down") return /* @__PURE__ */ jsx(ChevronDown, { className: "h-3.5 w-3.5" });
+  return /* @__PURE__ */ jsx(ChevronLeft, { className: "h-3.5 w-3.5" });
 }
 function BrandedDropdown(props) {
   const currentValue = props.value === void 0 ? "" : String(props.value);
@@ -721,31 +736,34 @@ function BrandedDropdown(props) {
     };
     props.onChange(fakeEvent);
   };
-  return /* @__PURE__ */ React21.createElement(Select, { value: currentValue, onValueChange: handleChange, disabled: props.disabled }, /* @__PURE__ */ React21.createElement(
-    SelectTrigger,
-    {
-      "aria-label": props["aria-label"],
-      className: "h-7 min-w-[88px] gap-1 rounded-md border border-ink/12 bg-white px-2 text-[13px] font-semibold text-ink-900 hover:border-ink/25 focus:ring-2 focus:ring-brand-indigo-400/35 focus:border-brand-indigo-500"
-    },
-    /* @__PURE__ */ React21.createElement(SelectValue, null)
-  ), /* @__PURE__ */ React21.createElement(
-    SelectContent,
-    {
-      className: "max-h-[260px]",
-      position: "popper",
-      sideOffset: 4
-    },
-    props.options?.map((opt) => /* @__PURE__ */ React21.createElement(
-      SelectItem,
+  return /* @__PURE__ */ jsxs(Select, { value: currentValue, onValueChange: handleChange, disabled: props.disabled, children: [
+    /* @__PURE__ */ jsx(
+      SelectTrigger,
       {
-        key: opt.value,
-        value: String(opt.value),
-        disabled: opt.disabled,
-        className: "text-[13px]"
-      },
-      opt.label
-    ))
-  ));
+        "aria-label": props["aria-label"],
+        className: "h-7 min-w-[88px] gap-1 rounded-md border border-ink/12 bg-white px-2 text-[13px] font-semibold text-ink-900 hover:border-ink/25 focus:ring-2 focus:ring-brand-indigo-400/35 focus:border-brand-indigo-500",
+        children: /* @__PURE__ */ jsx(SelectValue, {})
+      }
+    ),
+    /* @__PURE__ */ jsx(
+      SelectContent,
+      {
+        className: "max-h-[260px]",
+        position: "popper",
+        sideOffset: 4,
+        children: props.options?.map((opt) => /* @__PURE__ */ jsx(
+          SelectItem,
+          {
+            value: String(opt.value),
+            disabled: opt.disabled,
+            className: "text-[13px]",
+            children: opt.label
+          },
+          opt.value
+        ))
+      }
+    )
+  ] });
 }
 function Calendar({
   className,
@@ -757,7 +775,7 @@ function Calendar({
   const wkStart = weekStart(now);
   const wkEnd = new Date(wkStart);
   wkEnd.setDate(wkEnd.getDate() + 6);
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsx(
     DayPicker,
     {
       showOutsideDays,
@@ -798,7 +816,7 @@ function Calendar({
 }
 var Popover = PopoverPrimitive.Root;
 var PopoverTrigger = PopoverPrimitive.Trigger;
-var PopoverContent = React21.forwardRef(({ className, align = "start", sideOffset = 6, ...props }, ref) => /* @__PURE__ */ React21.createElement(PopoverPrimitive.Portal, null, /* @__PURE__ */ React21.createElement(
+var PopoverContent = React16.forwardRef(({ className, align = "start", sideOffset = 6, ...props }, ref) => /* @__PURE__ */ jsx(PopoverPrimitive.Portal, { children: /* @__PURE__ */ jsx(
   PopoverPrimitive.Content,
   {
     ref,
@@ -811,10 +829,8 @@ var PopoverContent = React21.forwardRef(({ className, align = "start", sideOffse
     ),
     ...props
   }
-)));
+) }));
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
-
-// src/selection/date-picker.tsx
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
@@ -900,98 +916,123 @@ function DatePicker({
     next.setMinutes(Math.max(0, Math.min(59, m)));
     setDate(next);
   };
-  return /* @__PURE__ */ React.createElement("div", { className: cn("relative", className) }, /* @__PURE__ */ React.createElement(Popover, { open, onOpenChange: setOpen }, /* @__PURE__ */ React.createElement(PopoverTrigger, { asChild: true }, /* @__PURE__ */ React.createElement(
-    "button",
-    {
-      type: "button",
-      id,
-      disabled,
-      className: cn(
-        "input flex items-center justify-between gap-2 text-left",
-        !date && "text-ink/45",
-        disabled && "cursor-not-allowed opacity-60"
-      )
-    },
-    /* @__PURE__ */ React.createElement("span", { className: "truncate" }, triggerLabel),
-    /* @__PURE__ */ React.createElement("span", { className: "flex items-center gap-1 shrink-0 text-ink/45" }, date && /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        type: "button",
-        "aria-label": "Clear",
-        className: "rounded p-0.5 hover:bg-ink/[0.06] hover:text-ink/80",
-        onClick: (e) => {
-          e.stopPropagation();
-          setDate(void 0);
+  return /* @__PURE__ */ jsxs("div", { className: cn("relative", className), children: [
+    /* @__PURE__ */ jsxs(Popover, { open, onOpenChange: setOpen, children: [
+      /* @__PURE__ */ jsx(PopoverTrigger, { asChild: true, children: /* @__PURE__ */ jsxs(
+        "button",
+        {
+          type: "button",
+          id,
+          disabled,
+          className: cn(
+            "input flex items-center justify-between gap-2 text-left",
+            !date && "text-ink/45",
+            disabled && "cursor-not-allowed opacity-60"
+          ),
+          children: [
+            /* @__PURE__ */ jsx("span", { className: "truncate", children: triggerLabel }),
+            /* @__PURE__ */ jsxs("span", { className: "flex items-center gap-1 shrink-0 text-ink/45", children: [
+              date && /* @__PURE__ */ jsx(
+                "button",
+                {
+                  type: "button",
+                  "aria-label": "Clear",
+                  className: "rounded p-0.5 hover:bg-ink/[0.06] hover:text-ink/80",
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setDate(void 0);
+                  },
+                  children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
+                }
+              ),
+              withTime ? /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx(CalendarDays, { className: "h-4 w-4" })
+            ] })
+          ]
         }
-      },
-      /* @__PURE__ */ React.createElement(X, { className: "h-3.5 w-3.5" })
-    ), withTime ? /* @__PURE__ */ React.createElement(Clock, { className: "h-4 w-4" }) : /* @__PURE__ */ React.createElement(CalendarDays, { className: "h-4 w-4" }))
-  )), /* @__PURE__ */ React.createElement(PopoverContent, { align: "start", className: "p-3" }, /* @__PURE__ */ React.createElement(
-    Calendar,
-    {
-      mode: "single",
-      selected: date,
-      onSelect: setCalendarDay,
-      captionLayout: "dropdown",
-      startMonth: new Date(fromYear ?? (/* @__PURE__ */ new Date()).getFullYear() - 10, 0),
-      endMonth: new Date(toYear ?? (/* @__PURE__ */ new Date()).getFullYear() + 10, 11),
-      defaultMonth: date ?? /* @__PURE__ */ new Date()
-    }
-  ), withTime && /* @__PURE__ */ React.createElement("div", { className: "mt-3 flex items-center justify-center gap-2 border-t border-ink/10 pt-3" }, /* @__PURE__ */ React.createElement(Clock, { className: "h-3.5 w-3.5 text-ink/45" }), /* @__PURE__ */ React.createElement("span", { className: "text-[11px] uppercase tracking-[0.14em] text-ink/55 font-mono mr-1" }, "Time"), /* @__PURE__ */ React.createElement(
-    TimeSpinner,
-    {
-      value: date?.getHours() ?? 0,
-      max: 23,
-      onChange: setHour,
-      ariaLabel: "Hours"
-    }
-  ), /* @__PURE__ */ React.createElement("span", { className: "text-ink/55 font-mono" }, ":"), /* @__PURE__ */ React.createElement(
-    TimeSpinner,
-    {
-      value: date?.getMinutes() ?? 0,
-      max: 59,
-      onChange: setMinute,
-      ariaLabel: "Minutes"
-    }
-  )), /* @__PURE__ */ React.createElement("div", { className: "mt-3 flex items-center justify-between gap-2 border-t border-ink/10 pt-3" }, /* @__PURE__ */ React.createElement(
-    "button",
-    {
-      type: "button",
-      className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/55 hover:text-brand-teal-700",
-      onClick: () => setDate(void 0)
-    },
-    "Clear"
-  ), /* @__PURE__ */ React.createElement(
-    "button",
-    {
-      type: "button",
-      className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-brand-teal-700 hover:text-brand-teal-800",
-      onClick: () => {
-        const t = /* @__PURE__ */ new Date();
-        if (!withTime) t.setHours(0, 0, 0, 0);
-        else t.setSeconds(0, 0);
-        setDate(t);
-        if (!withTime) setOpen(false);
+      ) }),
+      /* @__PURE__ */ jsxs(PopoverContent, { align: "start", className: "p-3", children: [
+        /* @__PURE__ */ jsx(
+          Calendar,
+          {
+            mode: "single",
+            selected: date,
+            onSelect: setCalendarDay,
+            captionLayout: "dropdown",
+            startMonth: new Date(fromYear ?? (/* @__PURE__ */ new Date()).getFullYear() - 10, 0),
+            endMonth: new Date(toYear ?? (/* @__PURE__ */ new Date()).getFullYear() + 10, 11),
+            defaultMonth: date ?? /* @__PURE__ */ new Date()
+          }
+        ),
+        withTime && /* @__PURE__ */ jsxs("div", { className: "mt-3 flex items-center justify-center gap-2 border-t border-ink/10 pt-3", children: [
+          /* @__PURE__ */ jsx(Clock, { className: "h-3.5 w-3.5 text-ink/45" }),
+          /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.14em] text-ink/55 font-mono mr-1", children: "Time" }),
+          /* @__PURE__ */ jsx(
+            TimeSpinner,
+            {
+              value: date?.getHours() ?? 0,
+              max: 23,
+              onChange: setHour,
+              ariaLabel: "Hours"
+            }
+          ),
+          /* @__PURE__ */ jsx("span", { className: "text-ink/55 font-mono", children: ":" }),
+          /* @__PURE__ */ jsx(
+            TimeSpinner,
+            {
+              value: date?.getMinutes() ?? 0,
+              max: 59,
+              onChange: setMinute,
+              ariaLabel: "Minutes"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "mt-3 flex items-center justify-between gap-2 border-t border-ink/10 pt-3", children: [
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/55 hover:text-brand-teal-700",
+              onClick: () => setDate(void 0),
+              children: "Clear"
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-brand-teal-700 hover:text-brand-teal-800",
+              onClick: () => {
+                const t = /* @__PURE__ */ new Date();
+                if (!withTime) t.setHours(0, 0, 0, 0);
+                else t.setSeconds(0, 0);
+                setDate(t);
+                if (!withTime) setOpen(false);
+              },
+              children: withTime ? "Now" : "Today"
+            }
+          ),
+          withTime && /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-brand-indigo-700 hover:text-brand-indigo-800",
+              onClick: () => setOpen(false),
+              children: "Done"
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        type: "hidden",
+        name,
+        value,
+        required
       }
-    },
-    withTime ? "Now" : "Today"
-  ), withTime && /* @__PURE__ */ React.createElement(
-    "button",
-    {
-      type: "button",
-      className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-brand-indigo-700 hover:text-brand-indigo-800",
-      onClick: () => setOpen(false)
-    },
-    "Done"
-  )))), /* @__PURE__ */ React.createElement(
-    "input",
-    {
-      type: "hidden",
-      name,
-      value,
-      required
-    }
-  ));
+    )
+  ] });
 }
 function TimeSpinner({
   value,
@@ -1011,7 +1052,7 @@ function TimeSpinner({
       setDraft(pad2(value));
     }
   };
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsx(
     "input",
     {
       type: "text",
@@ -1042,7 +1083,7 @@ var Dialog = DialogPrimitive.Root;
 var DialogTrigger = DialogPrimitive.Trigger;
 var DialogPortal = DialogPrimitive.Portal;
 var DialogClose = DialogPrimitive.Close;
-var DialogOverlay = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var DialogOverlay = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   DialogPrimitive.Overlay,
   {
     ref,
@@ -1051,25 +1092,33 @@ var DialogOverlay = React21.forwardRef(({ className, ...props }, ref) => /* @__P
   }
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
-var DialogContent = React21.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ React21.createElement(DialogPortal, null, /* @__PURE__ */ React21.createElement(DialogOverlay, null), /* @__PURE__ */ React21.createElement(
-  DialogPrimitive.Content,
-  {
-    ref,
-    className: cn(
-      "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
-      className
-    ),
-    ...props
-  },
-  children,
-  /* @__PURE__ */ React21.createElement(DialogPrimitive.Close, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none" }, /* @__PURE__ */ React21.createElement(X, { className: "h-4 w-4" }), /* @__PURE__ */ React21.createElement("span", { className: "sr-only" }, "Close"))
-)));
+var DialogContent = React16.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs(DialogPortal, { children: [
+  /* @__PURE__ */ jsx(DialogOverlay, {}),
+  /* @__PURE__ */ jsxs(
+    DialogPrimitive.Content,
+    {
+      ref,
+      className: cn(
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
+        className
+      ),
+      ...props,
+      children: [
+        children,
+        /* @__PURE__ */ jsxs(DialogPrimitive.Close, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none", children: [
+          /* @__PURE__ */ jsx(X, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Close" })
+        ] })
+      ]
+    }
+  )
+] }));
 DialogContent.displayName = DialogPrimitive.Content.displayName;
-var DialogHeader = ({ className, ...props }) => /* @__PURE__ */ React21.createElement("div", { className: cn("flex flex-col space-y-1.5 text-center sm:text-left", className), ...props });
+var DialogHeader = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col space-y-1.5 text-center sm:text-left", className), ...props });
 DialogHeader.displayName = "DialogHeader";
-var DialogFooter = ({ className, ...props }) => /* @__PURE__ */ React21.createElement("div", { className: cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className), ...props });
+var DialogFooter = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className), ...props });
 DialogFooter.displayName = "DialogFooter";
-var DialogTitle = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var DialogTitle = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   DialogPrimitive.Title,
   {
     ref,
@@ -1078,12 +1127,12 @@ var DialogTitle = React21.forwardRef(({ className, ...props }, ref) => /* @__PUR
   }
 ));
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
-var DialogDescription = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(DialogPrimitive.Description, { ref, className: cn("text-sm text-muted-foreground", className), ...props }));
+var DialogDescription = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(DialogPrimitive.Description, { ref, className: cn("text-sm text-muted-foreground", className), ...props }));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 var AlertDialog = AlertDialogPrimitive.Root;
 var AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 var AlertDialogPortal = AlertDialogPrimitive.Portal;
-var AlertDialogOverlay = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var AlertDialogOverlay = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   AlertDialogPrimitive.Overlay,
   {
     ref,
@@ -1092,23 +1141,26 @@ var AlertDialogOverlay = React21.forwardRef(({ className, ...props }, ref) => /*
   }
 ));
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
-var AlertDialogContent = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(AlertDialogPortal, null, /* @__PURE__ */ React21.createElement(AlertDialogOverlay, null), /* @__PURE__ */ React21.createElement(
-  AlertDialogPrimitive.Content,
-  {
-    ref,
-    className: cn(
-      "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
-      className
-    ),
-    ...props
-  }
-)));
+var AlertDialogContent = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxs(AlertDialogPortal, { children: [
+  /* @__PURE__ */ jsx(AlertDialogOverlay, {}),
+  /* @__PURE__ */ jsx(
+    AlertDialogPrimitive.Content,
+    {
+      ref,
+      className: cn(
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
+        className
+      ),
+      ...props
+    }
+  )
+] }));
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
-var AlertDialogHeader = ({ className, ...props }) => /* @__PURE__ */ React21.createElement("div", { className: cn("flex flex-col space-y-1.5 text-center sm:text-left", className), ...props });
+var AlertDialogHeader = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col space-y-1.5 text-center sm:text-left", className), ...props });
 AlertDialogHeader.displayName = "AlertDialogHeader";
-var AlertDialogFooter = ({ className, ...props }) => /* @__PURE__ */ React21.createElement("div", { className: cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className), ...props });
+var AlertDialogFooter = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className), ...props });
 AlertDialogFooter.displayName = "AlertDialogFooter";
-var AlertDialogTitle = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var AlertDialogTitle = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   AlertDialogPrimitive.Title,
   {
     ref,
@@ -1117,11 +1169,11 @@ var AlertDialogTitle = React21.forwardRef(({ className, ...props }, ref) => /* @
   }
 ));
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
-var AlertDialogDescription = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(AlertDialogPrimitive.Description, { ref, className: cn("text-sm text-muted-foreground", className), ...props }));
+var AlertDialogDescription = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(AlertDialogPrimitive.Description, { ref, className: cn("text-sm text-muted-foreground", className), ...props }));
 AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
-var AlertDialogAction = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(AlertDialogPrimitive.Action, { ref, className: cn(className), ...props }));
+var AlertDialogAction = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(AlertDialogPrimitive.Action, { ref, className: cn(className), ...props }));
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
-var AlertDialogCancel = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(AlertDialogPrimitive.Cancel, { ref, className: cn(className), ...props }));
+var AlertDialogCancel = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(AlertDialogPrimitive.Cancel, { ref, className: cn(className), ...props }));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
 var alertVariants = cva(
   "relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
@@ -1135,16 +1187,16 @@ var alertVariants = cva(
     defaultVariants: { variant: "default" }
   }
 );
-var Alert = React21.forwardRef(
-  ({ className, variant, ...props }, ref) => /* @__PURE__ */ React21.createElement("div", { ref, role: "alert", className: cn(alertVariants({ variant }), className), ...props })
+var Alert = React16.forwardRef(
+  ({ className, variant, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, role: "alert", className: cn(alertVariants({ variant }), className), ...props })
 );
 Alert.displayName = "Alert";
-var AlertTitle = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("h5", { ref, className: cn("mb-1 font-medium leading-none tracking-tight", className), ...props })
+var AlertTitle = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("h5", { ref, className: cn("mb-1 font-medium leading-none tracking-tight", className), ...props })
 );
 AlertTitle.displayName = "AlertTitle";
-var AlertDescription = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("div", { ref, className: cn("text-sm [&_p]:leading-relaxed", className), ...props })
+var AlertDescription = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("text-sm [&_p]:leading-relaxed", className), ...props })
 );
 AlertDescription.displayName = "AlertDescription";
 var DropdownMenu = DropdownMenuPrimitive.Root;
@@ -1153,7 +1205,7 @@ var DropdownMenuGroup = DropdownMenuPrimitive.Group;
 var DropdownMenuPortal = DropdownMenuPrimitive.Portal;
 var DropdownMenuSub = DropdownMenuPrimitive.Sub;
 var DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
-var DropdownMenuContent = React21.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ React21.createElement(DropdownMenuPrimitive.Portal, null, /* @__PURE__ */ React21.createElement(
+var DropdownMenuContent = React16.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ jsx(DropdownMenuPrimitive.Portal, { children: /* @__PURE__ */ jsx(
   DropdownMenuPrimitive.Content,
   {
     ref,
@@ -1164,9 +1216,9 @@ var DropdownMenuContent = React21.forwardRef(({ className, sideOffset = 4, ...pr
     ),
     ...props
   }
-)));
+) }));
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
-var DropdownMenuItem = React21.forwardRef(({ className, inset, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var DropdownMenuItem = React16.forwardRef(({ className, inset, ...props }, ref) => /* @__PURE__ */ jsx(
   DropdownMenuPrimitive.Item,
   {
     ref,
@@ -1179,7 +1231,7 @@ var DropdownMenuItem = React21.forwardRef(({ className, inset, ...props }, ref) 
   }
 ));
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
-var DropdownMenuLabel = React21.forwardRef(({ className, inset, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var DropdownMenuLabel = React16.forwardRef(({ className, inset, ...props }, ref) => /* @__PURE__ */ jsx(
   DropdownMenuPrimitive.Label,
   {
     ref,
@@ -1188,10 +1240,10 @@ var DropdownMenuLabel = React21.forwardRef(({ className, inset, ...props }, ref)
   }
 ));
 DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
-var DropdownMenuSeparator = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(DropdownMenuPrimitive.Separator, { ref, className: cn("-mx-1 my-1 h-px bg-muted", className), ...props }));
+var DropdownMenuSeparator = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(DropdownMenuPrimitive.Separator, { ref, className: cn("-mx-1 my-1 h-px bg-muted", className), ...props }));
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 var Tabs = TabsPrimitive.Root;
-var TabsList = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var TabsList = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   TabsPrimitive.List,
   {
     ref,
@@ -1200,7 +1252,7 @@ var TabsList = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__
   }
 ));
 TabsList.displayName = TabsPrimitive.List.displayName;
-var TabsTrigger = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var TabsTrigger = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   TabsPrimitive.Trigger,
   {
     ref,
@@ -1212,7 +1264,7 @@ var TabsTrigger = React21.forwardRef(({ className, ...props }, ref) => /* @__PUR
   }
 ));
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
-var TabsContent = React21.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var TabsContent = React16.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   TabsPrimitive.Content,
   {
     ref,
@@ -1221,8 +1273,6 @@ var TabsContent = React21.forwardRef(({ className, ...props }, ref) => /* @__PUR
   }
 ));
 TabsContent.displayName = TabsPrimitive.Content.displayName;
-
-// src/layout/page-header.tsx
 function PageHero({
   icon,
   title,
@@ -1231,16 +1281,29 @@ function PageHero({
   actions,
   kicker
 }) {
-  return /* @__PURE__ */ React.createElement("div", { className: "relative" }, /* @__PURE__ */ React.createElement(
-    "span",
-    {
-      "aria-hidden": "true",
-      className: "absolute inset-x-0 -top-1 h-px",
-      style: {
-        background: "linear-gradient(90deg, transparent 0%, rgba(0,142,134,0.5) 35%, rgba(46,49,145,0.5) 65%, transparent 100%)"
+  return /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+    /* @__PURE__ */ jsx(
+      "span",
+      {
+        "aria-hidden": "true",
+        className: "absolute inset-x-0 -top-1 h-px",
+        style: {
+          background: "linear-gradient(90deg, transparent 0%, rgba(0,142,134,0.5) 35%, rgba(46,49,145,0.5) 65%, transparent 100%)"
+        }
       }
-    }
-  ), /* @__PURE__ */ React.createElement("div", { className: "flex items-start gap-5 flex-wrap pt-4 pb-5" }, /* @__PURE__ */ React.createElement("span", { className: "inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-paper-200 text-ink-900 ring-1 ring-ink/10 shadow-paper" }, /* @__PURE__ */ React.createElement("span", { className: "text-ink/80" }, icon)), /* @__PURE__ */ React.createElement("div", { className: "flex-1 min-w-0" }, kicker && /* @__PURE__ */ React.createElement("div", { className: "eyebrow mb-2 text-brand-indigo-700" }, kicker), /* @__PURE__ */ React.createElement("h1", { className: "page-title" }, title), meta && /* @__PURE__ */ React.createElement("div", { className: "mt-3 flex flex-wrap items-center gap-2" }, meta), description && /* @__PURE__ */ React.createElement("p", { className: "mt-3 text-[14.5px] text-ink/65 max-w-2xl" }, description)), actions && /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 flex-wrap pt-1" }, actions)), /* @__PURE__ */ React.createElement("div", { className: "rule-fade" }));
+    ),
+    /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-5 flex-wrap pt-4 pb-5", children: [
+      /* @__PURE__ */ jsx("span", { className: "inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-paper-200 text-ink-900 ring-1 ring-ink/10 shadow-paper", children: /* @__PURE__ */ jsx("span", { className: "text-ink/80", children: icon }) }),
+      /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
+        kicker && /* @__PURE__ */ jsx("div", { className: "eyebrow mb-2 text-brand-indigo-700", children: kicker }),
+        /* @__PURE__ */ jsx("h1", { className: "page-title", children: title }),
+        meta && /* @__PURE__ */ jsx("div", { className: "mt-3 flex flex-wrap items-center gap-2", children: meta }),
+        description && /* @__PURE__ */ jsx("p", { className: "mt-3 text-[14.5px] text-ink/65 max-w-2xl", children: description })
+      ] }),
+      actions && /* @__PURE__ */ jsx("div", { className: "flex items-center gap-2 flex-wrap pt-1", children: actions })
+    ] }),
+    /* @__PURE__ */ jsx("div", { className: "rule-fade" })
+  ] });
 }
 function PageHeader({
   title,
@@ -1248,36 +1311,50 @@ function PageHeader({
   actions,
   kicker
 }) {
-  return /* @__PURE__ */ React.createElement("div", { className: "flex items-end justify-between flex-wrap gap-4 pb-5" }, /* @__PURE__ */ React.createElement("div", { className: "min-w-0" }, kicker && /* @__PURE__ */ React.createElement("div", { className: "eyebrow mb-2" }, kicker), /* @__PURE__ */ React.createElement("h1", { className: "page-title" }, title), description && /* @__PURE__ */ React.createElement("p", { className: "mt-2 text-[14px] text-ink/65 max-w-2xl" }, description)), actions && /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 flex-wrap" }, actions));
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-end justify-between flex-wrap gap-4 pb-5", children: [
+    /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
+      kicker && /* @__PURE__ */ jsx("div", { className: "eyebrow mb-2", children: kicker }),
+      /* @__PURE__ */ jsx("h1", { className: "page-title", children: title }),
+      description && /* @__PURE__ */ jsx("p", { className: "mt-2 text-[14px] text-ink/65 max-w-2xl", children: description })
+    ] }),
+    actions && /* @__PURE__ */ jsx("div", { className: "flex items-center gap-2 flex-wrap", children: actions })
+  ] });
 }
 var SEGMENT_BASE = "text-[10.5px] font-mono font-semibold uppercase tracking-[0.18em] transition-colors max-w-[24ch] truncate";
 var SEGMENT_LINK = SEGMENT_BASE + " text-ink/55 hover:text-ink-900";
 var SEGMENT_CURRENT = SEGMENT_BASE + " text-ink-900";
 function Breadcrumbs({ items }) {
   if (items.length === 0) return null;
-  return /* @__PURE__ */ React.createElement("nav", { "aria-label": "Breadcrumb", className: "mb-3" }, /* @__PURE__ */ React.createElement("ol", { className: "flex items-center gap-1.5 flex-wrap" }, items.map((item, i) => {
+  return /* @__PURE__ */ jsx("nav", { "aria-label": "Breadcrumb", className: "mb-3", children: /* @__PURE__ */ jsx("ol", { className: "flex items-center gap-1.5 flex-wrap", children: items.map((item, i) => {
     const isFirst = i === 0;
     const isLast = i === items.length - 1;
     const hasHref = Boolean(item.href);
-    const labelEl = hasHref && !isLast ? /* @__PURE__ */ React.createElement(
+    const labelEl = hasHref && !isLast ? /* @__PURE__ */ jsxs(
       Link6,
       {
         href: item.href,
-        className: "inline-flex items-center gap-1.5 " + SEGMENT_LINK
-      },
-      isFirst && /* @__PURE__ */ React.createElement(ArrowLeft, { className: "h-3 w-3 shrink-0", "aria-hidden": "true" }),
-      /* @__PURE__ */ React.createElement("span", { className: "truncate" }, item.label)
-    ) : /* @__PURE__ */ React.createElement(
+        className: "inline-flex items-center gap-1.5 " + SEGMENT_LINK,
+        children: [
+          isFirst && /* @__PURE__ */ jsx(ArrowLeft, { className: "h-3 w-3 shrink-0", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx("span", { className: "truncate", children: item.label })
+        ]
+      }
+    ) : /* @__PURE__ */ jsxs(
       "span",
       {
         "aria-current": isLast ? "page" : void 0,
-        className: "inline-flex items-center gap-1.5 " + (isLast ? SEGMENT_CURRENT : SEGMENT_LINK)
-      },
-      isFirst && /* @__PURE__ */ React.createElement(ArrowLeft, { className: "h-3 w-3 shrink-0 opacity-70", "aria-hidden": "true" }),
-      /* @__PURE__ */ React.createElement("span", { className: "truncate" }, item.label)
+        className: "inline-flex items-center gap-1.5 " + (isLast ? SEGMENT_CURRENT : SEGMENT_LINK),
+        children: [
+          isFirst && /* @__PURE__ */ jsx(ArrowLeft, { className: "h-3 w-3 shrink-0 opacity-70", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx("span", { className: "truncate", children: item.label })
+        ]
+      }
     );
-    return /* @__PURE__ */ React.createElement("li", { key: i, className: "flex items-center gap-1.5 min-w-0" }, !isFirst && /* @__PURE__ */ React.createElement(ChevronRight, { className: "h-3 w-3 shrink-0 text-ink/30", "aria-hidden": "true" }), labelEl);
-  })));
+    return /* @__PURE__ */ jsxs("li", { className: "flex items-center gap-1.5 min-w-0", children: [
+      !isFirst && /* @__PURE__ */ jsx(ChevronRight, { className: "h-3 w-3 shrink-0 text-ink/30", "aria-hidden": "true" }),
+      labelEl
+    ] }, i);
+  }) }) });
 }
 function isActive(pathname, href) {
   if (pathname === href) return true;
@@ -1301,21 +1378,21 @@ function SidebarNav({
     buckets.get(key).push(item);
   }
   const finalOrder = groupOrder ?? order;
-  return /* @__PURE__ */ React21.createElement("nav", { className: "flex-1 overflow-y-auto px-3 py-4 space-y-6" }, finalOrder.map((key) => {
+  return /* @__PURE__ */ jsx("nav", { className: "flex-1 overflow-y-auto px-3 py-4 space-y-6", children: finalOrder.map((key) => {
     const list = buckets.get(key);
     if (!list || list.length === 0) return null;
     const label = key === "" ? void 0 : groupLabels?.[key] ?? key.charAt(0).toUpperCase() + key.slice(1);
-    return /* @__PURE__ */ React21.createElement(
+    return /* @__PURE__ */ jsx(
       SidebarGroup,
       {
-        key: key || "__ungrouped",
         label,
         items: list,
         pathname,
         onNavigate
-      }
+      },
+      key || "__ungrouped"
     );
-  }));
+  }) });
 }
 function SidebarGroup({
   label,
@@ -1323,55 +1400,62 @@ function SidebarGroup({
   pathname,
   onNavigate
 }) {
-  return /* @__PURE__ */ React21.createElement("div", null, label && /* @__PURE__ */ React21.createElement("div", { className: "px-3 pb-2 eyebrow text-white/55" }, label), /* @__PURE__ */ React21.createElement("ul", { className: "space-y-0.5" }, items.map((i) => {
-    const Icon2 = i.icon;
-    const active = isActive(pathname, i.href);
-    return /* @__PURE__ */ React21.createElement("li", { key: i.href }, /* @__PURE__ */ React21.createElement(
-      Link6,
-      {
-        href: i.href,
-        onClick: onNavigate,
-        "aria-current": active ? "page" : void 0,
-        className: [
-          "group relative flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition-all duration-200",
-          active ? "bg-white/[0.07] text-white font-medium" : "text-white/65 hover:bg-white/[0.04] hover:text-white"
-        ].join(" ")
-      },
-      active && /* @__PURE__ */ React21.createElement(
-        "span",
+  return /* @__PURE__ */ jsxs("div", { children: [
+    label && /* @__PURE__ */ jsx("div", { className: "px-3 pb-2 eyebrow text-white/55", children: label }),
+    /* @__PURE__ */ jsx("ul", { className: "space-y-0.5", children: items.map((i) => {
+      const Icon2 = i.icon;
+      const active = isActive(pathname, i.href);
+      return /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs(
+        Link6,
         {
-          "aria-hidden": "true",
-          className: "absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1.5 flex h-1.5 w-1.5"
-        },
-        /* @__PURE__ */ React21.createElement("span", { className: "absolute inline-flex h-full w-full motion-safe:animate-dot-pulse rounded-full bg-brand-teal-400" }),
-        /* @__PURE__ */ React21.createElement("span", { className: "relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-teal-500" })
-      ),
-      /* @__PURE__ */ React21.createElement(
-        Icon2,
-        {
+          href: i.href,
+          onClick: onNavigate,
+          "aria-current": active ? "page" : void 0,
           className: [
-            "h-[15px] w-[15px] shrink-0 transition-colors",
-            active ? "text-brand-teal-300" : "text-white/45 group-hover:text-white/85"
-          ].join(" ")
+            "group relative flex items-center gap-3 rounded-md px-3 py-2 text-[13px] transition-all duration-200",
+            active ? "bg-white/[0.07] text-white font-medium" : "text-white/65 hover:bg-white/[0.04] hover:text-white"
+          ].join(" "),
+          children: [
+            active && /* @__PURE__ */ jsxs(
+              "span",
+              {
+                "aria-hidden": "true",
+                className: "absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1.5 flex h-1.5 w-1.5",
+                children: [
+                  /* @__PURE__ */ jsx("span", { className: "absolute inline-flex h-full w-full motion-safe:animate-dot-pulse rounded-full bg-brand-teal-400" }),
+                  /* @__PURE__ */ jsx("span", { className: "relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-teal-500" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              Icon2,
+              {
+                className: [
+                  "h-[15px] w-[15px] shrink-0 transition-colors",
+                  active ? "text-brand-teal-300" : "text-white/45 group-hover:text-white/85"
+                ].join(" ")
+              }
+            ),
+            /* @__PURE__ */ jsx("span", { className: "truncate tracking-[-0.005em]", children: i.label })
+          ]
         }
-      ),
-      /* @__PURE__ */ React21.createElement("span", { className: "truncate tracking-[-0.005em]" }, i.label)
-    ));
-  })));
+      ) }, i.href);
+    }) })
+  ] });
 }
 function MobileMenuButton({
   open,
   onClick
 }) {
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsx(
     "button",
     {
       type: "button",
       onClick,
       className: "md:hidden inline-flex items-center justify-center rounded-md p-2 text-neutral-700 hover:bg-neutral-100",
-      "aria-label": open ? "Close menu" : "Open menu"
-    },
-    open ? /* @__PURE__ */ React21.createElement(X, { className: "h-5 w-5" }) : /* @__PURE__ */ React21.createElement(Menu, { className: "h-5 w-5" })
+      "aria-label": open ? "Close menu" : "Open menu",
+      children: open ? /* @__PURE__ */ jsx(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx(Menu, { className: "h-5 w-5" })
+    }
   );
 }
 function ShellLayout({
@@ -1385,118 +1469,146 @@ function ShellLayout({
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   const pathname = usePathname();
-  return /* @__PURE__ */ React21.createElement("div", { className: "relative min-h-screen" }, /* @__PURE__ */ React21.createElement(
-    "div",
-    {
-      "data-app-chrome": true,
-      className: "md:hidden sticky top-0 z-30 flex items-center justify-between border-b border-ink/10 bg-paper-100/85 backdrop-blur px-4 py-2.5"
-    },
-    brand,
-    /* @__PURE__ */ React21.createElement(
-      "button",
+  return /* @__PURE__ */ jsxs("div", { className: "relative min-h-screen", children: [
+    /* @__PURE__ */ jsxs(
+      "div",
       {
-        type: "button",
-        onClick: () => setOpen((v) => !v),
-        "aria-label": open ? "Close menu" : "Open menu",
-        className: "inline-flex items-center justify-center rounded-md p-2 text-ink/80 hover:bg-ink/5"
+        "data-app-chrome": true,
+        className: "md:hidden sticky top-0 z-30 flex items-center justify-between border-b border-ink/10 bg-paper-100/85 backdrop-blur px-4 py-2.5",
+        children: [
+          brand,
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              onClick: () => setOpen((v) => !v),
+              "aria-label": open ? "Close menu" : "Open menu",
+              className: "inline-flex items-center justify-center rounded-md p-2 text-ink/80 hover:bg-ink/5",
+              children: open ? /* @__PURE__ */ jsx(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx(Menu, { className: "h-5 w-5" })
+            }
+          )
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxs(
+      "aside",
+      {
+        "data-app-chrome": true,
+        className: "hidden md:flex sidebar-surface fixed inset-y-0 left-0 w-64 flex-col z-20",
+        children: [
+          /* @__PURE__ */ jsx(
+            "span",
+            {
+              "aria-hidden": "true",
+              className: "absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-brand-teal-500/35 to-transparent"
+            }
+          ),
+          /* @__PURE__ */ jsx("div", { className: "flex h-16 items-center px-5 border-b border-white/5", children: brand }),
+          /* @__PURE__ */ jsx(
+            SidebarNav,
+            {
+              items: navItems,
+              groupOrder,
+              groupLabels
+            }
+          ),
+          userFooter && /* @__PURE__ */ jsx("div", { className: "border-t border-white/5", children: userFooter })
+        ]
+      }
+    ),
+    open && /* @__PURE__ */ jsxs("div", { className: "md:hidden fixed inset-0 z-40", children: [
+      /* @__PURE__ */ jsx(
+        "div",
+        {
+          className: "absolute inset-0 bg-ink/50 backdrop-blur-sm animate-fade-in-soft",
+          onClick: close,
+          "aria-hidden": true
+        }
+      ),
+      /* @__PURE__ */ jsxs("aside", { className: "absolute inset-y-0 left-0 w-72 max-w-[85%] sidebar-surface flex flex-col shadow-paper-lg", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex h-16 items-center justify-between px-5 border-b border-white/5", children: [
+          brand,
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              onClick: close,
+              "aria-label": "Close menu",
+              className: "inline-flex items-center justify-center rounded-md p-2 text-white/80 hover:bg-white/5",
+              children: /* @__PURE__ */ jsx(X, { className: "h-5 w-5" })
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsx(
+          SidebarNav,
+          {
+            items: navItems,
+            onNavigate: close,
+            groupOrder,
+            groupLabels
+          }
+        ),
+        userFooter && /* @__PURE__ */ jsx("div", { className: "border-t border-white/5", children: userFooter })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx("main", { className: "md:ml-64 relative z-[2]", children: /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: "px-4 py-7 sm:px-7 lg:px-10 animate-fade-in-soft",
+        children
       },
-      open ? /* @__PURE__ */ React21.createElement(X, { className: "h-5 w-5" }) : /* @__PURE__ */ React21.createElement(Menu, { className: "h-5 w-5" })
-    )
-  ), /* @__PURE__ */ React21.createElement(
-    "aside",
-    {
-      "data-app-chrome": true,
-      className: "hidden md:flex sidebar-surface fixed inset-y-0 left-0 w-64 flex-col z-20"
-    },
-    /* @__PURE__ */ React21.createElement(
-      "span",
-      {
-        "aria-hidden": "true",
-        className: "absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-brand-teal-500/35 to-transparent"
-      }
-    ),
-    /* @__PURE__ */ React21.createElement("div", { className: "flex h-16 items-center px-5 border-b border-white/5" }, brand),
-    /* @__PURE__ */ React21.createElement(
-      SidebarNav,
-      {
-        items: navItems,
-        groupOrder,
-        groupLabels
-      }
-    ),
-    userFooter && /* @__PURE__ */ React21.createElement("div", { className: "border-t border-white/5" }, userFooter)
-  ), open && /* @__PURE__ */ React21.createElement("div", { className: "md:hidden fixed inset-0 z-40" }, /* @__PURE__ */ React21.createElement(
-    "div",
-    {
-      className: "absolute inset-0 bg-ink/50 backdrop-blur-sm animate-fade-in-soft",
-      onClick: close,
-      "aria-hidden": true
-    }
-  ), /* @__PURE__ */ React21.createElement("aside", { className: "absolute inset-y-0 left-0 w-72 max-w-[85%] sidebar-surface flex flex-col shadow-paper-lg" }, /* @__PURE__ */ React21.createElement("div", { className: "flex h-16 items-center justify-between px-5 border-b border-white/5" }, brand, /* @__PURE__ */ React21.createElement(
-    "button",
-    {
-      type: "button",
-      onClick: close,
-      "aria-label": "Close menu",
-      className: "inline-flex items-center justify-center rounded-md p-2 text-white/80 hover:bg-white/5"
-    },
-    /* @__PURE__ */ React21.createElement(X, { className: "h-5 w-5" })
-  )), /* @__PURE__ */ React21.createElement(
-    SidebarNav,
-    {
-      items: navItems,
-      onNavigate: close,
-      groupOrder,
-      groupLabels
-    }
-  ), userFooter && /* @__PURE__ */ React21.createElement("div", { className: "border-t border-white/5" }, userFooter))), /* @__PURE__ */ React21.createElement("main", { className: "md:ml-64 relative z-[2]" }, /* @__PURE__ */ React21.createElement(
-    "div",
-    {
-      key: pathname,
-      className: "px-4 py-7 sm:px-7 lg:px-10 animate-fade-in-soft"
-    },
-    children
-  )));
+      pathname
+    ) })
+  ] });
 }
-
-// src/cards/form-card.tsx
 function FormCard({
   children,
   className
 }) {
-  return /* @__PURE__ */ React.createElement("div", { className: `card p-6 space-y-6 ${className ?? ""}` }, children);
+  return /* @__PURE__ */ jsx("div", { className: `card p-6 space-y-6 ${className ?? ""}`, children });
 }
 function FormSplitBody({
   left,
   right
 }) {
-  return /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-1 lg:grid-cols-[1fr_1px_1fr] gap-x-8 gap-y-6 items-start" }, /* @__PURE__ */ React.createElement("div", { className: "space-y-8" }, left), /* @__PURE__ */ React.createElement(
-    "div",
-    {
-      className: "hidden lg:block w-px bg-ink/10 self-stretch my-6",
-      "aria-hidden": true
-    }
-  ), /* @__PURE__ */ React.createElement("div", { className: "space-y-8" }, right));
+  return /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-[1fr_1px_1fr] gap-x-8 gap-y-6 items-start", children: [
+    /* @__PURE__ */ jsx("div", { className: "space-y-8", children: left }),
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: "hidden lg:block w-px bg-ink/10 self-stretch my-6",
+        "aria-hidden": true
+      }
+    ),
+    /* @__PURE__ */ jsx("div", { className: "space-y-8", children: right })
+  ] });
 }
 function FormSection({
   title,
   icon,
   children
 }) {
-  return /* @__PURE__ */ React.createElement("section", { className: "space-y-3" }, /* @__PURE__ */ React.createElement("h3", { className: "flex items-center gap-1.5 text-[11px] font-bold text-brand-indigo-700 uppercase tracking-[0.08em] mb-4 pb-2 border-b border-ink/10" }, icon && /* @__PURE__ */ React.createElement("span", { className: "text-brand-indigo-700" }, icon), title), children);
+  return /* @__PURE__ */ jsxs("section", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsxs("h3", { className: "flex items-center gap-1.5 text-[11px] font-bold text-brand-indigo-700 uppercase tracking-[0.08em] mb-4 pb-2 border-b border-ink/10", children: [
+      icon && /* @__PURE__ */ jsx("span", { className: "text-brand-indigo-700", children: icon }),
+      title
+    ] }),
+    children
+  ] });
 }
 function FormActions({
   primary,
   destructive
 }) {
-  return /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 pt-4 border-t border-ink/10" }, destructive && /* @__PURE__ */ React.createElement("div", { className: "mr-auto" }, destructive), /* @__PURE__ */ React.createElement("div", { className: "ml-auto" }, primary));
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 pt-4 border-t border-ink/10", children: [
+    destructive && /* @__PURE__ */ jsx("div", { className: "mr-auto", children: destructive }),
+    /* @__PURE__ */ jsx("div", { className: "ml-auto", children: primary })
+  ] });
 }
 function FormError({ children }) {
   if (!children) return null;
-  return /* @__PURE__ */ React.createElement("div", { className: "rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700" }, children);
+  return /* @__PURE__ */ jsx("div", { className: "rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700", children });
 }
-
-// src/cards/detail-card.tsx
 function DetailSection({
   title,
   icon,
@@ -1504,25 +1616,33 @@ function DetailSection({
   children,
   className
 }) {
-  return /* @__PURE__ */ React.createElement("section", { className: "card p-6 " + (className ?? "") }, /* @__PURE__ */ React.createElement(
-    "div",
-    {
-      className: action ? "flex items-center justify-between gap-4 mb-4" : "mb-4"
-    },
-    /* @__PURE__ */ React.createElement("h2", { className: "eyebrow text-brand-indigo-700 flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "text-brand-indigo-700 inline-flex" }, icon), title),
-    action
-  ), children);
+  return /* @__PURE__ */ jsxs("section", { className: "card p-6 " + (className ?? ""), children: [
+    /* @__PURE__ */ jsxs(
+      "div",
+      {
+        className: action ? "flex items-center justify-between gap-4 mb-4" : "mb-4",
+        children: [
+          /* @__PURE__ */ jsxs("h2", { className: "eyebrow text-brand-indigo-700 flex items-center gap-1.5", children: [
+            /* @__PURE__ */ jsx("span", { className: "text-brand-indigo-700 inline-flex", children: icon }),
+            title
+          ] }),
+          action
+        ]
+      }
+    ),
+    children
+  ] });
 }
 function DetailGrid({
   children,
   cols = 2
 }) {
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsx(
     "dl",
     {
-      className: "grid grid-cols-1 gap-x-8 gap-y-4 text-sm " + (cols === 2 ? "sm:grid-cols-2" : "")
-    },
-    children
+      className: "grid grid-cols-1 gap-x-8 gap-y-4 text-sm " + (cols === 2 ? "sm:grid-cols-2" : ""),
+      children
+    }
   );
 }
 function DetailRow({
@@ -1531,7 +1651,13 @@ function DetailRow({
   value,
   span
 }) {
-  return /* @__PURE__ */ React.createElement("div", { className: span === 2 ? "sm:col-span-2" : void 0 }, /* @__PURE__ */ React.createElement("dt", { className: "field-label flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "text-ink/40 inline-flex shrink-0" }, icon), label), /* @__PURE__ */ React.createElement("dd", { className: "mt-1 text-ink/85 leading-relaxed" }, value ?? /* @__PURE__ */ React.createElement("span", { className: "text-ink/40" }, "\u2014")));
+  return /* @__PURE__ */ jsxs("div", { className: span === 2 ? "sm:col-span-2" : void 0, children: [
+    /* @__PURE__ */ jsxs("dt", { className: "field-label flex items-center gap-1.5", children: [
+      /* @__PURE__ */ jsx("span", { className: "text-ink/40 inline-flex shrink-0", children: icon }),
+      label
+    ] }),
+    /* @__PURE__ */ jsx("dd", { className: "mt-1 text-ink/85 leading-relaxed", children: value ?? /* @__PURE__ */ jsx("span", { className: "text-ink/40", children: "\u2014" }) })
+  ] });
 }
 var ICON_TONE = {
   teal: "bg-brand-teal-50 text-brand-teal-700 ring-1 ring-brand-teal-100/70",
@@ -1557,15 +1683,26 @@ function KpiTile({
   caption,
   sparkline
 }) {
-  const body = /* @__PURE__ */ React21.createElement("div", { className: "card-interactive p-5 h-full flex flex-col" }, /* @__PURE__ */ React21.createElement("div", { className: "flex items-center gap-2.5" }, /* @__PURE__ */ React21.createElement(
-    "span",
-    {
-      className: "inline-flex h-7 w-7 items-center justify-center rounded-md shrink-0 " + ICON_TONE[tone]
-    },
-    icon
-  ), /* @__PURE__ */ React21.createElement("span", { className: "text-[10.5px] font-semibold uppercase tracking-[0.18em] text-ink/55" }, label)), /* @__PURE__ */ React21.createElement("div", { className: "mt-4 flex items-baseline gap-2" }, /* @__PURE__ */ React21.createElement("div", { className: "font-display font-semibold tabular-nums text-[34px] leading-[1] tracking-[-0.024em] text-ink-900" }, value), delta !== void 0 && deltaLabel && /* @__PURE__ */ React21.createElement(DeltaBadge, { delta, label: deltaLabel, upIsGood })), caption && /* @__PURE__ */ React21.createElement("div", { className: "mt-2 text-[11.5px] text-ink/55 font-mono tracking-tight" }, caption), sparkline && sparkline.length > 1 && /* @__PURE__ */ React21.createElement(Sparkline, { points: sparkline, className: SPARK_TONE[tone] }));
+  const body = /* @__PURE__ */ jsxs("div", { className: "card-interactive p-5 h-full flex flex-col", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2.5", children: [
+      /* @__PURE__ */ jsx(
+        "span",
+        {
+          className: "inline-flex h-7 w-7 items-center justify-center rounded-md shrink-0 " + ICON_TONE[tone],
+          children: icon
+        }
+      ),
+      /* @__PURE__ */ jsx("span", { className: "text-[10.5px] font-semibold uppercase tracking-[0.18em] text-ink/55", children: label })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "mt-4 flex items-baseline gap-2", children: [
+      /* @__PURE__ */ jsx("div", { className: "font-display font-semibold tabular-nums text-[34px] leading-[1] tracking-[-0.024em] text-ink-900", children: value }),
+      delta !== void 0 && deltaLabel && /* @__PURE__ */ jsx(DeltaBadge, { delta, label: deltaLabel, upIsGood })
+    ] }),
+    caption && /* @__PURE__ */ jsx("div", { className: "mt-2 text-[11.5px] text-ink/55 font-mono tracking-tight", children: caption }),
+    sparkline && sparkline.length > 1 && /* @__PURE__ */ jsx(Sparkline, { points: sparkline, className: SPARK_TONE[tone] })
+  ] });
   if (href) {
-    return /* @__PURE__ */ React21.createElement(Link6, { href, className: "block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo-400 rounded-lg" }, body);
+    return /* @__PURE__ */ jsx(Link6, { href, className: "block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo-400 rounded-lg", children: body });
   }
   return body;
 }
@@ -1582,25 +1719,25 @@ function Sparkline({
     const y = 22 - (v - min) / range * 20;
     return `${x.toFixed(2)},${y.toFixed(2)}`;
   }).join(" ");
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsx(
     "svg",
     {
       viewBox: "0 0 100 24",
       preserveAspectRatio: "none",
       className: "mt-3 h-6 w-full " + className,
-      "aria-hidden": "true"
-    },
-    /* @__PURE__ */ React21.createElement(
-      "polyline",
-      {
-        fill: "none",
-        stroke: "currentColor",
-        strokeWidth: "1.5",
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-        points: coords
-      }
-    )
+      "aria-hidden": "true",
+      children: /* @__PURE__ */ jsx(
+        "polyline",
+        {
+          fill: "none",
+          stroke: "currentColor",
+          strokeWidth: "1.5",
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+          points: coords
+        }
+      )
+    }
   );
 }
 function DeltaBadge({
@@ -1609,14 +1746,16 @@ function DeltaBadge({
   upIsGood
 }) {
   if (delta === 0) {
-    return /* @__PURE__ */ React21.createElement(
+    return /* @__PURE__ */ jsxs(
       "span",
       {
         className: "inline-flex items-center gap-0.5 rounded-full bg-neutral-100 px-1.5 py-0.5 text-xs font-medium text-neutral-600 tabular-nums",
-        "aria-label": `No change (${label}) compared to previous period`
-      },
-      /* @__PURE__ */ React21.createElement(Minus, { className: "h-3 w-3", "aria-hidden": "true" }),
-      label
+        "aria-label": `No change (${label}) compared to previous period`,
+        children: [
+          /* @__PURE__ */ jsx(Minus, { className: "h-3 w-3", "aria-hidden": "true" }),
+          label
+        ]
+      }
     );
   }
   const isUp = delta > 0;
@@ -1624,14 +1763,16 @@ function DeltaBadge({
   const direction = isUp ? "up" : "down";
   const sentiment = good ? "better than" : "worse than";
   const cls = good ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700";
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsxs(
     "span",
     {
       className: "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-xs font-medium tabular-nums " + cls,
-      "aria-label": `${direction} ${Math.abs(delta)} (${label}), ${sentiment} previous period`
-    },
-    isUp ? /* @__PURE__ */ React21.createElement(TrendingUp, { className: "h-3 w-3", "aria-hidden": "true" }) : /* @__PURE__ */ React21.createElement(TrendingDown, { className: "h-3 w-3", "aria-hidden": "true" }),
-    label
+      "aria-label": `${direction} ${Math.abs(delta)} (${label}), ${sentiment} previous period`,
+      children: [
+        isUp ? /* @__PURE__ */ jsx(TrendingUp, { className: "h-3 w-3", "aria-hidden": "true" }) : /* @__PURE__ */ jsx(TrendingDown, { className: "h-3 w-3", "aria-hidden": "true" }),
+        label
+      ]
+    }
   );
 }
 function TipCard({
@@ -1642,15 +1783,25 @@ function TipCard({
   icon,
   className
 }) {
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsx(
     "aside",
     {
       className: [
         sticky ? "lg:sticky lg:top-7 lg:h-fit" : "",
         className ?? ""
-      ].filter(Boolean).join(" ")
-    },
-    /* @__PURE__ */ React.createElement("div", { className: "card p-5 space-y-3 bg-paper-100" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 text-ink-900" }, /* @__PURE__ */ React.createElement("span", { className: "text-brand-teal-700 shrink-0" }, icon ?? /* @__PURE__ */ React.createElement(Info, { className: "h-4 w-4", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("span", { className: "eyebrow text-brand-indigo-700" }, title)), /* @__PURE__ */ React.createElement("p", { className: "text-[13px] leading-relaxed text-ink/70" }, children), footer && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "border-t border-ink/10" }), /* @__PURE__ */ React.createElement("p", { className: "text-[12px] leading-relaxed text-ink/55" }, footer)))
+      ].filter(Boolean).join(" "),
+      children: /* @__PURE__ */ jsxs("div", { className: "card p-5 space-y-3 bg-paper-100", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-ink-900", children: [
+          /* @__PURE__ */ jsx("span", { className: "text-brand-teal-700 shrink-0", children: icon ?? /* @__PURE__ */ jsx(Info, { className: "h-4 w-4", "aria-hidden": "true" }) }),
+          /* @__PURE__ */ jsx("span", { className: "eyebrow text-brand-indigo-700", children: title })
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "text-[13px] leading-relaxed text-ink/70", children }),
+        footer && /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx("div", { className: "border-t border-ink/10" }),
+          /* @__PURE__ */ jsx("p", { className: "text-[12px] leading-relaxed text-ink/55", children: footer })
+        ] })
+      ] })
+    }
   );
 }
 function TipStrip({
@@ -1659,13 +1810,18 @@ function TipStrip({
   icon,
   className
 }) {
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
-      className: "rounded-lg border border-ink/10 bg-paper-100 px-4 py-3 flex items-start gap-3 " + (className ?? "")
-    },
-    /* @__PURE__ */ React.createElement("span", { className: "inline-flex h-7 w-7 items-center justify-center rounded-md bg-white text-brand-teal-700 ring-1 ring-ink/10 shrink-0 mt-0.5" }, icon ?? /* @__PURE__ */ React.createElement(Info, { className: "h-3.5 w-3.5", "aria-hidden": "true" })),
-    /* @__PURE__ */ React.createElement("div", { className: "min-w-0 flex-1" }, /* @__PURE__ */ React.createElement("span", { className: "eyebrow text-brand-indigo-700" }, title), /* @__PURE__ */ React.createElement("p", { className: "mt-1.5 text-[13px] leading-relaxed text-ink/70" }, children))
+      className: "rounded-lg border border-ink/10 bg-paper-100 px-4 py-3 flex items-start gap-3 " + (className ?? ""),
+      children: [
+        /* @__PURE__ */ jsx("span", { className: "inline-flex h-7 w-7 items-center justify-center rounded-md bg-white text-brand-teal-700 ring-1 ring-ink/10 shrink-0 mt-0.5", children: icon ?? /* @__PURE__ */ jsx(Info, { className: "h-3.5 w-3.5", "aria-hidden": "true" }) }),
+        /* @__PURE__ */ jsxs("div", { className: "min-w-0 flex-1", children: [
+          /* @__PURE__ */ jsx("span", { className: "eyebrow text-brand-indigo-700", children: title }),
+          /* @__PURE__ */ jsx("p", { className: "mt-1.5 text-[13px] leading-relaxed text-ink/70", children })
+        ] })
+      ]
+    }
   );
 }
 
@@ -1715,8 +1871,6 @@ function dayOfYear(d) {
 function dailyQuote(now = /* @__PURE__ */ new Date()) {
   return QUOTES[dayOfYear(now) % QUOTES.length];
 }
-
-// src/cards/zen-strip.tsx
 var ZEN_IMAGES = [
   {
     url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80&auto=format&fit=crop",
@@ -1758,53 +1912,61 @@ function ZenStrip({ variant = "strip" }) {
   const pick = ZEN_IMAGES[idx];
   const quote = dailyQuote(today);
   const isCard = variant === "card";
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
-      className: "relative w-full overflow-hidden rounded-xl border border-ink/10 shadow-paper " + (isCard ? "h-full min-h-[320px]" : "h-[200px] sm:h-[240px]")
-    },
-    /* @__PURE__ */ React.createElement(
-      "img",
-      {
-        src: pick.url,
-        alt: "",
-        loading: "lazy",
-        className: "absolute inset-0 h-full w-full object-cover"
-      }
-    ),
-    /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        "aria-hidden": "true",
-        className: "absolute inset-0",
-        style: {
-          background: "linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.65) 100%)"
-        }
-      }
-    ),
-    /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        className: "absolute inset-x-0 bottom-0 px-5 pb-5 text-white " + (isCard ? "sm:px-6 sm:pb-6" : "sm:px-7 sm:pb-6")
-      },
-      /* @__PURE__ */ React.createElement(
-        "blockquote",
-        {
-          className: "italic font-medium leading-snug drop-shadow-sm " + (isCard ? "text-[15px] sm:text-[16px]" : "text-[15px] sm:text-[17px]")
-        },
-        "\u201C",
-        quote.text,
-        "\u201D"
-      ),
-      /* @__PURE__ */ React.createElement(
-        "div",
-        {
-          className: "mt-2 text-white " + (isCard ? "text-xs" : "text-[12px]")
-        },
-        "\u2014 ",
-        quote.author
-      )
-    )
+      className: "relative w-full overflow-hidden rounded-xl border border-ink/10 shadow-paper " + (isCard ? "h-full min-h-[320px]" : "h-[200px] sm:h-[240px]"),
+      children: [
+        /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: pick.url,
+            alt: "",
+            loading: "lazy",
+            className: "absolute inset-0 h-full w-full object-cover"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "div",
+          {
+            "aria-hidden": "true",
+            className: "absolute inset-0",
+            style: {
+              background: "linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.65) 100%)"
+            }
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "absolute inset-x-0 bottom-0 px-5 pb-5 text-white " + (isCard ? "sm:px-6 sm:pb-6" : "sm:px-7 sm:pb-6"),
+            children: [
+              /* @__PURE__ */ jsxs(
+                "blockquote",
+                {
+                  className: "italic font-medium leading-snug drop-shadow-sm " + (isCard ? "text-[15px] sm:text-[16px]" : "text-[15px] sm:text-[17px]"),
+                  children: [
+                    "\u201C",
+                    quote.text,
+                    "\u201D"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxs(
+                "div",
+                {
+                  className: "mt-2 text-white " + (isCard ? "text-xs" : "text-[12px]"),
+                  children: [
+                    "\u2014 ",
+                    quote.author
+                  ]
+                }
+              )
+            ]
+          }
+        )
+      ]
+    }
   );
 }
 
@@ -1829,8 +1991,6 @@ function getGreeting(now, fullName) {
   }
   return { greeting: `Working late, ${firstName}`, timeOfDay: "late_night", emoji: "\u{1F319}" };
 }
-
-// src/cards/manager-hero.tsx
 function formatAedShort(value) {
   if (!Number.isFinite(value) || value === 0) return "AED 0";
   const abs = Math.abs(value);
@@ -1851,97 +2011,161 @@ function ManagerHero({
   const weekday = format(now, "EEEE, MMMM d, yyyy");
   const issueDate = format(now, "yyyy.MM.dd");
   const overdue = openRequests > 0 || activeWorkOrders > 0;
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsxs(
     "section",
     {
       "aria-label": "Operations overview",
-      className: "relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-paper"
-    },
-    /* @__PURE__ */ React.createElement(
-      "span",
-      {
-        "aria-hidden": "true",
-        className: "absolute inset-x-0 top-0 h-px",
-        style: {
-          background: "linear-gradient(90deg, transparent 0%, rgba(0,142,134,0.6) 35%, rgba(46,49,145,0.6) 65%, transparent 100%)"
-        }
-      }
-    ),
-    /* @__PURE__ */ React.createElement("div", { className: "grid lg:grid-cols-[1.15fr_1fr]" }, /* @__PURE__ */ React.createElement("div", { className: "relative px-7 py-8 sm:px-9 sm:py-10" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-3 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink/55 font-mono" }, /* @__PURE__ */ React.createElement("span", null, "Issue ", issueDate), /* @__PURE__ */ React.createElement("span", { className: "vrule" }), /* @__PURE__ */ React.createElement("span", null, briefingLabel)), /* @__PURE__ */ React.createElement("h1", { className: "mt-5 font-display font-semibold text-[36px] sm:text-[44px] leading-[1.06] tracking-[-0.022em] text-ink-900" }, greeting.split(",")[0], ",", /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("span", { className: "display-em" }, userName.split(" ")[0] ?? "there"), ".", " ", /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true", className: "text-[30px] align-middle" }, emoji)), /* @__PURE__ */ React.createElement("p", { className: "mt-3 text-sm text-ink/65" }, /* @__PURE__ */ React.createElement("span", { className: "text-ink/80" }, weekday), !overdue && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "vrule" }), "Nothing pressing \u2014 clear deck")), /* @__PURE__ */ React.createElement("div", { className: "mt-5 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-paper-100 px-3 py-1.5 text-[11.5px] font-medium text-ink/75" }, /* @__PURE__ */ React.createElement("span", { className: "relative flex h-1.5 w-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "absolute inline-flex h-full w-full motion-safe:animate-dot-pulse rounded-full bg-brand-teal-400" }), /* @__PURE__ */ React.createElement("span", { className: "relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-teal-500" })), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("span", { className: "font-mono tabular-nums" }, propertyCount), /* @__PURE__ */ React.createElement("span", { className: "text-ink/50" }, " properties under management"))), /* @__PURE__ */ React.createElement("div", { className: "mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm" }, /* @__PURE__ */ React.createElement(HeroLink, { href: "/service-requests", label: "Open service requests" }), /* @__PURE__ */ React.createElement(HeroLink, { href: "/work-orders", label: "View work orders" }), /* @__PURE__ */ React.createElement(HeroLink, { href: "/properties", label: "Properties register" }))), /* @__PURE__ */ React.createElement("div", { className: "relative bg-hero-gradient overflow-hidden" }, /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        "aria-hidden": "true",
-        className: "pointer-events-none absolute -inset-32 motion-safe:animate-aurora-drift",
-        style: {
-          background: "radial-gradient(40% 50% at 30% 35%, rgba(1,182,173,0.32), transparent 65%), radial-gradient(35% 45% at 75% 70%, rgba(46,49,145,0.28), transparent 70%)"
-        }
-      }
-    ), /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        "aria-hidden": "true",
-        className: "pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full",
-        style: {
-          background: "radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%)"
-        }
-      }
-    ), /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        "aria-hidden": "true",
-        className: "pointer-events-none absolute -left-20 -bottom-24 h-72 w-72 rounded-full",
-        style: {
-          background: "radial-gradient(circle, rgba(1,182,173,0.18), transparent 70%)"
-        }
-      }
-    ), /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        "aria-hidden": "true",
-        className: "absolute inset-0 opacity-[0.07]",
-        style: {
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)",
-          backgroundSize: "32px 32px"
-        }
-      }
-    ), /* @__PURE__ */ React.createElement("div", { className: "relative p-7 sm:p-9 h-full flex flex-col justify-between gap-8" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-3 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/70 font-mono" }, /* @__PURE__ */ React.createElement("span", null, "The Ledger"), /* @__PURE__ */ React.createElement("span", { className: "inline-block h-px w-6 bg-white/35" }), /* @__PURE__ */ React.createElement("span", null, "Live")), /* @__PURE__ */ React.createElement("dl", { className: "stagger grid grid-cols-3 gap-5 sm:gap-7" }, /* @__PURE__ */ React.createElement(
-      HeroStat,
-      {
-        label: "Open requests",
-        value: openRequests.toString(),
-        urgent: openRequests > 0
-      }
-    ), /* @__PURE__ */ React.createElement(
-      HeroStat,
-      {
-        label: "Work orders",
-        value: activeWorkOrders.toString()
-      }
-    ), /* @__PURE__ */ React.createElement(
-      HeroStat,
-      {
-        label: "Outstanding",
-        value: formatAedShort(outstandingAed),
-        urgent: outstandingAed > 0
-      }
-    )))))
+      className: "relative overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-paper",
+      children: [
+        /* @__PURE__ */ jsx(
+          "span",
+          {
+            "aria-hidden": "true",
+            className: "absolute inset-x-0 top-0 h-px",
+            style: {
+              background: "linear-gradient(90deg, transparent 0%, rgba(0,142,134,0.6) 35%, rgba(46,49,145,0.6) 65%, transparent 100%)"
+            }
+          }
+        ),
+        /* @__PURE__ */ jsxs("div", { className: "grid lg:grid-cols-[1.15fr_1fr]", children: [
+          /* @__PURE__ */ jsxs("div", { className: "relative px-7 py-8 sm:px-9 sm:py-10", children: [
+            /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-ink/55 font-mono", children: [
+              /* @__PURE__ */ jsxs("span", { children: [
+                "Issue ",
+                issueDate
+              ] }),
+              /* @__PURE__ */ jsx("span", { className: "vrule" }),
+              /* @__PURE__ */ jsx("span", { children: briefingLabel })
+            ] }),
+            /* @__PURE__ */ jsxs("h1", { className: "mt-5 font-display font-semibold text-[36px] sm:text-[44px] leading-[1.06] tracking-[-0.022em] text-ink-900", children: [
+              greeting.split(",")[0],
+              ",",
+              /* @__PURE__ */ jsx("br", {}),
+              /* @__PURE__ */ jsx("span", { className: "display-em", children: userName.split(" ")[0] ?? "there" }),
+              ".",
+              " ",
+              /* @__PURE__ */ jsx("span", { "aria-hidden": "true", className: "text-[30px] align-middle", children: emoji })
+            ] }),
+            /* @__PURE__ */ jsxs("p", { className: "mt-3 text-sm text-ink/65", children: [
+              /* @__PURE__ */ jsx("span", { className: "text-ink/80", children: weekday }),
+              !overdue && /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx("span", { className: "vrule" }),
+                "Nothing pressing \u2014 clear deck"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "mt-5 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-paper-100 px-3 py-1.5 text-[11.5px] font-medium text-ink/75", children: [
+              /* @__PURE__ */ jsxs("span", { className: "relative flex h-1.5 w-1.5", children: [
+                /* @__PURE__ */ jsx("span", { className: "absolute inline-flex h-full w-full motion-safe:animate-dot-pulse rounded-full bg-brand-teal-400" }),
+                /* @__PURE__ */ jsx("span", { className: "relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-teal-500" })
+              ] }),
+              /* @__PURE__ */ jsxs("span", { children: [
+                /* @__PURE__ */ jsx("span", { className: "font-mono tabular-nums", children: propertyCount }),
+                /* @__PURE__ */ jsx("span", { className: "text-ink/50", children: " properties under management" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm", children: [
+              /* @__PURE__ */ jsx(HeroLink, { href: "/service-requests", label: "Open service requests" }),
+              /* @__PURE__ */ jsx(HeroLink, { href: "/work-orders", label: "View work orders" }),
+              /* @__PURE__ */ jsx(HeroLink, { href: "/properties", label: "Properties register" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "relative bg-hero-gradient overflow-hidden", children: [
+            /* @__PURE__ */ jsx(
+              "div",
+              {
+                "aria-hidden": "true",
+                className: "pointer-events-none absolute -inset-32 motion-safe:animate-aurora-drift",
+                style: {
+                  background: "radial-gradient(40% 50% at 30% 35%, rgba(1,182,173,0.32), transparent 65%), radial-gradient(35% 45% at 75% 70%, rgba(46,49,145,0.28), transparent 70%)"
+                }
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "div",
+              {
+                "aria-hidden": "true",
+                className: "pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full",
+                style: {
+                  background: "radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%)"
+                }
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "div",
+              {
+                "aria-hidden": "true",
+                className: "pointer-events-none absolute -left-20 -bottom-24 h-72 w-72 rounded-full",
+                style: {
+                  background: "radial-gradient(circle, rgba(1,182,173,0.18), transparent 70%)"
+                }
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "div",
+              {
+                "aria-hidden": "true",
+                className: "absolute inset-0 opacity-[0.07]",
+                style: {
+                  backgroundImage: "linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)",
+                  backgroundSize: "32px 32px"
+                }
+              }
+            ),
+            /* @__PURE__ */ jsxs("div", { className: "relative p-7 sm:p-9 h-full flex flex-col justify-between gap-8", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/70 font-mono", children: [
+                /* @__PURE__ */ jsx("span", { children: "The Ledger" }),
+                /* @__PURE__ */ jsx("span", { className: "inline-block h-px w-6 bg-white/35" }),
+                /* @__PURE__ */ jsx("span", { children: "Live" })
+              ] }),
+              /* @__PURE__ */ jsxs("dl", { className: "stagger grid grid-cols-3 gap-5 sm:gap-7", children: [
+                /* @__PURE__ */ jsx(
+                  HeroStat,
+                  {
+                    label: "Open requests",
+                    value: openRequests.toString(),
+                    urgent: openRequests > 0
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  HeroStat,
+                  {
+                    label: "Work orders",
+                    value: activeWorkOrders.toString()
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  HeroStat,
+                  {
+                    label: "Outstanding",
+                    value: formatAedShort(outstandingAed),
+                    urgent: outstandingAed > 0
+                  }
+                )
+              ] })
+            ] })
+          ] })
+        ] })
+      ]
+    }
   );
 }
 function HeroLink({ href, label }) {
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsxs(
     Link6,
     {
       href,
-      className: "group inline-flex items-center gap-1.5 text-ink/85 hover:text-ink transition-colors"
-    },
-    /* @__PURE__ */ React.createElement("span", { className: "underline-draw" }, label),
-    /* @__PURE__ */ React.createElement(
-      ArrowUpRight,
-      {
-        className: "h-3.5 w-3.5 text-brand-teal-600 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
-        "aria-hidden": "true"
-      }
-    )
+      className: "group inline-flex items-center gap-1.5 text-ink/85 hover:text-ink transition-colors",
+      children: [
+        /* @__PURE__ */ jsx("span", { className: "underline-draw", children: label }),
+        /* @__PURE__ */ jsx(
+          ArrowUpRight,
+          {
+            className: "h-3.5 w-3.5 text-brand-teal-600 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
+            "aria-hidden": "true"
+          }
+        )
+      ]
+    }
   );
 }
 function HeroStat({
@@ -1949,13 +2173,16 @@ function HeroStat({
   value,
   urgent
 }) {
-  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
-    "dd",
-    {
-      className: "font-display font-semibold tabular-nums text-[44px] sm:text-[56px] leading-none tracking-[-0.028em] " + (urgent ? "text-amber-200" : "text-white")
-    },
-    value
-  ), /* @__PURE__ */ React.createElement("dt", { className: "mt-2 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/65 font-mono" }, label));
+  return /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsx(
+      "dd",
+      {
+        className: "font-display font-semibold tabular-nums text-[44px] sm:text-[56px] leading-none tracking-[-0.028em] " + (urgent ? "text-amber-200" : "text-white"),
+        children: value
+      }
+    ),
+    /* @__PURE__ */ jsx("dt", { className: "mt-2 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-white/65 font-mono", children: label })
+  ] });
 }
 function buildHref(baseHref, page, searchParams) {
   const params = new URLSearchParams();
@@ -1977,7 +2204,11 @@ function Pagination({
   searchParams
 }) {
   if (totalPages <= 1) {
-    return /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-end px-4 py-3 text-[11px] font-mono uppercase tracking-[0.16em] text-ink/55 border-t border-ink/10 tabular-nums" }, totalCount, " ", totalCount === 1 ? "row" : "rows");
+    return /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-end px-4 py-3 text-[11px] font-mono uppercase tracking-[0.16em] text-ink/55 border-t border-ink/10 tabular-nums", children: [
+      totalCount,
+      " ",
+      totalCount === 1 ? "row" : "rows"
+    ] });
   }
   const from = (currentPage - 1) * pageSize + 1;
   const to = Math.min(currentPage * pageSize, totalCount);
@@ -1987,44 +2218,69 @@ function Pagination({
   const hasNext = currentPage < totalPages;
   const baseBtn = "inline-flex items-center gap-1 rounded-md border border-ink/10 bg-white px-2.5 py-1.5 text-[11px] font-mono uppercase tracking-[0.16em] text-ink/80 transition-colors hover:bg-paper-100 hover:text-brand-teal-700 hover:border-ink/20";
   const disabled = "opacity-40 pointer-events-none cursor-not-allowed";
-  return /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between gap-3 flex-wrap px-4 py-3 border-t border-ink/10" }, /* @__PURE__ */ React.createElement("div", { className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/65 tabular-nums" }, "Showing ", /* @__PURE__ */ React.createElement("span", { className: "font-medium text-ink-900" }, from), "\u2013", /* @__PURE__ */ React.createElement("span", { className: "font-medium text-ink-900" }, to), " of", " ", /* @__PURE__ */ React.createElement("span", { className: "font-medium text-ink-900" }, totalCount)), /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement(
-    Link6,
-    {
-      href: hasPrev ? prevHref : "#",
-      "aria-disabled": !hasPrev,
-      "aria-label": "Previous page",
-      className: `${baseBtn} ${hasPrev ? "" : disabled}`,
-      tabIndex: hasPrev ? 0 : -1
-    },
-    /* @__PURE__ */ React.createElement(ChevronLeft, { className: "h-3.5 w-3.5" }),
-    "Prev"
-  ), /* @__PURE__ */ React.createElement("span", { className: "px-2 text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/55 tabular-nums" }, "Page ", /* @__PURE__ */ React.createElement("span", { className: "font-medium text-ink-900" }, currentPage), " of", " ", /* @__PURE__ */ React.createElement("span", { className: "font-medium text-ink-900" }, totalPages)), /* @__PURE__ */ React.createElement(
-    Link6,
-    {
-      href: hasNext ? nextHref : "#",
-      "aria-disabled": !hasNext,
-      "aria-label": "Next page",
-      className: `${baseBtn} ${hasNext ? "" : disabled}`,
-      tabIndex: hasNext ? 0 : -1
-    },
-    "Next",
-    /* @__PURE__ */ React.createElement(ChevronRight, { className: "h-3.5 w-3.5" })
-  )));
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-3 flex-wrap px-4 py-3 border-t border-ink/10", children: [
+    /* @__PURE__ */ jsxs("div", { className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/65 tabular-nums", children: [
+      "Showing ",
+      /* @__PURE__ */ jsx("span", { className: "font-medium text-ink-900", children: from }),
+      "\u2013",
+      /* @__PURE__ */ jsx("span", { className: "font-medium text-ink-900", children: to }),
+      " of",
+      " ",
+      /* @__PURE__ */ jsx("span", { className: "font-medium text-ink-900", children: totalCount })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1.5", children: [
+      /* @__PURE__ */ jsxs(
+        Link6,
+        {
+          href: hasPrev ? prevHref : "#",
+          "aria-disabled": !hasPrev,
+          "aria-label": "Previous page",
+          className: `${baseBtn} ${hasPrev ? "" : disabled}`,
+          tabIndex: hasPrev ? 0 : -1,
+          children: [
+            /* @__PURE__ */ jsx(ChevronLeft, { className: "h-3.5 w-3.5" }),
+            "Prev"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxs("span", { className: "px-2 text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/55 tabular-nums", children: [
+        "Page ",
+        /* @__PURE__ */ jsx("span", { className: "font-medium text-ink-900", children: currentPage }),
+        " of",
+        " ",
+        /* @__PURE__ */ jsx("span", { className: "font-medium text-ink-900", children: totalPages })
+      ] }),
+      /* @__PURE__ */ jsxs(
+        Link6,
+        {
+          href: hasNext ? nextHref : "#",
+          "aria-disabled": !hasNext,
+          "aria-label": "Next page",
+          className: `${baseBtn} ${hasNext ? "" : disabled}`,
+          tabIndex: hasNext ? 0 : -1,
+          children: [
+            "Next",
+            /* @__PURE__ */ jsx(ChevronRight, { className: "h-3.5 w-3.5" })
+          ]
+        }
+      )
+    ] })
+  ] });
 }
-var Table = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("div", { className: "relative w-full overflow-auto" }, /* @__PURE__ */ React21.createElement("table", { ref, className: cn("w-full caption-bottom text-sm", className), ...props }))
+var Table = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { className: "relative w-full overflow-auto", children: /* @__PURE__ */ jsx("table", { ref, className: cn("w-full caption-bottom text-sm", className), ...props }) })
 );
 Table.displayName = "Table";
-var TableHeader = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("thead", { ref, className: cn("[&_tr]:border-b", className), ...props })
+var TableHeader = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("thead", { ref, className: cn("[&_tr]:border-b", className), ...props })
 );
 TableHeader.displayName = "TableHeader";
-var TableBody = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("tbody", { ref, className: cn("[&_tr:last-child]:border-0", className), ...props })
+var TableBody = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("tbody", { ref, className: cn("[&_tr:last-child]:border-0", className), ...props })
 );
 TableBody.displayName = "TableBody";
-var TableRow = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var TableRow = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
     "tr",
     {
       ref,
@@ -2034,8 +2290,8 @@ var TableRow = React21.forwardRef(
   )
 );
 TableRow.displayName = "TableRow";
-var TableHead = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var TableHead = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
     "th",
     {
       ref,
@@ -2048,8 +2304,8 @@ var TableHead = React21.forwardRef(
   )
 );
 TableHead.displayName = "TableHead";
-var TableCell = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement(
+var TableCell = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx(
     "td",
     {
       ref,
@@ -2059,8 +2315,8 @@ var TableCell = React21.forwardRef(
   )
 );
 TableCell.displayName = "TableCell";
-var TableCaption = React21.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React21.createElement("caption", { ref, className: cn("mt-4 text-sm text-muted-foreground", className), ...props })
+var TableCaption = React16.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("caption", { ref, className: cn("mt-4 text-sm text-muted-foreground", className), ...props })
 );
 TableCaption.displayName = "TableCaption";
 function KanbanBoard({
@@ -2091,29 +2347,29 @@ function KanbanBoard({
     const key = resolveStage(it);
     (byStage[key] ??= []).push(it);
   }
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsx(
     "div",
     {
-      className: "stagger flex md:grid md:grid-cols-3 xl:grid-cols-6 gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none -mx-4 md:mx-0 px-4 md:px-0 pb-2 md:pb-0"
-    },
-    stages.map((stage) => /* @__PURE__ */ React21.createElement(
-      Column,
-      {
-        key: stage.key,
-        stage,
-        cards: byStage[stage.key] ?? [],
-        canDrop: canMove,
-        renderCard,
-        cardHref,
-        onDrop: (id) => {
-          if (!canMove || !onMove) return;
-          startTransition(async () => {
-            setOptimistic({ id, stage: stage.key });
-            await onMove(id, stage.key);
-          });
-        }
-      }
-    ))
+      className: "stagger flex md:grid md:grid-cols-3 xl:grid-cols-6 gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none -mx-4 md:mx-0 px-4 md:px-0 pb-2 md:pb-0",
+      children: stages.map((stage) => /* @__PURE__ */ jsx(
+        Column,
+        {
+          stage,
+          cards: byStage[stage.key] ?? [],
+          canDrop: canMove,
+          renderCard,
+          cardHref,
+          onDrop: (id) => {
+            if (!canMove || !onMove) return;
+            startTransition(async () => {
+              setOptimistic({ id, stage: stage.key });
+              await onMove(id, stage.key);
+            });
+          }
+        },
+        stage.key
+      ))
+    }
   );
 }
 function Column({
@@ -2125,7 +2381,7 @@ function Column({
   cardHref
 }) {
   const [over, setOver] = useState(false);
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       onDragOver: (e) => {
@@ -2144,18 +2400,26 @@ function Column({
         const id = e.dataTransfer.getData("text/plain");
         if (id) onDrop(id);
       },
-      className: "shrink-0 md:shrink min-w-[280px] md:min-w-0 snap-start md:snap-align-none rounded-lg border p-3 min-h-[220px] transition-colors " + (over ? "border-brand-indigo-400 bg-brand-indigo-50/60 ring-2 ring-brand-indigo-200" : "border-ink/10 bg-paper-100/70")
-    },
-    /* @__PURE__ */ React21.createElement("div", { className: "flex items-center justify-between mb-3" }, /* @__PURE__ */ React21.createElement("h3", { className: "eyebrow text-brand-indigo-700" }, stage.label), /* @__PURE__ */ React21.createElement("span", { className: "text-[11px] font-mono tabular-nums text-ink/55" }, cards.length)),
-    /* @__PURE__ */ React21.createElement("ul", { className: "space-y-2" }, cards.map((item) => /* @__PURE__ */ React21.createElement("li", { key: item.id }, /* @__PURE__ */ React21.createElement(
-      CardWrapper,
-      {
-        item,
-        draggable: canDrop,
-        cardHref
-      },
-      renderCard(item)
-    ))), cards.length === 0 && /* @__PURE__ */ React21.createElement("li", { className: "text-[11px] text-ink/40 italic px-1 py-2" }, "No items"))
+      className: "shrink-0 md:shrink min-w-[280px] md:min-w-0 snap-start md:snap-align-none rounded-lg border p-3 min-h-[220px] transition-colors " + (over ? "border-brand-indigo-400 bg-brand-indigo-50/60 ring-2 ring-brand-indigo-200" : "border-ink/10 bg-paper-100/70"),
+      children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between mb-3", children: [
+          /* @__PURE__ */ jsx("h3", { className: "eyebrow text-brand-indigo-700", children: stage.label }),
+          /* @__PURE__ */ jsx("span", { className: "text-[11px] font-mono tabular-nums text-ink/55", children: cards.length })
+        ] }),
+        /* @__PURE__ */ jsxs("ul", { className: "space-y-2", children: [
+          cards.map((item) => /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsx(
+            CardWrapper,
+            {
+              item,
+              draggable: canDrop,
+              cardHref,
+              children: renderCard(item)
+            }
+          ) }, item.id)),
+          cards.length === 0 && /* @__PURE__ */ jsx("li", { className: "text-[11px] text-ink/40 italic px-1 py-2", children: "No items" })
+        ] })
+      ]
+    }
   );
 }
 function CardWrapper({
@@ -2171,25 +2435,25 @@ function CardWrapper({
     e.dataTransfer.effectAllowed = "move";
   };
   if (cardHref) {
-    return /* @__PURE__ */ React21.createElement(
+    return /* @__PURE__ */ jsx(
       Link6,
       {
         href: cardHref(item),
         draggable,
         onDragStart,
-        className
-      },
-      children
+        className,
+        children
+      }
     );
   }
-  return /* @__PURE__ */ React21.createElement(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       draggable,
       onDragStart,
-      className
-    },
-    children
+      className,
+      children
+    }
   );
 }
 function useUnsavedChangesGuard(active) {
@@ -2255,7 +2519,7 @@ function useUnsavedChangesGuard(active) {
     setPendingHref(null);
   }, []);
   return {
-    dialog: /* @__PURE__ */ React.createElement(
+    dialog: /* @__PURE__ */ jsx(
       UnsavedChangesDialog,
       {
         open: pendingHref !== null,
@@ -2288,72 +2552,92 @@ function UnsavedChangesDialog({
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onStay]);
   if (!open) return null;
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       role: "dialog",
       "aria-modal": "true",
       "aria-labelledby": "unsaved-changes-title",
-      className: "fixed inset-0 z-[60] flex items-center justify-center p-4"
-    },
-    /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        className: "absolute inset-0 bg-ink/45 backdrop-blur-sm animate-fade-in-soft",
-        onClick: onStay,
-        "aria-hidden": "true"
-      }
-    ),
-    /* @__PURE__ */ React.createElement("div", { className: "relative w-full max-w-md rounded-xl border border-ink/12 bg-white shadow-paper-lg overflow-hidden animate-stagger-up" }, /* @__PURE__ */ React.createElement(
-      "span",
-      {
-        "aria-hidden": "true",
-        className: "absolute inset-x-0 top-0 h-px",
-        style: {
-          background: "linear-gradient(90deg, transparent, rgba(0,142,134,0.55) 35%, rgba(46,49,145,0.55) 65%, transparent)"
-        }
-      }
-    ), /* @__PURE__ */ React.createElement("div", { className: "p-6" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-start gap-4" }, /* @__PURE__ */ React.createElement("span", { className: "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-teal-50 ring-1 ring-brand-teal-200/70 text-brand-teal-700" }, /* @__PURE__ */ React.createElement(AlertTriangle, { className: "h-5 w-5", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("div", { className: "min-w-0 flex-1" }, /* @__PURE__ */ React.createElement(
-      "h2",
-      {
-        id: "unsaved-changes-title",
-        className: "font-display font-semibold text-[22px] leading-tight tracking-[-0.018em] text-ink-900"
-      },
-      "Leave with ",
-      /* @__PURE__ */ React.createElement("span", { className: "display-em" }, "unsaved"),
-      " changes?"
-    ), /* @__PURE__ */ React.createElement("p", { className: "mt-2 text-[14px] text-ink/70 leading-relaxed" }, "You've made edits that haven't been saved. If you navigate away now, those changes will be discarded.")), /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: onStay,
-        "aria-label": "Close",
-        className: "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ink/55 hover:text-ink hover:bg-ink/5 transition-colors"
-      },
-      /* @__PURE__ */ React.createElement(X, { className: "h-4 w-4", "aria-hidden": "true" })
-    )), /* @__PURE__ */ React.createElement("div", { className: "mt-6 flex items-center justify-end gap-2.5" }, /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: onLeave,
-        className: "inline-flex items-center gap-1.5 rounded-md border border-ink/15 bg-white px-3 py-2 text-[13px] font-medium text-ink/75 hover:text-ink hover:border-ink/30 hover:bg-paper-50 transition-all"
-      },
-      /* @__PURE__ */ React.createElement(ArrowLeftRight, { className: "h-3.5 w-3.5", "aria-hidden": "true" }),
-      "Discard & leave"
-    ), /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: onStay,
-        autoFocus: true,
-        className: "btn-primary text-[13px] px-4 py-2"
-      },
-      "Keep editing"
-    ))))
+      className: "fixed inset-0 z-[60] flex items-center justify-center p-4",
+      children: [
+        /* @__PURE__ */ jsx(
+          "div",
+          {
+            className: "absolute inset-0 bg-ink/45 backdrop-blur-sm animate-fade-in-soft",
+            onClick: onStay,
+            "aria-hidden": "true"
+          }
+        ),
+        /* @__PURE__ */ jsxs("div", { className: "relative w-full max-w-md rounded-xl border border-ink/12 bg-white shadow-paper-lg overflow-hidden animate-stagger-up", children: [
+          /* @__PURE__ */ jsx(
+            "span",
+            {
+              "aria-hidden": "true",
+              className: "absolute inset-x-0 top-0 h-px",
+              style: {
+                background: "linear-gradient(90deg, transparent, rgba(0,142,134,0.55) 35%, rgba(46,49,145,0.55) 65%, transparent)"
+              }
+            }
+          ),
+          /* @__PURE__ */ jsxs("div", { className: "p-6", children: [
+            /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
+              /* @__PURE__ */ jsx("span", { className: "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-teal-50 ring-1 ring-brand-teal-200/70 text-brand-teal-700", children: /* @__PURE__ */ jsx(AlertTriangle, { className: "h-5 w-5", "aria-hidden": "true" }) }),
+              /* @__PURE__ */ jsxs("div", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsxs(
+                  "h2",
+                  {
+                    id: "unsaved-changes-title",
+                    className: "font-display font-semibold text-[22px] leading-tight tracking-[-0.018em] text-ink-900",
+                    children: [
+                      "Leave with ",
+                      /* @__PURE__ */ jsx("span", { className: "display-em", children: "unsaved" }),
+                      " changes?"
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsx("p", { className: "mt-2 text-[14px] text-ink/70 leading-relaxed", children: "You've made edits that haven't been saved. If you navigate away now, those changes will be discarded." })
+              ] }),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  type: "button",
+                  onClick: onStay,
+                  "aria-label": "Close",
+                  className: "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ink/55 hover:text-ink hover:bg-ink/5 transition-colors",
+                  children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4", "aria-hidden": "true" })
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "mt-6 flex items-center justify-end gap-2.5", children: [
+              /* @__PURE__ */ jsxs(
+                "button",
+                {
+                  type: "button",
+                  onClick: onLeave,
+                  className: "inline-flex items-center gap-1.5 rounded-md border border-ink/15 bg-white px-3 py-2 text-[13px] font-medium text-ink/75 hover:text-ink hover:border-ink/30 hover:bg-paper-50 transition-all",
+                  children: [
+                    /* @__PURE__ */ jsx(ArrowLeftRight, { className: "h-3.5 w-3.5", "aria-hidden": "true" }),
+                    "Discard & leave"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  type: "button",
+                  onClick: onStay,
+                  autoFocus: true,
+                  className: "btn-primary text-[13px] px-4 py-2",
+                  children: "Keep editing"
+                }
+              )
+            ] })
+          ] })
+        ] })
+      ]
+    }
   );
 }
-
-// src/form-helpers/form-submit-ribbon.tsx
 function FormSubmitRibbon({
   submitLabel,
   /** Override the dirty-detection. Most forms should leave this alone
@@ -2402,23 +2686,39 @@ function FormSubmitRibbon({
   }, []);
   const isDirty = alwaysDirty || dirty;
   const guard = useUnsavedChangesGuard(isDirty && !submitting);
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { ref, "aria-hidden": "true", className: "h-24" }), /* @__PURE__ */ React.createElement(
-    "div",
-    {
-      role: "region",
-      "aria-label": "Save changes",
-      className: "fixed inset-x-0 bottom-0 z-30 border-t border-ink/10 bg-paper-100/95 backdrop-blur shadow-paper-lg md:ml-64"
-    },
-    /* @__PURE__ */ React.createElement("div", { className: "px-4 sm:px-7 lg:px-10" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-between gap-4 py-3 max-w-6xl mx-auto" }, /* @__PURE__ */ React.createElement("div", { className: "text-[12.5px] font-mono uppercase tracking-[0.18em] text-ink/55" }, submitting ? /* @__PURE__ */ React.createElement("span", { className: "inline-flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "h-1.5 w-1.5 rounded-full bg-brand-teal-500 motion-safe:animate-dot-pulse" }), "Saving\u2026") : isDirty ? /* @__PURE__ */ React.createElement("span", { className: "inline-flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "h-1.5 w-1.5 rounded-full bg-brand-teal-500 motion-safe:animate-dot-pulse" }), "Unsaved changes") : /* @__PURE__ */ React.createElement("span", { className: "inline-flex items-center gap-1.5" }, /* @__PURE__ */ React.createElement("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-500" }), "No changes")), /* @__PURE__ */ React.createElement(
-      "button",
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx("div", { ref, "aria-hidden": "true", className: "h-24" }),
+    /* @__PURE__ */ jsx(
+      "div",
       {
-        type: "submit",
-        disabled: submitting || !isDirty && !alwaysDirty,
-        className: "btn-primary"
-      },
-      submitting ? "Saving\u2026" : submitLabel
-    )))
-  ), guard.dialog);
+        role: "region",
+        "aria-label": "Save changes",
+        className: "fixed inset-x-0 bottom-0 z-30 border-t border-ink/10 bg-paper-100/95 backdrop-blur shadow-paper-lg md:ml-64",
+        children: /* @__PURE__ */ jsx("div", { className: "px-4 sm:px-7 lg:px-10", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-4 py-3 max-w-6xl mx-auto", children: [
+          /* @__PURE__ */ jsx("div", { className: "text-[12.5px] font-mono uppercase tracking-[0.18em] text-ink/55", children: submitting ? /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5", children: [
+            /* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-brand-teal-500 motion-safe:animate-dot-pulse" }),
+            "Saving\u2026"
+          ] }) : isDirty ? /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5", children: [
+            /* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-brand-teal-500 motion-safe:animate-dot-pulse" }),
+            "Unsaved changes"
+          ] }) : /* @__PURE__ */ jsxs("span", { className: "inline-flex items-center gap-1.5", children: [
+            /* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-500" }),
+            "No changes"
+          ] }) }),
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "submit",
+              disabled: submitting || !isDirty && !alwaysDirty,
+              className: "btn-primary",
+              children: submitting ? "Saving\u2026" : submitLabel
+            }
+          )
+        ] }) })
+      }
+    ),
+    guard.dialog
+  ] });
 }
 function serializeForm(form) {
   const data = new FormData(form);
@@ -2435,15 +2735,13 @@ function serializeForm(form) {
   );
   return JSON.stringify(entries);
 }
-
-// src/form-helpers/confirm-form.tsx
 function ConfirmForm({
   message,
   children,
   className,
   ...formProps
 }) {
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsx(
     "form",
     {
       ...formProps,
@@ -2452,9 +2750,9 @@ function ConfirmForm({
         if (!window.confirm(message)) {
           e.preventDefault();
         }
-      }
-    },
-    children
+      },
+      children
+    }
   );
 }
 function fmt(d) {
@@ -2478,10 +2776,15 @@ function LocalClock() {
     return () => clearInterval(t);
   }, []);
   if (!now) {
-    return /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 text-[10.5px] text-white/40 font-mono tabular-nums" }, "\xA0");
+    return /* @__PURE__ */ jsx("div", { className: "flex items-center gap-2 text-[10.5px] text-white/40 font-mono tabular-nums", children: "\xA0" });
   }
   const { time, date } = fmt(now);
-  return /* @__PURE__ */ React.createElement("div", { className: "flex items-center gap-2 text-[10.5px] text-white/55 font-mono tabular-nums" }, /* @__PURE__ */ React.createElement(Clock, { className: "h-3 w-3 text-white/40", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("span", { className: "text-white/80" }, time), /* @__PURE__ */ React.createElement("span", { className: "h-2.5 w-px bg-white/15", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("span", null, date));
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-[10.5px] text-white/55 font-mono tabular-nums", children: [
+    /* @__PURE__ */ jsx(Clock, { className: "h-3 w-3 text-white/40", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx("span", { className: "text-white/80", children: time }),
+    /* @__PURE__ */ jsx("span", { className: "h-2.5 w-px bg-white/15", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx("span", { children: date })
+  ] });
 }
 
 // src/lib/format.ts

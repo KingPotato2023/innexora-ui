@@ -25,6 +25,20 @@ export default defineConfig({
   splitting: false,
   treeshake: true,
   external: ["react", "react-dom", "next", "lucide-react", "tailwindcss"],
+  // Modern JSX transform — emits `_jsx` calls that import from
+  // "react/jsx-runtime", instead of the classic `React.createElement`
+  // calls that require an in-scope React binding. Without this,
+  // Next.js consumers hit `ReferenceError: React is not defined` on
+  // routes that only import a server-safe component from the package
+  // (Next tree-shakes the unused `import * as React from 'react'`
+  // away). Confirmed via Vercel runtime logs after the v0.1.0 ship —
+  // /home threw on every request because Next stripped the React import
+  // from the chunk. The automatic transform sidesteps this entirely
+  // because each .tsx file's compiled output explicitly imports the
+  // jsx runtime from "react/jsx-runtime".
+  esbuildOptions(options) {
+    options.jsx = "automatic";
+  },
   async onSuccess() {
     const outDir = "dist";
     const targets = ["index.mjs", "index.js"];

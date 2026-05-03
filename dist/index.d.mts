@@ -4,6 +4,7 @@ import { ReactNode, FormHTMLAttributes } from 'react';
 import { VariantProps } from 'class-variance-authority';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import { DayPicker } from 'react-day-picker';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
@@ -42,31 +43,31 @@ declare function BrandedAvatar({ name, imageUrl, size, }: {
     name: string;
     imageUrl?: string | null;
     size?: number;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function OwnerCell({ name, imageUrl, }: {
     name: string;
     imageUrl?: string | null;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 declare const badgeVariants: (props?: ({
     variant?: "default" | "destructive" | "outline" | "secondary" | null | undefined;
 } & class_variance_authority_types.ClassProp) | undefined) => string;
 interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {
 }
-declare function Badge({ className, variant, ...props }: BadgeProps): React.JSX.Element;
+declare function Badge({ className, variant, ...props }: BadgeProps): react_jsx_runtime.JSX.Element;
 
 declare const Separator: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLDivElement> & {
     orientation?: "horizontal" | "vertical";
 } & React.RefAttributes<HTMLDivElement>>;
 
-declare function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element;
+declare function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): react_jsx_runtime.JSX.Element;
 
 declare function EmptyState({ icon, title, description, action, }: {
     icon?: ReactNode;
     title: string;
     description?: string;
     action?: ReactNode;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 declare const Card: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>>;
 declare const CardHeader: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>>;
@@ -80,7 +81,7 @@ declare function StatusBadge({ children, tone, dot, }: {
     children: ReactNode;
     tone?: StatusBadgeTone;
     dot?: boolean;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function leadStageTone(stage: string): StatusBadgeTone;
 declare function workOrderStatusTone(status: string): StatusBadgeTone;
 declare function priorityTone(priority: string): StatusBadgeTone;
@@ -109,14 +110,14 @@ declare function PillGroup({ name, options, defaultValue, disabled, required, on
     disabled?: boolean;
     required?: boolean;
     onValueChange?: (next: string) => void;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function PillButtons<T extends string>({ options, value, onChange, ariaLabel, variant, }: {
     options: readonly PillOption[];
     value: T;
     onChange: (next: T) => void;
     ariaLabel?: string;
     variant?: "color" | "filter";
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 type HiddenFormSelectOption = {
     value: string;
@@ -131,7 +132,7 @@ declare function HiddenFormSelect({ name, defaultValue, placeholder, options, di
     ariaInvalid?: boolean;
     className?: string;
     onChange?: (next: string) => void;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 type Option<T extends string> = {
     value: T;
@@ -142,7 +143,7 @@ declare function SegmentedControlLinks<T extends string>({ options, value, hrefF
     value: T;
     hrefFor: (value: T) => string;
     ariaLabel?: string;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 declare function DatePicker({ name, defaultValue, required, placeholder, className, id, disabled, fromYear, toYear, withTime, }: {
     name: string;
@@ -156,10 +157,10 @@ declare function DatePicker({ name, defaultValue, required, placeholder, classNa
     fromYear?: number;
     toYear?: number;
     withTime?: boolean;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 type CalendarProps = React.ComponentProps<typeof DayPicker>;
-declare function Calendar({ className, classNames, showOutsideDays, ...props }: CalendarProps): React.JSX.Element;
+declare function Calendar({ className, classNames, showOutsideDays, ...props }: CalendarProps): react_jsx_runtime.JSX.Element;
 
 declare const Dialog: React.FC<DialogPrimitive.DialogProps>;
 declare const DialogTrigger: React.ForwardRefExoticComponent<DialogPrimitive.DialogTriggerProps & React.RefAttributes<HTMLButtonElement>>;
@@ -168,11 +169,11 @@ declare const DialogClose: React.ForwardRefExoticComponent<DialogPrimitive.Dialo
 declare const DialogOverlay: React.ForwardRefExoticComponent<Omit<DialogPrimitive.DialogOverlayProps & React.RefAttributes<HTMLDivElement>, "ref"> & React.RefAttributes<HTMLDivElement>>;
 declare const DialogContent: React.ForwardRefExoticComponent<Omit<DialogPrimitive.DialogContentProps & React.RefAttributes<HTMLDivElement>, "ref"> & React.RefAttributes<HTMLDivElement>>;
 declare const DialogHeader: {
-    ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element;
+    ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): react_jsx_runtime.JSX.Element;
     displayName: string;
 };
 declare const DialogFooter: {
-    ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element;
+    ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): react_jsx_runtime.JSX.Element;
     displayName: string;
 };
 declare const DialogTitle: React.ForwardRefExoticComponent<Omit<DialogPrimitive.DialogTitleProps & React.RefAttributes<HTMLHeadingElement>, "ref"> & React.RefAttributes<HTMLHeadingElement>>;
@@ -184,11 +185,11 @@ declare const AlertDialogPortal: React.FC<AlertDialogPrimitive.AlertDialogPortal
 declare const AlertDialogOverlay: React.ForwardRefExoticComponent<Omit<AlertDialogPrimitive.AlertDialogOverlayProps & React.RefAttributes<HTMLDivElement>, "ref"> & React.RefAttributes<HTMLDivElement>>;
 declare const AlertDialogContent: React.ForwardRefExoticComponent<Omit<AlertDialogPrimitive.AlertDialogContentProps & React.RefAttributes<HTMLDivElement>, "ref"> & React.RefAttributes<HTMLDivElement>>;
 declare const AlertDialogHeader: {
-    ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element;
+    ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): react_jsx_runtime.JSX.Element;
     displayName: string;
 };
 declare const AlertDialogFooter: {
-    ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): React.JSX.Element;
+    ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>): react_jsx_runtime.JSX.Element;
     displayName: string;
 };
 declare const AlertDialogTitle: React.ForwardRefExoticComponent<Omit<AlertDialogPrimitive.AlertDialogTitleProps & React.RefAttributes<HTMLHeadingElement>, "ref"> & React.RefAttributes<HTMLHeadingElement>>;
@@ -241,14 +242,14 @@ declare function PageHero({ icon, title, description, meta, actions, kicker, }: 
     actions?: ReactNode;
     /** Optional eyebrow above the title, e.g. "Sales · Master Tracker". */
     kicker?: ReactNode;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function PageHeader({ title, description, actions, kicker, }: {
     title: ReactNode;
     description?: ReactNode;
     actions?: ReactNode;
     /** Optional eyebrow above the title. */
     kicker?: ReactNode;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 type BreadcrumbItem = {
     label: string;
@@ -257,7 +258,7 @@ type BreadcrumbItem = {
 };
 declare function Breadcrumbs({ items }: {
     items: ReadonlyArray<BreadcrumbItem>;
-}): React.JSX.Element | null;
+}): react_jsx_runtime.JSX.Element | null;
 
 type SidebarNavItem = {
     href: string;
@@ -276,11 +277,11 @@ declare function SidebarNav({ items, onNavigate, groupOrder, groupLabels, }: {
     groupOrder?: ReadonlyArray<string>;
     /** Override the eyebrow label for a group. Defaults to capitalised key. */
     groupLabels?: Record<string, string>;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function MobileMenuButton({ open, onClick, }: {
     open: boolean;
     onClick: () => void;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 declare function ShellLayout({ children, navItems, brand, userFooter, groupOrder, groupLabels, }: {
     children: React.ReactNode;
@@ -293,30 +294,30 @@ declare function ShellLayout({ children, navItems, brand, userFooter, groupOrder
     groupOrder?: ReadonlyArray<string>;
     /** Forwarded to SidebarNav. */
     groupLabels?: Record<string, string>;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 declare function FormCard({ children, className, }: {
     children: ReactNode;
     className?: string;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function FormSplitBody({ left, right, }: {
     left: ReactNode;
     right: ReactNode;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function FormSection({ title, icon, children, }: {
     title: ReactNode;
     icon?: ReactNode;
     children: ReactNode;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function FormActions({ primary, destructive, }: {
     /** The Save / Submit button — gets pushed to the right via ml-auto. */
     primary: ReactNode;
     /** Optional Delete (or other destructive) button — sits on the left. */
     destructive?: ReactNode;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function FormError({ children }: {
     children: ReactNode;
-}): React.JSX.Element | null;
+}): react_jsx_runtime.JSX.Element | null;
 
 declare function DetailSection({ title, icon, action, children, className, }: {
     title: string;
@@ -325,12 +326,12 @@ declare function DetailSection({ title, icon, action, children, className, }: {
     action?: ReactNode;
     children: ReactNode;
     className?: string;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function DetailGrid({ children, cols, }: {
     children: ReactNode;
     /** 2 (default) or 1 — single-column for narrow surfaces. */
     cols?: 1 | 2;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function DetailRow({ icon, label, value, span, }: {
     /** Lucide icon — usually `<Mail className="h-3.5 w-3.5" />` etc. */
     icon: ReactNode;
@@ -338,7 +339,7 @@ declare function DetailRow({ icon, label, value, span, }: {
     value: ReactNode;
     /** Set to 2 to make the row span both columns of a DetailGrid. */
     span?: 1 | 2;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 type KpiTone = "teal" | "indigo" | "warn" | "neutral";
 interface KpiTileProps {
@@ -353,7 +354,7 @@ interface KpiTileProps {
     caption?: string;
     sparkline?: number[];
 }
-declare function KpiTile({ icon, label, value, tone, delta, deltaLabel, upIsGood, href, caption, sparkline, }: KpiTileProps): React.JSX.Element;
+declare function KpiTile({ icon, label, value, tone, delta, deltaLabel, upIsGood, href, caption, sparkline, }: KpiTileProps): react_jsx_runtime.JSX.Element;
 
 declare function TipCard({ title, children, footer, sticky, icon, className, }: {
     title: string;
@@ -362,17 +363,17 @@ declare function TipCard({ title, children, footer, sticky, icon, className, }: 
     sticky?: boolean;
     icon?: ReactNode;
     className?: string;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 declare function TipStrip({ title, children, icon, className, }: {
     title: string;
     children: ReactNode;
     icon?: ReactNode;
     className?: string;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 declare function ZenStrip({ variant }: {
     variant?: "strip" | "card";
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 interface ManagerHeroProps {
     userName: string;
@@ -384,7 +385,7 @@ interface ManagerHeroProps {
     /** Optional override for the secondary "<segment> · Briefing" kicker. */
     briefingLabel?: string;
 }
-declare function ManagerHero({ userName, openRequests, activeWorkOrders, outstandingAed, propertyCount, now, briefingLabel, }: ManagerHeroProps): React.JSX.Element;
+declare function ManagerHero({ userName, openRequests, activeWorkOrders, outstandingAed, propertyCount, now, briefingLabel, }: ManagerHeroProps): react_jsx_runtime.JSX.Element;
 
 interface PaginationProps {
     /** 1-based page number currently being shown. */
@@ -404,7 +405,7 @@ interface PaginationProps {
      */
     searchParams?: Record<string, string | undefined>;
 }
-declare function Pagination({ currentPage, totalPages, totalCount, pageSize, baseHref, searchParams, }: PaginationProps): React.JSX.Element;
+declare function Pagination({ currentPage, totalPages, totalCount, pageSize, baseHref, searchParams, }: PaginationProps): react_jsx_runtime.JSX.Element;
 
 declare const Table: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLTableElement> & React.RefAttributes<HTMLTableElement>>;
 declare const TableHeader: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLTableSectionElement> & React.RefAttributes<HTMLTableSectionElement>>;
@@ -447,7 +448,7 @@ declare function FormSubmitRibbon({ submitLabel,
 alwaysDirty, }: {
     submitLabel: string;
     alwaysDirty?: boolean;
-}): React.JSX.Element;
+}): react_jsx_runtime.JSX.Element;
 
 interface UnsavedChangesGuard {
     /** Render this anywhere inside the form's tree — the dialog itself
@@ -466,9 +467,9 @@ declare function ConfirmForm({ message, children, className, ...formProps }: {
     message: string;
     children: ReactNode;
     className?: string;
-} & Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "children">): React.JSX.Element;
+} & Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "children">): react_jsx_runtime.JSX.Element;
 
-declare function LocalClock(): React.JSX.Element;
+declare function LocalClock(): react_jsx_runtime.JSX.Element;
 
 declare function cn(...inputs: ClassValue[]): string;
 
