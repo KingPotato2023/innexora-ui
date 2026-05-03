@@ -48,16 +48,48 @@ const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDiv
 );
 AlertDialogFooter.displayName = "AlertDialogFooter";
 
+// Editorial Atlas alert-dialog title —
+// Bricolage display sans at 18px, with an optional leading icon slot. The
+// canonical destructive-confirm pattern wires a red AlertTriangle into the
+// icon prop so the modal reads as a warning at a glance.
 const AlertDialogTitle = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Title
-    ref={ref}
-    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
-    {...props}
-  />
-));
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title> & {
+    icon?: React.ReactNode;
+  }
+>(({ className, icon, children, ...props }, ref) => {
+  if (icon) {
+    return (
+      <div className="flex items-center gap-2.5">
+        <span aria-hidden="true" className="shrink-0 [&_svg]:h-4 [&_svg]:w-4">
+          {icon}
+        </span>
+        <AlertDialogPrimitive.Title
+          ref={ref}
+          className={cn(
+            "font-display text-[18px] font-semibold leading-none text-ink-900",
+            className,
+          )}
+          {...props}
+        >
+          {children}
+        </AlertDialogPrimitive.Title>
+      </div>
+    );
+  }
+  return (
+    <AlertDialogPrimitive.Title
+      ref={ref}
+      className={cn(
+        "font-display text-[18px] font-semibold leading-none text-ink-900",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </AlertDialogPrimitive.Title>
+  );
+});
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 
 const AlertDialogDescription = React.forwardRef<

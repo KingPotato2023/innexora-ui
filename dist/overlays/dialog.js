@@ -85,14 +85,37 @@ const DialogHeader = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx
 DialogHeader.displayName = "DialogHeader";
 const DialogFooter = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: (0, import_utils.cn)("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className), ...props });
 DialogFooter.displayName = "DialogFooter";
-const DialogTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-  DialogPrimitive.Title,
-  {
-    ref,
-    className: (0, import_utils.cn)("text-lg font-semibold leading-none tracking-tight", className),
-    ...props
+const DialogTitle = React.forwardRef(({ className, icon, children, ...props }, ref) => {
+  if (icon) {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-center gap-2.5", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { "aria-hidden": "true", className: "shrink-0 text-ink/80 [&_svg]:h-4 [&_svg]:w-4", children: icon }),
+      /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+        DialogPrimitive.Title,
+        {
+          ref,
+          className: (0, import_utils.cn)(
+            "font-display text-[18px] font-semibold leading-none text-ink-900",
+            className
+          ),
+          ...props,
+          children
+        }
+      )
+    ] });
   }
-));
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+    DialogPrimitive.Title,
+    {
+      ref,
+      className: (0, import_utils.cn)(
+        "font-display text-[18px] font-semibold leading-none text-ink-900",
+        className
+      ),
+      ...props,
+      children
+    }
+  );
+});
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 const DialogDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DialogPrimitive.Description, { ref, className: (0, import_utils.cn)("text-sm text-muted-foreground", className), ...props }));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;

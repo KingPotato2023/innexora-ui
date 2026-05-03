@@ -43,14 +43,37 @@ const DialogHeader = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { c
 DialogHeader.displayName = "DialogHeader";
 const DialogFooter = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className), ...props });
 DialogFooter.displayName = "DialogFooter";
-const DialogTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-  DialogPrimitive.Title,
-  {
-    ref,
-    className: cn("text-lg font-semibold leading-none tracking-tight", className),
-    ...props
+const DialogTitle = React.forwardRef(({ className, icon, children, ...props }, ref) => {
+  if (icon) {
+    return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2.5", children: [
+      /* @__PURE__ */ jsx("span", { "aria-hidden": "true", className: "shrink-0 text-ink/80 [&_svg]:h-4 [&_svg]:w-4", children: icon }),
+      /* @__PURE__ */ jsx(
+        DialogPrimitive.Title,
+        {
+          ref,
+          className: cn(
+            "font-display text-[18px] font-semibold leading-none text-ink-900",
+            className
+          ),
+          ...props,
+          children
+        }
+      )
+    ] });
   }
-));
+  return /* @__PURE__ */ jsx(
+    DialogPrimitive.Title,
+    {
+      ref,
+      className: cn(
+        "font-display text-[18px] font-semibold leading-none text-ink-900",
+        className
+      ),
+      ...props,
+      children
+    }
+  );
+});
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 const DialogDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(DialogPrimitive.Description, { ref, className: cn("text-sm text-muted-foreground", className), ...props }));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;

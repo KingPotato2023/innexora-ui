@@ -56,16 +56,49 @@ const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 );
 DialogFooter.displayName = "DialogFooter";
 
+// Editorial Atlas dialog title —
+// Bricolage display sans at 18px, paired with an optional leading icon slot.
+// When an `icon` is provided the title renders inside a flex row with the icon
+// as a decorative sibling (aria-hidden) — the Radix Title still owns the
+// heading text so screen readers announce a clean label.
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
-    {...props}
-  />
-));
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title> & {
+    icon?: React.ReactNode;
+  }
+>(({ className, icon, children, ...props }, ref) => {
+  if (icon) {
+    return (
+      <div className="flex items-center gap-2.5">
+        <span aria-hidden="true" className="shrink-0 text-ink/80 [&_svg]:h-4 [&_svg]:w-4">
+          {icon}
+        </span>
+        <DialogPrimitive.Title
+          ref={ref}
+          className={cn(
+            "font-display text-[18px] font-semibold leading-none text-ink-900",
+            className,
+          )}
+          {...props}
+        >
+          {children}
+        </DialogPrimitive.Title>
+      </div>
+    );
+  }
+  return (
+    <DialogPrimitive.Title
+      ref={ref}
+      className={cn(
+        "font-display text-[18px] font-semibold leading-none text-ink-900",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </DialogPrimitive.Title>
+  );
+});
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
 const DialogDescription = React.forwardRef<

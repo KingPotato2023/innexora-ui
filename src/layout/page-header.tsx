@@ -77,17 +77,20 @@ export function PageHeader({
   kicker?: ReactNode;
 }) {
   return (
-    <div className="flex items-end justify-between flex-wrap gap-4 pb-5">
-      <div className="min-w-0">
-        {kicker && <div className="eyebrow mb-2">{kicker}</div>}
-        <h1 className="page-title">{title}</h1>
-        {description && (
-          <p className="mt-2 text-[14px] text-ink/65 max-w-2xl">{description}</p>
+    <div>
+      <div className="flex items-end justify-between flex-wrap gap-4 pb-5">
+        <div className="min-w-0">
+          {kicker && <div className="eyebrow mb-2">{kicker}</div>}
+          <h1 className="page-title">{title}</h1>
+          {description && (
+            <p className="mt-2 text-[14px] text-ink/65 max-w-2xl">{description}</p>
+          )}
+        </div>
+        {actions && (
+          <div className="flex items-center gap-2 flex-wrap">{actions}</div>
         )}
       </div>
-      {actions && (
-        <div className="flex items-center gap-2 flex-wrap">{actions}</div>
-      )}
+      <div className="rule-fade" />
     </div>
   );
 }

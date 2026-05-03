@@ -173,7 +173,7 @@
      to ink would make the button look flat dark indigo from a meter away
      instead of the editorial teal-to-indigo signature. */
   .btn {
-    @apply relative inline-flex items-center justify-center gap-2 h-10 rounded-md px-4 text-sm font-medium transition-all duration-200 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-paper-100 disabled:opacity-50 disabled:pointer-events-none;
+    @apply relative inline-flex items-center justify-center gap-1.5 h-8 rounded-md px-3 text-xs font-medium transition-all duration-200 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-paper-100 disabled:opacity-50 disabled:pointer-events-none;
   }
   .btn-primary {
     @apply btn text-white shadow-paper hover:-translate-y-px hover:shadow-paper-lg;

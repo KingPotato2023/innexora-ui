@@ -61,13 +61,16 @@ function PageHeader({
   actions,
   kicker
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-end justify-between flex-wrap gap-4 pb-5", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "min-w-0", children: [
-      kicker && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "eyebrow mb-2", children: kicker }),
-      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "page-title", children: title }),
-      description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-2 text-[14px] text-ink/65 max-w-2xl", children: description })
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex items-end justify-between flex-wrap gap-4 pb-5", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "min-w-0", children: [
+        kicker && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "eyebrow mb-2", children: kicker }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", { className: "page-title", children: title }),
+        description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "mt-2 text-[14px] text-ink/65 max-w-2xl", children: description })
+      ] }),
+      actions && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex items-center gap-2 flex-wrap", children: actions })
     ] }),
-    actions && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex items-center gap-2 flex-wrap", children: actions })
+    /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "rule-fade" })
   ] });
 }
 // Annotate the CommonJS export names for ESM import in node:
