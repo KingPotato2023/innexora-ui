@@ -1,57 +1,39 @@
 import { defineConfig } from "tsup";
-import { promises as fs } from "node:fs";
-import path from "node:path";
 
-// "use client" preservation
+// PER-FILE OUTPUT (`bundle: false`)
 //
-// tsup's `banner: { js: '"use client";' }` is rejected with a "Module
-// level directives cause errors when bundled" warning and stripped from
-// the output. The barrel re-exports a mix of server-safe (Pagination,
-// PageHeader, Table…) and client-only components (Button uses no hooks
-// directly but Slot needs the client; FormSubmitRibbon, KanbanBoard,
-// DatePicker, etc. all do). Marking the whole bundle as a client
-// boundary is the safe choice for Next.js App Router consumers — server
-// components can still import named exports from a "use client" module,
-// they just can't render server-only data into them.
+// Earlier ship attempts bundled everything into a single `dist/index.mjs`
+// with `"use client";` prepended at the top. That made Next.js treat
+// EVERY export — including pure utility functions like `priorityTone`,
+// `formatAed`, and `cn` — as a React Server Component "client reference
+// proxy". Calling `priorityTone("high")` then threw
+// `TypeError: (0 , a.wZ) is not a function` because the proxy is an
+// object, not a function. Pages that imported any tone helper failed at
+// render time; pages that only imported components (e.g. `/home` using
+// ManagerHero/KpiTile) happened to work.
 //
-// Solution: prepend the directive in `onSuccess` after the bundle is
-// written. We patch dist/index.mjs and dist/index.js directly.
+// Switching to `bundle: false` means tsup transpiles each source file
+// individually into its own output file, preserving the per-file
+// `"use client"` directive on components that need it (Button,
+// FormSubmitRibbon, KanbanBoard, DatePicker, the Radix overlays…) and
+// leaving server-safe modules (status-badge tone helpers, format,
+// utils, pagination, page-header) free of the directive. Next sees
+// each as its own module and applies the right boundary per file.
+//
+// Modern JSX transform stays on — emits `_jsx` from `react/jsx-runtime`
+// so chunks never depend on an in-scope React binding (fixes the
+// `ReferenceError: React is not defined` from v0.1.0).
 export default defineConfig({
-  entry: ["src/index.ts"],
-  format: ["cjs", "esm"],
+  entry: ["src/**/*.{ts,tsx}", "!src/**/*.test.{ts,tsx}"],
+  format: ["esm", "cjs"],
   dts: true,
   clean: true,
   sourcemap: false,
+  bundle: false,
   splitting: false,
-  treeshake: true,
+  treeshake: false,
   external: ["react", "react-dom", "next", "lucide-react", "tailwindcss"],
-  // Modern JSX transform — emits `_jsx` calls that import from
-  // "react/jsx-runtime", instead of the classic `React.createElement`
-  // calls that require an in-scope React binding. Without this,
-  // Next.js consumers hit `ReferenceError: React is not defined` on
-  // routes that only import a server-safe component from the package
-  // (Next tree-shakes the unused `import * as React from 'react'`
-  // away). Confirmed via Vercel runtime logs after the v0.1.0 ship —
-  // /home threw on every request because Next stripped the React import
-  // from the chunk. The automatic transform sidesteps this entirely
-  // because each .tsx file's compiled output explicitly imports the
-  // jsx runtime from "react/jsx-runtime".
   esbuildOptions(options) {
     options.jsx = "automatic";
-  },
-  async onSuccess() {
-    const outDir = "dist";
-    const targets = ["index.mjs", "index.js"];
-    for (const file of targets) {
-      const p = path.join(outDir, file);
-      try {
-        const body = await fs.readFile(p, "utf8");
-        if (!body.startsWith('"use client"')) {
-          await fs.writeFile(p, `"use client";\n${body}`, "utf8");
-        }
-      } catch {
-        // ignore — file may not exist on a partial build
-      }
-    }
   },
 });
