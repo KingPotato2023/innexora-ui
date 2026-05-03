@@ -1,0 +1,463 @@
+/* ────────────────────────────────────────────────────────────────────────
+   @innexora/ui — Editorial Atlas styles.
+   Imported once by the consuming app's globals.css:
+     @import "@innexora/ui/styles.css";
+     @tailwind base;
+     @tailwind components;
+     @tailwind utilities;
+   The Tailwind directives are intentionally NOT included here — the
+   consuming app owns its Tailwind layer order so app-specific overrides
+   can live below the package's components without specificity wars.
+
+   The palette is intentionally cool with a single warm accent (brass).
+   `paper` is the cream canvas; `ink` is the deep indigo near-black used
+   for primary text. The brand teal/indigo are preserved for the hero
+   gradient and KPI accents — but the rest of the surface lives in
+   paper + ink + brass.
+   ──────────────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Surface */
+    --background: 42 50% 97%;          /* paper-100 #FBFAF6 */
+    --foreground: 232 55% 12%;         /* ink #0E1330 */
+    --card: 0 0% 100%;
+    --card-foreground: 232 55% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 232 55% 12%;
+
+    /* Primary (indigo) — used by shadcn primitives. */
+    --primary: 238 48% 31%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 42 30% 92%;
+    --secondary-foreground: 232 55% 12%;
+    --muted: 42 30% 92%;
+    --muted-foreground: 232 15% 38%;
+
+    /* Accent — warm brass on paper */
+    --accent: 41 70% 92%;
+    --accent-foreground: 33 50% 32%;
+
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 42 25% 86%;
+    --input: 42 25% 86%;
+    --ring: 237 47% 43%;
+    --radius: 0.625rem;
+  }
+
+  /* Dark mode tokens are kept (for shadcn compat) but the app never sets
+     `class="dark"` — there is no theme toggle. Same shape as before. */
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    /* Paper canvas with a faint blueprint-grid dot pattern. The dots are
+       2px on a 28px lattice at ~2% opacity — perceptible only as texture,
+       never as content. Pure CSS, zero network. */
+    background-color: #FBFAF6;
+    background-image:
+      radial-gradient(rgba(14, 19, 48, 0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: 0 0;
+  }
+  body {
+    @apply bg-transparent text-ink;
+    font-feature-settings: "ss01", "cv11", "kern";
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Tabular numerals in every numeric context. The mono stack gives
+     financial-ledger weight to KPI tiles, table data, and money figures. */
+  .tabular-nums {
+    font-feature-settings: "tnum";
+  }
+
+  /* Headings inherit the editorial serif with optical sizing. Italic is
+     reserved for inline emphasis — we use it deliberately on page titles
+     ("<i>Sales</i> Performance") to give every page a single accent word. */
+  h1, h2, h3 {
+    letter-spacing: -0.012em;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Atmospheric layers
+   ──────────────────────────────────────────────────────────────────── */
+@layer base {
+  /* Fixed grain overlay — paper texture without a network image.
+     200×200 SVG noise at 1.4% opacity is enough for the eye but
+     invisible to compression. */
+  .paper-grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.05  0 0 0 0 0.07  0 0 0 0 0.18  0 0 0 0.045 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 220px 220px;
+  }
+
+  /* Reduce motion: stop the hero's drifting gradients and the
+     active-nav dot pulse. Card stagger reveals collapse to a single
+     6ms fade so layout is still calm but not jarring. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* ── Form primitives ─────────────────────────────────────────────────
+     Inputs use a hairline ink border so fields feel etched, not boxed.
+     Focus ring picks up the brand teal — direct continuation of the
+     logo gradient's left stop. */
+  .input {
+    @apply w-full h-10 rounded-md border border-ink/15 bg-white/90 px-3 text-sm text-ink placeholder:text-ink/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-teal-500/35 focus:border-brand-teal-600 disabled:bg-paper-200 disabled:text-ink/40 disabled:cursor-not-allowed;
+  }
+  textarea.input,
+  .input.textarea {
+    @apply h-auto py-2 leading-5;
+  }
+  /* Native <select className="input"> — strip the default OS chevron
+     and replace with our own (an inline SVG matching the Radix
+     SelectTrigger). Keeps native dropdowns visually identical to
+     Radix-driven ones. */
+  select.input {
+    @apply pr-9 appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgb(14,19,48,0.55)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+  }
+  select.input::-ms-expand {
+    display: none;
+  }
+
+  .field-label {
+    @apply block text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/70 mb-2;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────────────
+     Tactile press, magnetic hover lift, focus ring on brand teal.
+     Primary uses a bright 135° teal-500 → indigo-700 sweep — same gradient
+     family as the active SegmentedControl pill so the brand reads at a
+     glance. We deliberately stop at indigo-700 (not ink-900) — running
+     to ink would make the button look flat dark indigo from a meter away
+     instead of the editorial teal-to-indigo signature. */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 h-10 rounded-md px-4 text-sm font-medium transition-all duration-200 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-paper-100 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn text-white shadow-paper hover:-translate-y-px hover:shadow-paper-lg;
+    background-image: linear-gradient(135deg, #01b6ad 0%, #282a73 100%);
+  }
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.18),
+      transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .btn-primary:hover::after {
+    opacity: 1;
+  }
+
+  .btn-secondary {
+    @apply btn border border-ink/15 bg-white/80 text-ink hover:bg-white hover:border-ink/30 hover:-translate-y-px;
+  }
+  .btn-destructive {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+  .btn-ghost {
+    @apply btn text-ink/80 hover:bg-ink/5 hover:text-ink;
+  }
+  .btn-teal {
+    @apply btn text-white shadow-paper bg-gradient-to-br from-brand-teal-500 to-brand-teal-700 hover:from-brand-teal-600 hover:to-brand-teal-700 hover:-translate-y-px hover:shadow-paper-lg;
+  }
+
+  /* ── Brand gradient — full saturation, used for buttons & text ────
+     This is the literal logo gradient: bright teal → indigo → ink.
+     Reserved for highlight surfaces (primary buttons, gradient text)
+     where saturation reads as brand. The 200% width lets `hue-drift`
+     slide the gradient without tiling. */
+  .bg-brand-gradient {
+    background-image: linear-gradient(135deg, #008e86 0%, #2e3191 60%, #0E1330 100%);
+    background-size: 200% 200%;
+  }
+  .brand-gradient {
+    background-image: linear-gradient(135deg, #008e86 0%, #2e3191 60%, #0E1330 100%);
+    background-size: 200% 200%;
+  }
+  .brand-gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #008e86 0%, #2e3191 60%, #0E1330 100%);
+  }
+
+  /* ── Hero gradient — desaturated, sits in the same hue family as
+     the dark sidebar so the two surfaces feel like one composition.
+     The teal hint comes through a corner radial flare (applied in
+     the component), not the base gradient itself. */
+  .bg-hero-gradient {
+    background-image:
+      linear-gradient(135deg, #1A1F4A 0%, #14193A 55%, #0E1330 100%);
+    background-size: 200% 200%;
+  }
+
+  /* ── Cards ───────────────────────────────────────────────────────────
+     Cards are paper-on-paper: pure white plate, hairline ink ring, warm
+     low-spread shadow. On hover the card lifts a single pixel and a
+     1px brand-gradient rule fades in along the top edge — a small
+     gilt-keyline signature using the logo's teal→indigo sweep. */
+  .card {
+    @apply relative bg-white rounded-lg border border-ink/10 shadow-paper transition-all duration-300;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgb(0 142 134 / 0) 15%,
+      rgb(0 142 134 / 0.55) 35%,
+      rgb(46 49 145 / 0.55) 65%,
+      rgb(46 49 145 / 0) 85%,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .card:hover {
+    @apply shadow-paper-lg border-ink/15;
+  }
+  .card:hover::before {
+    opacity: 1;
+  }
+  .card-interactive {
+    @apply card cursor-pointer;
+  }
+  .card-interactive:hover {
+    @apply -translate-y-0.5 border-brand-teal-300/60;
+  }
+
+  /* ── Page chrome ─────────────────────────────────────────────────────
+     Page titles use the Bricolage Grotesque display sans at heavy
+     weight with tight tracking. <em> tags inside titles are NOT
+     italicised — they pick up the brand teal→indigo gradient as a
+     colour accent so emphasis reads as brand-tinted, not "italic". */
+  .page-title {
+    @apply font-display font-semibold text-[28px] sm:text-[34px] leading-[1.08] text-ink-900 tracking-[-0.02em];
+  }
+  .page-title em,
+  .display-em {
+    font-style: normal;
+    background-image: linear-gradient(135deg, #008e86 0%, #2e3191 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .section-title {
+    @apply text-[10.5px] font-semibold text-ink/60 uppercase tracking-[0.22em];
+  }
+  /* "Eyebrow" used above section titles — like a magazine kicker. */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.22em] text-brand-indigo-700;
+  }
+  .eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0.55;
+  }
+
+  /* ── Tables ──────────────────────────────────────────────────────────
+     Editorial table: hairline ink rules, no fills, mono numerals,
+     generous vertical rhythm. Rows reveal a 2px brass left rule on
+     hover (animated in via `rule-in`) — the only colour change a row
+     ever gets. */
+  .tbl {
+    @apply w-full text-sm border-separate border-spacing-0;
+  }
+  :where(.tbl) thead th {
+    @apply bg-transparent text-left text-[10.5px] font-semibold text-ink/55 uppercase tracking-[0.18em] px-4 py-3 border-b border-ink/15;
+  }
+  :where(.tbl) tbody td {
+    @apply px-4 py-3 text-ink/85 border-b border-ink/10;
+    border-bottom-color: rgb(14 19 48 / 0.07);
+  }
+  :where(.tbl) tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  :where(.tbl) tbody tr {
+    position: relative;
+    @apply transition-colors;
+  }
+  :where(.tbl) tbody td:first-child {
+    position: relative;
+  }
+  :where(.tbl) tbody td:first-child::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8%;
+    bottom: 8%;
+    width: 2px;
+    background-image: linear-gradient(180deg, #008e86, #2e3191);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :where(.tbl) tbody tr:hover td:first-child::before {
+    transform: scaleY(1);
+  }
+  :where(.tbl) tbody tr:hover {
+    background-color: rgb(0 142 134 / 0.035);
+  }
+  :where(.tbl) tbody tr:hover td {
+    color: rgb(14 19 48 / 0.95);
+  }
+
+  /* Master Tracker (/accounts) override — soft indigo-tinted header. */
+  .tbl-accounts thead th {
+    background-color: #EBEEFF;
+    @apply text-ink/70;
+  }
+
+  /* Numeric cells inherit the JetBrains Mono stack via .font-mono;
+     this class is a shorthand for the most common combo — right-
+     aligned, mono-numerals, slightly tighter tracking. */
+  .num {
+    @apply text-right font-mono tabular-nums tracking-[-0.01em];
+  }
+
+  /* ── Editorial accents ───────────────────────────────────────────────
+     Hairline rule used as a section divider — fades from transparent
+     into ink and back, like a printed letter's en-rule. */
+  .rule-fade {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(14 19 48 / 0.18) 30%,
+      rgb(14 19 48 / 0.18) 70%,
+      transparent
+    );
+  }
+
+  /* Vertical separator — used between meta items ("01 │ 24"). */
+  .vrule {
+    @apply mx-2 inline-block h-3 w-px align-middle bg-ink/25;
+  }
+
+  /* Stagger reveal — apply to a grid container. The first 8 children
+     animate in sequence; later ones still appear (just after the same
+     delay) so the page never feels frozen waiting on the cascade. */
+  .stagger > * {
+    animation: stagger-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .stagger > *:nth-child(1)  { animation-delay: 0ms; }
+  .stagger > *:nth-child(2)  { animation-delay: 50ms; }
+  .stagger > *:nth-child(3)  { animation-delay: 100ms; }
+  .stagger > *:nth-child(4)  { animation-delay: 150ms; }
+  .stagger > *:nth-child(5)  { animation-delay: 200ms; }
+  .stagger > *:nth-child(6)  { animation-delay: 250ms; }
+  .stagger > *:nth-child(7)  { animation-delay: 300ms; }
+  .stagger > *:nth-child(8)  { animation-delay: 350ms; }
+  .stagger > *:nth-child(n+9) { animation-delay: 400ms; }
+
+  /* Dot pulse — used by the active-nav indicator and the "live" beacon
+     in the hero. The element below renders the ring; the dot itself is
+     a sibling so the pulse never affects the dot's own size. */
+  .pulse-ring::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 9999px;
+    background: currentColor;
+    animation: dot-pulse 2.4s ease-out infinite;
+  }
+
+  /* Underline-draw — used on hover for the brand wordmark and
+     in-flow link emphasis. The underline scales from 0 to 1 along
+     the X-axis, anchored at the left. */
+  .underline-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .underline-draw:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Marquee ticker — duplicate the content (twice) so the loop is
+     seamless. Animates -50% on a slow loop. Used in hero & access page. */
+  .ticker {
+    overflow: hidden;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      black 6%,
+      black 94%,
+      transparent 100%
+    );
+  }
+  .ticker__track {
+    display: inline-flex;
+    gap: 2.5rem;
+    white-space: nowrap;
+    animation: ticker-scroll 60s linear infinite;
+    width: max-content;
+  }
+
+  /* Sidebar dark surface — ink-900 with a subtle inner glow.
+     The constellation overlay is a static SVG of three faint dots
+     positioned in the top-right corner; it's purely decorative. */
+  .sidebar-surface {
+    background:
+      radial-gradient(120% 60% at 100% 0%, rgba(199, 148, 74, 0.05), transparent 60%),
+      linear-gradient(180deg, #14193A 0%, #0E1330 100%);
+    color: rgb(255 255 255 / 0.86);
+  }
+}

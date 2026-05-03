@@ -1,0 +1,1471 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>@innexora/ui — Component Showcase</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              teal:   { 50:"#e6f7f5",100:"#c2ebe7",200:"#8ed7d1",300:"#5cc4ba",400:"#2fb2a6",500:"#01b6ad",600:"#00a69c",700:"#008e86",800:"#006e68" },
+              indigo: { 50:"#eef0f9",100:"#d4d7ec",200:"#a9aed8",300:"#7e85c4",400:"#545db0",500:"#3a3fa3",600:"#2e3191",700:"#282a73",800:"#1f2159",900:"#171940",950:"#0E1330" },
+            },
+            paper: { 50:"#FFFDF8", 100:"#FBFAF6", 200:"#F4F1E9", 300:"#E9E4D6" },
+            ink:   { DEFAULT:"#0E1330", 900:"#0E1330", 800:"#1A1F4A", 700:"#2A2F5C", 600:"#444976", 500:"#6B6F94", 400:"#9A9DB4", 300:"#C8CAD7" },
+            brass: { 50:"#FAF4E6", 100:"#F2E5C2", 200:"#E5CB8C", 300:"#D7B05B", 400:"#C7944A", 500:"#B07F3A", 600:"#8E662E" },
+          },
+          boxShadow: {
+            paper: "0 1px 2px rgba(14,19,48,0.04), 0 4px 16px rgba(14,19,48,0.06)",
+            "paper-lg": "0 2px 4px rgba(14,19,48,0.06), 0 12px 32px rgba(14,19,48,0.08)",
+            "brass-glow": "0 0 0 1px rgba(199,148,74,0.45), 0 6px 20px rgba(199,148,74,0.18)",
+          },
+          fontFamily: {
+            display: ["Bricolage Grotesque", "ui-serif", "Georgia", "serif"],
+            sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "ui-monospace", "Menlo", "monospace"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background:#FBFAF6; color:#0E1330; }
+    h1,h2,h3 { font-family:'Bricolage Grotesque', serif; }
+    .field-label { font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:rgba(14,19,48,0.65); }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:#282a73; }
+    .eyebrow::before { content:""; display:block; width:24px; height:1px; background:currentColor; opacity:0.4; }
+    .page-title { font-family:'Bricolage Grotesque', serif; font-size:30px; font-weight:600; letter-spacing:-0.02em; line-height:1.1; color:#0E1330; }
+    .page-title em { font-style:normal; background:linear-gradient(135deg,#01b6ad 0%,#282a73 70%,#0E1330 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .display-em { background:linear-gradient(135deg,#01b6ad 0%,#282a73 70%,#0E1330 100%); -webkit-background-clip:text; background-clip:text; color:transparent; font-style:normal; }
+    .input { display:block; width:100%; height:40px; padding:0 12px; font-size:14px; color:#0E1330; background:rgba(255,255,255,0.9); border:1px solid rgba(14,19,48,0.12); border-radius:8px; transition:border .15s, box-shadow .15s, background .15s; }
+    .input:focus { outline:none; border-color:#01b6ad; box-shadow:0 0 0 3px rgba(1,182,173,0.18); background:#fff; }
+    .input::placeholder { color:#9A9DB4; }
+    .textarea { height:auto; min-height:96px; padding:10px 12px; resize:vertical; line-height:1.5; }
+    .input:disabled { background:#F4F1E9; color:#6B6F94; cursor:not-allowed; }
+    .card { background:#fff; border:1px solid rgba(14,19,48,0.10); border-radius:12px; box-shadow:0 1px 2px rgba(14,19,48,0.04), 0 4px 16px rgba(14,19,48,0.06); position:relative; transition:transform .15s, box-shadow .15s; }
+    .card-interactive { cursor:pointer; }
+    .card-interactive:hover { border-color:rgba(1,182,173,0.45); transform:translateY(-2px); box-shadow:0 2px 4px rgba(14,19,48,0.06), 0 12px 32px rgba(14,19,48,0.08); }
+    .btn-primary { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; font-size:12px; font-weight:600; color:#fff; background:linear-gradient(135deg,#01b6ad 0%,#282a73 100%); border:none; border-radius:8px; cursor:pointer; transition:transform .15s, box-shadow .15s; box-shadow:0 1px 2px rgba(14,19,48,0.10); }
+    .btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(40,42,115,0.25); }
+    .btn-outline { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; font-size:12px; font-weight:500; color:#0E1330; background:#fff; border:1px solid rgba(14,19,48,0.15); border-radius:8px; cursor:pointer; transition:background .15s; }
+    .btn-outline:hover { background:#FBFAF6; border-color:rgba(14,19,48,0.25); }
+    .btn-ghost { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 10px; font-size:12px; color:#444976; background:transparent; border:none; border-radius:8px; cursor:pointer; transition:color .15s, background .15s; }
+    .btn-ghost:hover { background:rgba(14,19,48,0.04); color:#0E1330; }
+    .btn-destructive { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 12px; font-size:12px; font-weight:500; color:#b91c1c; background:#fff; border:1px solid rgba(185,28,28,0.25); border-radius:8px; cursor:pointer; }
+    .btn-destructive:hover { background:#fef2f2; }
+    .btn-teal { background:linear-gradient(135deg,#01b6ad 0%,#00a69c 100%); }
+    .num { font-family:'JetBrains Mono', monospace; font-variant-numeric:tabular-nums; text-align:right; letter-spacing:-0.01em; }
+    .tbl { width:100%; border-collapse:collapse; }
+    .tbl thead th { font-family:'JetBrains Mono', monospace; font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.18em; color:rgba(14,19,48,0.65); padding:10px 16px; text-align:left; border-bottom:1px solid rgba(14,19,48,0.15); background:rgba(244,241,233,0.4); }
+    .tbl tbody td { padding:12px 16px; font-size:13.5px; border-bottom:1px solid rgba(14,19,48,0.06); }
+    .tbl tbody tr { transition:background .15s; }
+    .tbl tbody tr:hover { background:rgba(1,182,173,0.04); }
+    .tbl tbody tr:last-child td { border-bottom:none; }
+    .pill { display:inline-flex; align-items:center; padding:5px 11px; font-size:12px; font-weight:500; color:#444976; background:#fff; border:1px solid rgba(14,19,48,0.12); border-radius:9999px; cursor:pointer; transition:all .15s; }
+    .pill:hover { border-color:rgba(1,182,173,0.45); color:#0E1330; }
+    .pill-active { color:#fff; background:linear-gradient(135deg,#01b6ad 0%,#282a73 100%); border-color:transparent; }
+    .pill-radio { background:#fff; border:1px solid rgba(14,19,48,0.12); }
+    .pill-radio.active { background:#282a73; color:#fff; border-color:#282a73; }
+    .badge-base { display:inline-flex; align-items:center; gap:5px; padding:3px 8px; font-size:11px; font-weight:500; border-radius:6px; line-height:1.4; }
+    .badge-info { color:#1e40af; background:#dbeafe; }
+    .badge-positive { color:#166534; background:#dcfce7; }
+    .badge-warn { color:#92400e; background:#fef3c7; }
+    .badge-negative { color:#991b1b; background:#fee2e2; }
+    .badge-neutral { color:#444976; background:#F4F1E9; }
+    .badge-brand { color:#282a73; background:#eef0f9; }
+    .badge-muted { color:#6B6F94; background:rgba(14,19,48,0.05); }
+    .underline-draw { position:relative; }
+    .underline-draw::after { content:""; position:absolute; left:0; right:0; bottom:-1px; height:1px; background:#01b6ad; transform:scaleX(0); transform-origin:left; transition:transform .25s; }
+    .underline-draw:hover::after { transform:scaleX(1); }
+    .rule-fade { height:1px; background:linear-gradient(90deg, transparent 0%, rgba(14,19,48,0.18) 50%, transparent 100%); }
+    .vrule { display:inline-block; width:1px; height:10px; background:rgba(14,19,48,0.25); vertical-align:middle; margin:0 8px; }
+    .bg-brand-gradient { background:linear-gradient(135deg, #01b6ad 0%, #282a73 60%, #0E1330 100%); }
+    .bg-hero-gradient { background:linear-gradient(135deg, #1f2159 0%, #171940 50%, #0E1330 100%); }
+    .sidebar-surface { background:radial-gradient(ellipse at top right, rgba(1,182,173,0.18), transparent 60%), radial-gradient(ellipse at bottom left, rgba(199,148,74,0.12), transparent 70%), linear-gradient(180deg, #0E1330 0%, #171940 100%); }
+    .ribbon { position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:1px solid rgba(14,19,48,0.10); box-shadow:0 -4px 12px rgba(14,19,48,0.08); padding:12px 24px; }
+    .stagger-card { animation:fadeUp .35s ease-out both; }
+    .stagger-card:nth-child(2) { animation-delay:50ms; }
+    .stagger-card:nth-child(3) { animation-delay:100ms; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    pre.code { background:#0E1330; color:#C8CAD7; font-family:'JetBrains Mono', monospace; font-size:12px; padding:14px 16px; border-radius:8px; overflow-x:auto; line-height:1.55; }
+    pre.code .k { color:#5cc4ba; }
+    pre.code .s { color:#D7B05B; }
+    pre.code .c { color:#6B6F94; font-style:italic; }
+    pre.code .t { color:#a9aed8; }
+    .anchor-target { scroll-margin-top:24px; }
+    /* layout */
+    .doc-grid { display:grid; grid-template-columns: 240px minmax(0,1fr); gap:48px; align-items:start; }
+    @media (max-width: 900px) { .doc-grid { grid-template-columns: 1fr; } .toc { position:static !important; } }
+    .toc { position:sticky; top:24px; max-height:calc(100vh - 48px); overflow-y:auto; padding-right:8px; }
+    .toc a { display:block; padding:4px 8px; font-size:12px; color:#444976; border-radius:4px; text-decoration:none; }
+    .toc a:hover { background:#F4F1E9; color:#0E1330; }
+    .toc .group { font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:#9A9DB4; margin-top:14px; padding:0 8px 4px; }
+    .toc .group:first-child { margin-top:0; }
+    .swatch { display:flex; align-items:center; gap:10px; padding:10px; background:#fff; border:1px solid rgba(14,19,48,0.08); border-radius:8px; }
+    .swatch .chip { width:36px; height:36px; border-radius:6px; flex-shrink:0; box-shadow:inset 0 0 0 1px rgba(14,19,48,0.05); }
+    .swatch .meta { font-family:'JetBrains Mono', monospace; font-size:11px; }
+    .swatch .meta .name { color:#0E1330; font-weight:600; }
+    .swatch .meta .hex { color:#6B6F94; font-size:10px; }
+    section { padding:32px 0; border-bottom:1px dashed rgba(14,19,48,0.08); }
+    section:last-of-type { border-bottom:none; }
+    section > h2 { font-size:22px; font-weight:600; letter-spacing:-0.015em; margin:0 0 6px; }
+    section > .lead { font-size:14px; color:#444976; max-width:60ch; margin:0 0 28px; }
+    .component { padding:24px; background:#fff; border:1px solid rgba(14,19,48,0.10); border-radius:12px; margin:0 0 20px; box-shadow:0 1px 2px rgba(14,19,48,0.03); }
+    .component .name { display:flex; align-items:baseline; gap:10px; margin:0 0 4px; }
+    .component .name h3 { font-size:18px; font-weight:600; letter-spacing:-0.01em; margin:0; }
+    .component .name code { font-family:'JetBrains Mono', monospace; font-size:11px; color:#01b6ad; background:#e6f7f5; padding:2px 6px; border-radius:4px; }
+    .component .desc { font-size:13.5px; color:#444976; margin:0 0 12px; }
+    .component .when { font-size:12px; color:#6B6F94; margin:0 0 18px; padding:8px 12px; background:#FBFAF6; border-left:2px solid #C7944A; border-radius:0 6px 6px 0; }
+    .component .when strong { color:#0E1330; font-weight:600; }
+    .component .demo { padding:24px; background:#FBFAF6; border:1px dashed rgba(14,19,48,0.08); border-radius:8px; margin:0 0 14px; }
+    .props { font-size:12px; color:#444976; margin:8px 0 14px; }
+    .props ul { margin:6px 0 0 16px; }
+    .props li { margin:2px 0; }
+    .props code { font-family:'JetBrains Mono', monospace; font-size:11px; color:#282a73; background:#eef0f9; padding:1px 5px; border-radius:3px; }
+    /* shell mock */
+    .shell-mock { display:grid; grid-template-columns: 220px 1fr; height:380px; border-radius:12px; overflow:hidden; border:1px solid rgba(14,19,48,0.10); }
+    .shell-mock .side { padding:18px 14px; color:#fff; }
+    .shell-mock .side .brand { display:flex; align-items:center; gap:8px; font-family:'Bricolage Grotesque', serif; font-size:18px; font-weight:600; }
+    .shell-mock .side .nav-item { display:flex; align-items:center; gap:10px; padding:8px 10px; margin:2px 0; font-size:13px; color:rgba(255,255,255,0.7); border-radius:6px; transition:all .15s; cursor:pointer; }
+    .shell-mock .side .nav-item:hover { background:rgba(255,255,255,0.06); color:#fff; }
+    .shell-mock .side .nav-item.active { background:rgba(1,182,173,0.18); color:#fff; }
+    .shell-mock .side .group-label { font-family:'JetBrains Mono', monospace; font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.45); padding:14px 10px 6px; }
+    .shell-mock .main { background:#FBFAF6; padding:24px; overflow:auto; }
+  </style>
+</head>
+<body class="text-ink-900">
+
+<!-- HEADER -->
+<header class="bg-paper-200/60 border-b border-ink/10">
+  <div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="eyebrow">Component library · v0.1 plan</div>
+    <h1 class="page-title mt-2"><em>@innexora/ui</em> showcase</h1>
+    <p class="text-ink/70 mt-3 max-w-2xl text-[14.5px] leading-relaxed">
+      The shared component family for every Innexora app. One source of truth, one update path,
+      one design language across Properties, PM, and anything we ship next. Below is a visual
+      catalog of every component this package will export — each with what it is, when to use it,
+      and the import line.
+    </p>
+    <div class="mt-5 flex items-center gap-2 text-[11px] font-mono text-ink/55">
+      <span class="badge-base badge-positive">v0.1 plan</span>
+      <span class="vrule"></span>
+      <span>38 components</span>
+      <span class="vrule"></span>
+      <span>Tailwind preset + CSS</span>
+      <span class="vrule"></span>
+      <span>peer-deps: react · next · lucide</span>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-7xl mx-auto px-6 py-10 doc-grid">
+
+<!-- TOC -->
+<aside class="toc">
+  <div class="group">Foundations</div>
+  <a href="#tokens-color">Color tokens</a>
+  <a href="#tokens-type">Typography</a>
+  <a href="#tokens-shadow">Shadows &amp; radii</a>
+  <a href="#tokens-css">Utility classes</a>
+
+  <div class="group">Conventions</div>
+  <a href="#convention-pills">Pills, not dropdowns (filters)</a>
+  <a href="#convention-icons">Icons on every label</a>
+
+  <div class="group">Primitives</div>
+  <a href="#button">Button</a>
+  <a href="#input">Input · Textarea</a>
+  <a href="#label">Label</a>
+  <a href="#checkbox">Checkbox · Switch</a>
+  <a href="#avatar">Avatar</a>
+  <a href="#badge">Badge</a>
+  <a href="#separator">Separator</a>
+  <a href="#skeleton">Skeleton</a>
+  <a href="#empty-state">EmptyState</a>
+
+  <div class="group">Status &amp; feedback</div>
+  <a href="#status-badge">StatusBadge</a>
+  <a href="#alert">Alert</a>
+
+  <div class="group">Selection</div>
+  <a href="#pill-group">PillGroup · PillButtons</a>
+  <a href="#hidden-form-select">HiddenFormSelect</a>
+  <a href="#segmented-control">SegmentedControl(Links)</a>
+  <a href="#date-picker">DatePicker · Calendar</a>
+
+  <div class="group">Overlays</div>
+  <a href="#dialog">Dialog · AlertDialog</a>
+  <a href="#dropdown-menu">DropdownMenu</a>
+  <a href="#popover">Popover · Tooltip</a>
+  <a href="#tabs">Tabs</a>
+
+  <div class="group">Layout &amp; headers</div>
+  <a href="#page-header">PageHeader</a>
+  <a href="#page-hero">PageHero</a>
+  <a href="#breadcrumbs">Breadcrumbs</a>
+  <a href="#shell">ShellLayout · SidebarNav</a>
+
+  <div class="group">Cards &amp; content</div>
+  <a href="#form-card">FormCard family</a>
+  <a href="#detail-card">DetailCard family</a>
+  <a href="#kpi-tile">KpiTile</a>
+  <a href="#tip-card">TipCard · TipStrip</a>
+  <a href="#zen-strip">ZenStrip</a>
+  <a href="#manager-hero">ManagerHero</a>
+
+  <div class="group">Tables &amp; data</div>
+  <a href="#table">Table (.tbl)</a>
+  <a href="#kanban">KanbanBoard</a>
+  <a href="#pagination">Pagination</a>
+
+  <div class="group">Form helpers</div>
+  <a href="#form-submit-ribbon">FormSubmitRibbon</a>
+  <a href="#unsaved-guard">UnsavedChangesGuard</a>
+  <a href="#confirm-form">ConfirmForm</a>
+
+  <div class="group">Utility</div>
+  <a href="#local-clock">LocalClock</a>
+
+  <div class="group">Reference</div>
+  <a href="#package-shape">Package shape</a>
+  <a href="#consumer-setup">Consumer setup</a>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main>
+
+<!-- ============== TOKENS ============== -->
+<section id="tokens-color" class="anchor-target">
+  <h2>Color tokens</h2>
+  <p class="lead">Four families. Backgrounds default to <code class="font-mono text-[11px] bg-paper-200 px-1.5 py-0.5 rounded">paper-100</code>, foregrounds to <code class="font-mono text-[11px] bg-paper-200 px-1.5 py-0.5 rounded">ink-900</code>. Brand teal/indigo are reserved for emphasis (CTAs, active pills, gradient accents). Brass for warm dividers and the "issue stamp" treatment.</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="swatch"><div class="chip bg-brand-teal-500"></div><div class="meta"><div class="name">brand-teal-500</div><div class="hex">#01B6AD</div></div></div>
+    <div class="swatch"><div class="chip bg-brand-indigo-700"></div><div class="meta"><div class="name">brand-indigo-700</div><div class="hex">#282A73</div></div></div>
+    <div class="swatch"><div class="chip bg-paper-100 border"></div><div class="meta"><div class="name">paper-100</div><div class="hex">#FBFAF6</div></div></div>
+    <div class="swatch"><div class="chip bg-ink-900"></div><div class="meta"><div class="name">ink-900</div><div class="hex">#0E1330</div></div></div>
+    <div class="swatch"><div class="chip bg-brass-400"></div><div class="meta"><div class="name">brass-400</div><div class="hex">#C7944A</div></div></div>
+    <div class="swatch"><div class="chip" style="background:linear-gradient(135deg,#01b6ad 0%,#282a73 100%)"></div><div class="meta"><div class="name">btn gradient</div><div class="hex">teal-500 → indigo-700</div></div></div>
+    <div class="swatch"><div class="chip" style="background:linear-gradient(135deg,#01b6ad 0%,#282a73 60%,#0E1330 100%)"></div><div class="meta"><div class="name">brand gradient</div><div class="hex">teal → indigo → ink</div></div></div>
+    <div class="swatch"><div class="chip" style="background:linear-gradient(135deg,#1f2159 0%,#0E1330 100%)"></div><div class="meta"><div class="name">hero gradient</div><div class="hex">indigo-only dark pane</div></div></div>
+  </div>
+</section>
+
+<section id="tokens-type" class="anchor-target">
+  <h2>Typography</h2>
+  <p class="lead">Three faces, one job each. Display for titles, sans for everything else, mono for tabular numerals and meta labels.</p>
+  <div class="component">
+    <div class="space-y-3">
+      <div><div class="field-label mb-1">font-display · Bricolage Grotesque</div><div class="font-display text-[28px] font-semibold tracking-tight">Properties <em class="display-em">register</em></div></div>
+      <div><div class="field-label mb-1">font-sans · Inter</div><div class="text-[14px]">Operational execution — triage, assignment, and SLA-tracked lifecycle.</div></div>
+      <div><div class="field-label mb-1">font-mono · JetBrains Mono</div><div class="font-mono text-[12px] text-ink/65 tabular-nums">SHOWING 1–25 OF 1,247  ·  PAGE 1 OF 50</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="tokens-shadow" class="anchor-target">
+  <h2>Shadows &amp; radii</h2>
+  <p class="lead">Three shadow tokens for stacking depth without losing the airy "paper" feel. Radii are uniform: 6px chips, 8px inputs, 12px cards.</p>
+  <div class="grid grid-cols-3 gap-3">
+    <div class="card p-4 text-center text-[12px]"><div class="font-mono text-ink/55">shadow-paper</div><div class="font-display text-[15px] mt-1">card resting</div></div>
+    <div class="card p-4 text-center text-[12px]" style="box-shadow:0 2px 4px rgba(14,19,48,0.06), 0 12px 32px rgba(14,19,48,0.08)"><div class="font-mono text-ink/55">shadow-paper-lg</div><div class="font-display text-[15px] mt-1">card lifted</div></div>
+    <div class="card p-4 text-center text-[12px]" style="box-shadow:0 0 0 1px rgba(199,148,74,0.45), 0 6px 20px rgba(199,148,74,0.18)"><div class="font-mono text-ink/55">shadow-brass-glow</div><div class="font-display text-[15px] mt-1">selected state</div></div>
+  </div>
+</section>
+
+<section id="tokens-css" class="anchor-target">
+  <h2>Utility classes</h2>
+  <p class="lead">Shipped as <code class="font-mono text-[11.5px] bg-paper-200 px-1.5 py-0.5 rounded">@innexora/ui/styles.css</code>. Consumer apps <code class="font-mono text-[11.5px] bg-paper-200 px-1.5 py-0.5 rounded">@import</code> it once in their root CSS.</p>
+  <div class="component">
+    <div class="props">
+      <strong class="text-ink-900">Layout:</strong>
+      <ul>
+        <li><code>.card</code> — white plate, hairline ink/10 border, paper shadow, hover lift</li>
+        <li><code>.card-interactive</code> — adds cursor-pointer + brand-teal hover border</li>
+        <li><code>.rule-fade</code> — horizontal hairline that fades at both ends</li>
+        <li><code>.vrule</code> — vertical 1px middot replacement for inline meta</li>
+      </ul>
+      <strong class="text-ink-900 mt-3 inline-block">Forms:</strong>
+      <ul>
+        <li><code>.input</code> — 40px hairline-bordered field, brand-teal focus ring</li>
+        <li><code>.input.textarea</code> — multi-line variant</li>
+        <li><code>.field-label</code> — 10.5px uppercase tracked-wide field label</li>
+      </ul>
+      <strong class="text-ink-900 mt-3 inline-block">Buttons (composed by &lt;Button&gt;):</strong>
+      <ul>
+        <li><code>.btn-primary</code> · <code>.btn-outline</code> · <code>.btn-ghost</code> · <code>.btn-destructive</code> · <code>.btn-teal</code></li>
+      </ul>
+      <strong class="text-ink-900 mt-3 inline-block">Type accents:</strong>
+      <ul>
+        <li><code>.eyebrow</code> — kicker with leading hairline rule</li>
+        <li><code>.page-title</code> · <code>.section-title</code> — display-sans titles; <code>.page-title em</code> auto-applies brand gradient</li>
+        <li><code>.display-em</code> — brand-gradient text accent (usable outside titles)</li>
+      </ul>
+      <strong class="text-ink-900 mt-3 inline-block">Tables &amp; data:</strong>
+      <ul>
+        <li><code>.tbl</code> — editorial table (header eyebrow, hairline rows, hover wash)</li>
+        <li><code>.num</code> — right-aligned mono tabular numerals</li>
+      </ul>
+      <strong class="text-ink-900 mt-3 inline-block">Backgrounds:</strong>
+      <ul>
+        <li><code>.bg-brand-gradient</code> · <code>.bg-hero-gradient</code> · <code>.sidebar-surface</code></li>
+      </ul>
+      <strong class="text-ink-900 mt-3 inline-block">Animation:</strong>
+      <ul>
+        <li><code>.stagger &gt; *</code> · <code>.pulse-ring</code> · <code>.underline-draw</code> · <code>.ticker</code> (+ all <code>@keyframes</code>)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONVENTIONS ============== -->
+<section id="convention-pills" class="anchor-target">
+  <h2>Conventions</h2>
+  <p class="lead">Two non-negotiable rules that keep every Innexora page reading as part of the same family. When a page skips them it stops feeling editorial within seconds.</p>
+
+  <div class="component">
+    <div class="name"><h3>Pills, not dropdowns, for filters</h3><code>filter UI</code></div>
+    <p class="desc">Every filter bar uses <code>PillButtons variant="filter"</code>. Native <code>&lt;select&gt;</code> and <code>HiddenFormSelect</code> are reserved for <em>forms</em> where the user is editing a record — never for filtering a list.</p>
+    <p class="when"><strong>Why:</strong> a pill row shows every option at a glance, the active value is one click away, and the brand-indigo "active pill" is uniform — the eye locks onto the current filter without scanning. Dropdowns hide options behind a click and make the active state harder to read.</p>
+
+    <p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-brand-teal-700 mt-5 mb-2">✓ Filter — pills (correct)</p>
+    <div class="demo">
+      <label class="field-label inline-flex items-center gap-1.5">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Type
+      </label>
+      <div class="flex gap-2 mt-1.5 flex-wrap">
+        <span class="pill pill-active">All</span><span class="pill">Developer</span><span class="pill">Owner</span><span class="pill">Tenant</span><span class="pill">Vendor</span><span class="pill">Investor</span>
+      </div>
+    </div>
+
+    <p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-red-700/80 mt-5 mb-2">✗ Dropdown for filtering (avoid)</p>
+    <div class="demo opacity-70">
+      <label class="field-label">Type</label>
+      <div class="mt-1.5 input flex items-center justify-between max-w-xs cursor-not-allowed">
+        <span class="text-sm text-ink/70">All types</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="text-[11.5px] text-red-700/75 mt-2 italic">Hides the option set; user has to click to see the choices.</div>
+    </div>
+
+    <p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-brand-teal-700 mt-5 mb-2">✓ Dropdown for forms (correct — see HiddenFormSelect)</p>
+    <div class="demo">
+      <label class="field-label">Stakeholder</label>
+      <div class="mt-1.5 input flex items-center justify-between max-w-xs cursor-pointer">
+        <span class="text-sm">Acme Towers FZ-LLC</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="text-[11.5px] text-ink/55 mt-2 italic">Foreign-key picker (could be 100s of options) — pills wouldn't fit.</div>
+    </div>
+  </div>
+</section>
+
+<section id="convention-icons" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Icons on every label, header, and message</h3><code>icon convention</code></div>
+    <p class="desc">Every text element that <em>names a thing</em> — a field, a column, a section, a confirmation prompt — gets a Lucide icon. Sized so the icon never visually outweighs the text it labels.</p>
+    <p class="when"><strong>Why:</strong> a glanceable icon roughly doubles "I know what this is" speed. After 100 hours in the app the user navigates by icon shape, not text. Skipping the icon makes the page read as a bare-bones admin tool — and breaks the family resemblance with the rest of the Innexora surfaces.</p>
+
+    <table class="w-full mt-5 text-[13px]">
+      <thead>
+        <tr class="border-b border-ink/15">
+          <th class="text-left py-2 pr-4 field-label">Where</th>
+          <th class="text-left py-2 pr-4 field-label">Icon size</th>
+          <th class="text-left py-2 field-label">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-ink/06"><td class="py-2 pr-4">Field labels (<code class="font-mono text-[11px] text-brand-indigo-700 bg-brand-indigo-50 px-1.5 py-0.5 rounded">.field-label</code>)</td><td class="py-2 pr-4 font-mono text-[11.5px] tabular-nums">h-3 w-3 (12px)</td><td class="py-2 text-ink/65">field-label is 10.5px — icon stays subordinate</td></tr>
+        <tr class="border-b border-ink/06"><td class="py-2 pr-4">Table headers (<code class="font-mono text-[11px] text-brand-indigo-700 bg-brand-indigo-50 px-1.5 py-0.5 rounded">&lt;th&gt;</code>)</td><td class="py-2 pr-4 font-mono text-[11.5px] tabular-nums">h-3 w-3 (12px)</td><td class="py-2 text-ink/65">th uses the same eyebrow type as field-label</td></tr>
+        <tr class="border-b border-ink/06"><td class="py-2 pr-4">Section headers (<code class="font-mono text-[11px] text-brand-indigo-700 bg-brand-indigo-50 px-1.5 py-0.5 rounded">FormSection / DetailSection</code>)</td><td class="py-2 pr-4 font-mono text-[11.5px] tabular-nums">h-3.5 w-3.5 (14px)</td><td class="py-2 text-ink/65">section title is 11px — needs a fractionally bigger icon</td></tr>
+        <tr class="border-b border-ink/06"><td class="py-2 pr-4">User messages (<code class="font-mono text-[11px] text-brand-indigo-700 bg-brand-indigo-50 px-1.5 py-0.5 rounded">Dialog / AlertDialog title</code>)</td><td class="py-2 pr-4 font-mono text-[11.5px] tabular-nums">h-4 w-4 (16px)</td><td class="py-2 text-ink/65">tone the icon — red for destructive, brand for confirm</td></tr>
+        <tr class="border-b border-ink/06"><td class="py-2 pr-4">Page titles (h1) and h2 section titles</td><td class="py-2 pr-4 font-mono text-[11.5px] tabular-nums">h-4 w-4 (16px)</td><td class="py-2 text-ink/65">paired with eyebrow above; PageHero uses an icon stamp instead</td></tr>
+        <tr class="border-b border-ink/06"><td class="py-2 pr-4">EmptyState icon stamp</td><td class="py-2 pr-4 font-mono text-[11.5px] tabular-nums">h-5 w-5 (20px)</td><td class="py-2 text-ink/65">inside a 48px paper-200 rounded chip</td></tr>
+        <tr><td class="py-2 pr-4">PageHero icon stamp</td><td class="py-2 pr-4 font-mono text-[11.5px] tabular-nums">h-6 w-6 (24px)</td><td class="py-2 text-ink/65">inside a 56px paper-200 rounded chip</td></tr>
+      </tbody>
+    </table>
+
+    <p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/55 mt-6 mb-3">Examples — every label has an icon</p>
+    <div class="demo space-y-5">
+      <!-- field label -->
+      <div>
+        <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45 mb-2">Field label</div>
+        <label class="field-label inline-flex items-center gap-1.5">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search
+        </label>
+        <input class="input mt-1.5 max-w-md" placeholder="Name, email, phone…" />
+      </div>
+
+      <!-- table headers -->
+      <div>
+        <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45 mb-2">Table header (&lt;th&gt;)</div>
+        <div class="card overflow-hidden p-0">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th><span class="inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H7a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2h-2"/><path d="M9 11V8a3 3 0 016 0v3"/></svg>Title</span></th>
+                <th><span class="inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Status</span></th>
+                <th><span class="inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>Priority</span></th>
+                <th class="text-right"><span class="inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>SLA</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="font-medium">Chiller maintenance</td><td><span class="badge-base badge-info">Assigned</span></td><td><span class="badge-base badge-warn">High</span></td><td class="text-right font-mono tabular-nums">2026-05-08</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- section header -->
+      <div>
+        <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45 mb-2">Section header (FormSection / DetailSection)</div>
+        <div class="card p-5">
+          <div class="flex items-center gap-2 pb-3 border-b border-ink/10">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#282a73" stroke-width="2"><path d="M9 11H7a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2h-2"/><path d="M9 11V8a3 3 0 016 0v3"/></svg>
+            <div class="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-indigo-700">Agreement</div>
+          </div>
+          <div class="text-[12.5px] text-ink/55 mt-3 italic">… section fields …</div>
+        </div>
+      </div>
+
+      <!-- destructive dialog -->
+      <div>
+        <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45 mb-2">User message — destructive (Dialog title)</div>
+        <div class="card p-6 max-w-md">
+          <div class="flex items-center gap-2.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="font-display text-[16px] font-semibold text-ink-900">Delete this work order?</div>
+          </div>
+          <div class="text-[13px] text-ink/65 mt-2">This action cannot be undone. The audit log will retain a record of the deletion.</div>
+          <div class="mt-5 flex justify-end gap-2"><button class="btn-ghost">Cancel</button><button class="btn-destructive">Delete work order</button></div>
+        </div>
+      </div>
+
+      <!-- confirm dialog (positive) -->
+      <div>
+        <div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45 mb-2">User message — confirm (Dialog title)</div>
+        <div class="card p-6 max-w-md">
+          <div class="flex items-center gap-2.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#01b6ad" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+            <div class="font-display text-[16px] font-semibold text-ink-900">Convert to work order?</div>
+          </div>
+          <div class="text-[13px] text-ink/65 mt-2">A new work order will be created and linked to this service request.</div>
+          <div class="mt-5 flex justify-end gap-2"><button class="btn-ghost">Cancel</button><button class="btn-primary">Convert</button></div>
+        </div>
+      </div>
+    </div>
+<pre class="code"><span class="c">// Field label</span>
+<span class="t">&lt;label</span> className=<span class="s">"field-label inline-flex items-center gap-1.5"</span><span class="t">&gt;</span>
+  <span class="t">&lt;Search</span> className=<span class="s">"h-3 w-3"</span> aria-hidden=<span class="s">"true"</span> <span class="t">/&gt;</span>
+  Search
+<span class="t">&lt;/label&gt;</span>
+
+<span class="c">// Table header</span>
+<span class="t">&lt;th&gt;</span>
+  <span class="t">&lt;span</span> className=<span class="s">"inline-flex items-center gap-1.5"</span><span class="t">&gt;</span>
+    <span class="t">&lt;Briefcase</span> className=<span class="s">"h-3 w-3"</span> <span class="t">/&gt;</span>
+    Title
+  <span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;/th&gt;</span>
+
+<span class="c">// Dialog title — destructive</span>
+<span class="t">&lt;DialogTitle</span> className=<span class="s">"flex items-center gap-2.5"</span><span class="t">&gt;</span>
+  <span class="t">&lt;AlertTriangle</span> className=<span class="s">"h-4 w-4 text-red-700"</span> <span class="t">/&gt;</span>
+  Delete this work order?
+<span class="t">&lt;/DialogTitle&gt;</span></pre>
+  </div>
+</section>
+
+<!-- ============== PRIMITIVES ============== -->
+<section id="button" class="anchor-target">
+  <h2>Primitives</h2>
+  <p class="lead">The building blocks. Every more-complex component composes these.</p>
+
+  <div class="component">
+    <div class="name"><h3>Button</h3><code>{ Button }</code></div>
+    <p class="desc">The shadcn Button primitive, rewritten so the <em>default</em> variant carries the brand gradient. Every button in the app comes from here.</p>
+    <p class="when"><strong>Use when:</strong> ANY clickable action. Variants: <code>default</code> (primary CTA) · <code>outline</code> (secondary) · <code>ghost</code> (tertiary) · <code>destructive</code> (delete) · <code>secondary</code> (rare). Sizes: <code>default</code> · <code>sm</code> · <code>lg</code> · <code>icon</code>. Lucide icons inside auto-size to <code>h-3.5 w-3.5</code> with <code>gap-1.5</code>.</p>
+    <div class="demo space-x-2 space-y-2">
+      <button class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>New lead</button>
+      <button class="btn-outline"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>
+      <button class="btn-ghost">Cancel</button>
+      <button class="btn-destructive"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>Delete</button>
+    </div>
+<pre class="code"><span class="k">import</span> { Button } <span class="k">from</span> <span class="s">"@innexora/ui"</span>;
+
+<span class="t">&lt;Button</span> asChild<span class="t">&gt;</span>
+  <span class="t">&lt;Link</span> href=<span class="s">"/leads/new"</span><span class="t">&gt;</span>
+    <span class="t">&lt;Plus /&gt;</span> New lead
+  <span class="t">&lt;/Link&gt;</span>
+<span class="t">&lt;/Button&gt;</span></pre>
+  </div>
+</section>
+
+<section id="input" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Input · Textarea</h3><code>{ Input, Textarea }</code></div>
+    <p class="desc">40px hairline-bordered fields with a brand-teal focus ring. Always paired with a <code>.field-label</code>.</p>
+    <p class="when"><strong>Use when:</strong> any text/number/date/email field. For multi-line use Textarea (or <code>className="input textarea"</code> on a raw textarea). Disabled state goes paper-cream so it reads as inert without disappearing.</p>
+    <div class="demo space-y-3">
+      <div>
+        <label class="field-label">Name *</label>
+        <input class="input mt-1.5" placeholder="Stakeholder name…" />
+      </div>
+      <div>
+        <label class="field-label">Notes</label>
+        <textarea class="input textarea mt-1.5" rows="3" placeholder="Anything worth remembering for next time…"></textarea>
+      </div>
+      <div>
+        <label class="field-label text-ink/40">Email (disabled)</label>
+        <input class="input mt-1.5" disabled value="locked@example.com" />
+      </div>
+    </div>
+<pre class="code"><span class="k">import</span> { Input, Textarea } <span class="k">from</span> <span class="s">"@innexora/ui"</span>;
+
+<span class="t">&lt;label</span> className=<span class="s">"field-label"</span><span class="t">&gt;</span>Name *<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;Input</span> name=<span class="s">"name"</span> required <span class="t">/&gt;</span>
+
+<span class="t">&lt;Textarea</span> name=<span class="s">"notes"</span> rows={3} <span class="t">/&gt;</span></pre>
+  </div>
+</section>
+
+<section id="label" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Label</h3><code>{ Label }</code></div>
+    <p class="desc">Radix Label primitive, plus the editorial <code>.field-label</code> class for the small uppercase variant.</p>
+    <p class="when"><strong>Use when:</strong> inside a <code>&lt;FormSection&gt;</code>, above each input, and on every filter-bar field. The <code>htmlFor</code> attribute keeps clicks on the label focusing the input — accessibility bonus.</p>
+    <div class="demo">
+      <label class="field-label inline-flex items-center gap-1.5">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/></svg>
+        Search
+      </label>
+      <input class="input mt-1.5" placeholder="Name, email, phone…" />
+    </div>
+  </div>
+</section>
+
+<section id="checkbox" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Checkbox · Switch</h3><code>{ Checkbox, Switch }</code></div>
+    <p class="desc">Radix-driven, restyled to match the editorial language. Switch is for binary settings, Checkbox is for multi-selection.</p>
+    <p class="when"><strong>Use when:</strong> Checkbox = "is this true?" inside a form (e.g. <em>Confirmed by tenant</em>). Switch = a setting that flips a feature on/off (e.g. <em>Email notifications</em>).</p>
+    <div class="demo flex items-center gap-6">
+      <label class="inline-flex items-center gap-2"><input type="checkbox" checked class="w-4 h-4 accent-brand-teal-500"> <span class="text-sm">Confirmed by tenant</span></label>
+      <div class="inline-flex items-center gap-2">
+        <span class="relative inline-block w-9 h-5"><span class="absolute inset-0 bg-brand-teal-500 rounded-full"></span><span class="absolute top-0.5 right-0.5 w-4 h-4 bg-white rounded-full shadow"></span></span>
+        <span class="text-sm">Email alerts</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="avatar" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Avatar</h3><code>{ Avatar, OwnerCell }</code></div>
+    <p class="desc">Radix Avatar with image fallback to initials. <code>OwnerCell</code> is the canonical "icon + name" treatment for table cells.</p>
+    <p class="when"><strong>Use when:</strong> displaying a user (table row, comment header, assignee chip). Initials avatar uses brand-indigo gradient with the user's first two letters.</p>
+    <div class="demo flex items-center gap-3">
+      <span class="inline-flex items-center justify-center w-9 h-9 rounded-full text-white text-[12px] font-semibold" style="background:linear-gradient(135deg,#01b6ad 0%,#282a73 100%)">AY</span>
+      <span class="inline-flex items-center justify-center w-9 h-9 rounded-full text-white text-[12px] font-semibold" style="background:linear-gradient(135deg,#545db0 0%,#171940 100%)">SM</span>
+      <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-paper-200 text-ink/55 text-[12px] font-semibold">JD</span>
+    </div>
+  </div>
+</section>
+
+<section id="badge" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Badge</h3><code>{ Badge }</code></div>
+    <p class="desc">A neutral pill for short metadata. For tonal status pills (positive, warn, negative, etc.) use <code>StatusBadge</code> instead — it handles the colour mapping for you.</p>
+    <div class="demo space-x-2">
+      <span class="badge-base badge-neutral">Default</span>
+      <span class="badge-base badge-info">Info</span>
+      <span class="badge-base badge-brand">Featured</span>
+    </div>
+  </div>
+</section>
+
+<section id="separator" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Separator</h3><code>{ Separator }</code></div>
+    <p class="desc">Hairline divider, horizontal or vertical. Inside cards prefer <code>border-t border-ink/10</code> directly; Separator is for free-standing splits.</p>
+    <div class="demo">
+      <div class="text-sm">Above the rule</div>
+      <div class="rule-fade my-3"></div>
+      <div class="text-sm text-ink/60">Below the rule</div>
+    </div>
+  </div>
+</section>
+
+<section id="skeleton" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Skeleton</h3><code>{ Skeleton }</code></div>
+    <p class="desc">Animated placeholder block for loading states.</p>
+    <p class="when"><strong>Use when:</strong> inside React Suspense boundaries while the server component fetches. Prefer skeletons that match the final layout shape — line, card, table row — so there's no jump on hydrate.</p>
+    <div class="demo space-y-2">
+      <div class="h-4 bg-paper-200 rounded w-1/3 animate-pulse"></div>
+      <div class="h-4 bg-paper-200 rounded w-2/3 animate-pulse"></div>
+      <div class="h-4 bg-paper-200 rounded w-1/2 animate-pulse"></div>
+    </div>
+  </div>
+</section>
+
+<section id="empty-state" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>EmptyState</h3><code>{ EmptyState }</code></div>
+    <p class="desc">The "no data yet" panel — icon stamp + title + description + optional action.</p>
+    <p class="when"><strong>Use when:</strong> a list/table renders zero rows. Always include an action that creates the first record. Generic enough to use across every entity.</p>
+    <div class="demo">
+      <div class="text-center py-10 px-6 rounded-xl border border-dashed border-ink/15">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-paper-200 ring-1 ring-ink/8 mb-3">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#444976" stroke-width="2"><path d="M3 6h18l-2 13H5L3 6z"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <div class="font-display font-semibold text-[16px] text-ink-900">No leads yet</div>
+        <div class="text-[13px] text-ink/60 mt-1">Capture inbound enquiries — qualify, propose, win.</div>
+        <button class="btn-primary mt-4"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Capture your first lead</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== STATUS ============== -->
+<section id="status-badge" class="anchor-target">
+  <h2>Status &amp; feedback</h2>
+  <p class="lead">Tonal pills, alerts, and inline state communication. Every status colour mapping lives in one place — change it once, every list page picks it up.</p>
+
+  <div class="component">
+    <div class="name"><h3>StatusBadge</h3><code>{ StatusBadge, priorityTone, ... }</code></div>
+    <p class="desc">A pill with a semantic tone. Pair with the appropriate tone helper so the colour mapping is centralised.</p>
+    <p class="when"><strong>Use when:</strong> any cell or hero block shows a status, priority, or stage. Tones: <code>positive</code> · <code>info</code> · <code>warn</code> · <code>negative</code> · <code>neutral</code> · <code>brand</code> · <code>muted</code>. Pass <code>dot</code> prop for a leading status dot.</p>
+    <div class="props">
+      Tone helpers exported from the package:
+      <ul>
+        <li><code>priorityTone(p)</code>, <code>srStatusTone(s)</code>, <code>workOrderStatusTone(s)</code></li>
+        <li><code>contractStatusTone(s)</code>, <code>invoiceStatusTone(s)</code>, <code>auditActionTone(a)</code></li>
+        <li><code>activeTone(b)</code>, <code>assetConditionTone(c)</code>, <code>leadStageTone(s)</code></li>
+        <li><code>communicationTypeTone(t)</code>, <code>communicationDirectionTone(d)</code>, <code>stakeholderTypeTone(t)</code></li>
+      </ul>
+    </div>
+    <div class="demo space-x-2 space-y-2">
+      <span class="badge-base badge-positive">● Active</span>
+      <span class="badge-base badge-info">In progress</span>
+      <span class="badge-base badge-warn">Overdue</span>
+      <span class="badge-base badge-negative">Cancelled</span>
+      <span class="badge-base badge-neutral">Draft</span>
+      <span class="badge-base badge-brand">Featured</span>
+      <span class="badge-base badge-muted">Archived</span>
+    </div>
+<pre class="code"><span class="k">import</span> { StatusBadge, priorityTone } <span class="k">from</span> <span class="s">"@innexora/ui"</span>;
+
+<span class="t">&lt;StatusBadge</span> tone={priorityTone(wo.priority)}<span class="t">&gt;</span>
+  {wo.priority}
+<span class="t">&lt;/StatusBadge&gt;</span></pre>
+  </div>
+</section>
+
+<section id="alert" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Alert</h3><code>{ Alert, AlertTitle, AlertDescription }</code></div>
+    <p class="desc">A compact info/warning/error panel. Less heavy than a dialog, more visible than a status badge.</p>
+    <p class="when"><strong>Use when:</strong> page-level messaging — "X open work orders past SLA", "your changes were saved", a banner summarising state. Inline form errors should use <code>FormError</code> instead.</p>
+    <div class="demo space-y-3">
+      <div class="flex items-center gap-3 rounded-lg border border-red-300 bg-red-50/70 px-4 py-3 text-sm">
+        <span class="font-mono uppercase tracking-[0.18em] text-[11px] text-red-700/80">SLA</span>
+        <span class="text-red-800 font-medium">3 open work orders past SLA deadline</span>
+      </div>
+      <div class="flex items-center gap-3 rounded-lg border border-brand-teal-200 bg-brand-teal-50/60 px-4 py-3 text-sm">
+        <span class="font-mono uppercase tracking-[0.18em] text-[11px] text-brand-teal-700">Saved</span>
+        <span class="text-brand-teal-800 font-medium">Changes saved at 10:42</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SELECTION ============== -->
+<section id="pill-group" class="anchor-target">
+  <h2>Selection</h2>
+  <p class="lead">Anywhere the user picks one (or one-of-many) value: pills for bounded enums, a hidden-form-select for unbounded picks, segmented controls for view toggles, a date picker for dates.</p>
+
+  <div class="component">
+    <div class="name"><h3>PillGroup · PillButtons</h3><code>{ PillGroup, PillButtons }</code></div>
+    <p class="desc">Horizontal pill row for bounded enums (≤ 10 options). PillGroup is radio-input backed (native form submit). PillButtons is React-state controlled (drives conditional UI).</p>
+    <p class="when"><strong>Use when:</strong> Status, Priority, Type, Category, Stage, Condition. Active pill is uniformly brand-indigo-700 with white text in <code>variant="filter"</code>, or per-tone in <code>variant="form"</code>. For unbounded sets (a stakeholder picker) use <code>HiddenFormSelect</code>.</p>
+    <div class="demo space-y-3">
+      <div>
+        <label class="field-label">Priority</label>
+        <div class="flex gap-2 mt-1.5">
+          <span class="pill pill-radio">Low</span>
+          <span class="pill pill-radio">Medium</span>
+          <span class="pill pill-radio active">High</span>
+          <span class="pill pill-radio">Urgent</span>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">Filter — variant="filter"</label>
+        <div class="flex gap-2 mt-1.5 flex-wrap">
+          <span class="pill pill-active">All</span><span class="pill">Developer</span><span class="pill">Owner</span><span class="pill">Tenant</span><span class="pill">Vendor</span><span class="pill">Investor</span>
+        </div>
+      </div>
+    </div>
+<pre class="code"><span class="k">import</span> { PillGroup, PRIORITY_OPTIONS } <span class="k">from</span> <span class="s">"@innexora/ui"</span>;
+
+<span class="t">&lt;PillGroup</span> name=<span class="s">"priority"</span> options={PRIORITY_OPTIONS} defaultValue=<span class="s">"medium"</span> <span class="t">/&gt;</span></pre>
+  </div>
+</section>
+
+<section id="hidden-form-select" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>HiddenFormSelect</h3><code>{ HiddenFormSelect }</code></div>
+    <p class="desc">Radix-driven dropdown styled to match the form input language. Writes a hidden input so server-action forms read it natively. NEVER use a raw <code>&lt;select&gt;</code> — it looks generic against the rest of the design.</p>
+    <p class="when"><strong>Use when:</strong> the option set is unbounded or large — stakeholder picker, property picker, vendor picker, contract picker.</p>
+    <div class="demo">
+      <label class="field-label">Stakeholder</label>
+      <div class="mt-1.5 flex items-center justify-between input cursor-pointer max-w-sm">
+        <span class="text-sm">Acme Towers FZ-LLC</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="segmented-control" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>SegmentedControl · SegmentedControlLinks</h3><code>{ SegmentedControl, SegmentedControlLinks }</code></div>
+    <p class="desc">Two-or-three-option toggle. SegmentedControl is React-state controlled, SegmentedControlLinks renders <code>&lt;Link&gt;</code> children so the URL stays the source of truth (good for view toggles like Kanban/List).</p>
+    <p class="when"><strong>Use when:</strong> mutually-exclusive view modes. The selected segment carries the same brand-gradient as the primary Button so they read as one brand surface.</p>
+    <div class="demo">
+      <div class="inline-flex p-0.5 bg-paper-200 rounded-lg">
+        <button class="pill-active px-4 py-1.5 text-[12px] rounded-md">Kanban</button>
+        <button class="px-4 py-1.5 text-[12px] text-ink/60 rounded-md">List</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="date-picker" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>DatePicker · Calendar</h3><code>{ DatePicker, Calendar }</code></div>
+    <p class="desc">react-day-picker wrapped to match the form input language. <code>Calendar</code> is the standalone month-grid (drops into a Popover or a side panel); <code>DatePicker</code> is the input-with-popover pattern.</p>
+    <p class="when"><strong>Use when:</strong> any date field — start/end dates, expected close, expiry. For date <em>ranges</em> render two DatePickers side by side; the package doesn't ship a custom range primitive (rare enough to not justify one).</p>
+
+    <p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/55 mt-5 mb-2">DatePicker — input + popover</p>
+    <div class="demo">
+      <label class="field-label inline-flex items-center gap-1.5">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Expected close
+      </label>
+      <div class="input mt-1.5 max-w-xs flex items-center justify-between cursor-pointer">
+        <span class="text-sm">2026-05-15</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </div>
+    </div>
+
+    <p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/55 mt-6 mb-2">Calendar — popover content / standalone month grid</p>
+    <div class="demo">
+      <div class="card p-4 max-w-[280px]">
+        <div class="flex items-center justify-between mb-3">
+          <button class="w-7 h-7 inline-flex items-center justify-center rounded-md hover:bg-paper-200 text-ink/70" aria-label="Previous month">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="font-display text-[14px] font-semibold tracking-tight">May 2026</div>
+          <button class="w-7 h-7 inline-flex items-center justify-center rounded-md hover:bg-paper-200 text-ink/70" aria-label="Next month">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="grid grid-cols-7 gap-1 text-center font-mono text-[9.5px] uppercase tracking-[0.18em] text-ink/45 mb-1">
+          <div class="py-1">S</div><div class="py-1">M</div><div class="py-1">T</div><div class="py-1">W</div><div class="py-1">T</div><div class="py-1">F</div><div class="py-1">S</div>
+        </div>
+        <div class="grid grid-cols-7 gap-0.5 text-[12px]">
+          <!-- prev-month tail -->
+          <div class="text-ink/25 py-1.5 text-center">26</div>
+          <div class="text-ink/25 py-1.5 text-center">27</div>
+          <div class="text-ink/25 py-1.5 text-center">28</div>
+          <div class="text-ink/25 py-1.5 text-center">29</div>
+          <div class="text-ink/25 py-1.5 text-center">30</div>
+          <!-- May 1 (Fri) -->
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">1</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">2</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">3</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">4</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">5</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">6</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">7</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">8</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">9</div>
+          <!-- today (Sun May 10) — brand-teal ring -->
+          <div class="py-1.5 text-center text-ink-900 rounded cursor-pointer ring-1 ring-brand-teal-400 font-semibold">10</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">11</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">12</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">13</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">14</div>
+          <!-- selected (May 15) — brand gradient fill -->
+          <div class="py-1.5 text-center text-white rounded font-semibold cursor-pointer" style="background:linear-gradient(135deg,#01b6ad 0%,#282a73 100%)">15</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">16</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">17</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">18</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">19</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">20</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">21</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">22</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">23</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">24</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">25</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">26</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">27</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">28</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">29</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">30</div>
+          <div class="py-1.5 text-center text-ink-900 hover:bg-paper-200 rounded cursor-pointer">31</div>
+          <!-- next-month head -->
+          <div class="text-ink/25 py-1.5 text-center">1</div>
+          <div class="text-ink/25 py-1.5 text-center">2</div>
+          <div class="text-ink/25 py-1.5 text-center">3</div>
+          <div class="text-ink/25 py-1.5 text-center">4</div>
+          <div class="text-ink/25 py-1.5 text-center">5</div>
+          <div class="text-ink/25 py-1.5 text-center">6</div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-ink/08 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-ink/55">
+          <span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full ring-1 ring-brand-teal-400"></span>Today</span>
+          <span class="inline-flex items-center gap-1.5"><span class="inline-block w-2 h-2 rounded-full" style="background:linear-gradient(135deg,#01b6ad 0%,#282a73 100%)"></span>Selected</span>
+        </div>
+      </div>
+    </div>
+<pre class="code"><span class="k">import</span> { DatePicker, Calendar } <span class="k">from</span> <span class="s">"@innexora/ui"</span>;
+
+<span class="c">// Form field — input + popover calendar</span>
+<span class="t">&lt;DatePicker</span>
+  name=<span class="s">"expectedCloseDate"</span>
+  defaultValue={lead.expectedCloseDate}
+  placeholder=<span class="s">"Pick a date"</span>
+<span class="t">/&gt;</span>
+
+<span class="c">// Standalone — for filter sidebars or scheduling views</span>
+<span class="t">&lt;Calendar</span> mode=<span class="s">"single"</span> selected={date} onSelect={setDate} <span class="t">/&gt;</span></pre>
+  </div>
+</section>
+
+<!-- ============== OVERLAYS ============== -->
+<section id="dialog" class="anchor-target">
+  <h2>Overlays</h2>
+  <p class="lead">Modal, dropdown, popover, and tab primitives — all Radix-driven, all restyled to inherit the editorial design language.</p>
+
+  <div class="component">
+    <div class="name"><h3>Dialog · AlertDialog</h3><code>{ Dialog, AlertDialog }</code></div>
+    <p class="desc">Modal panels. Dialog is for forms / extended content. AlertDialog is for confirmations (delete, cancel) — has a built-in cancel/confirm button pair and traps focus.</p>
+    <p class="when"><strong>Use when:</strong> a destructive action needs explicit confirmation, or a small editor needs to overlay the page without a route change. For longer flows, prefer a dedicated route.</p>
+    <div class="demo">
+      <div class="card p-6 max-w-md mx-auto">
+        <div class="flex items-center gap-2.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="font-display text-[18px] font-semibold text-ink-900">Delete this work order?</div>
+        </div>
+        <div class="text-[13px] text-ink/65 mt-2">This action cannot be undone. The audit log will retain a record of the deletion.</div>
+        <div class="mt-5 flex justify-end gap-2"><button class="btn-ghost">Cancel</button><button class="btn-destructive">Delete work order</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="dropdown-menu" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>DropdownMenu</h3><code>{ DropdownMenu }</code></div>
+    <p class="desc">Click-to-open contextual menu. Restyled with the brand-teal hover wash and the rotating chevron on open.</p>
+    <p class="when"><strong>Use when:</strong> a row's "actions" overflow (Edit, Duplicate, Archive, Delete). For 1–2 actions, render them as inline buttons instead.</p>
+    <div class="demo">
+      <div class="card p-2 max-w-xs">
+        <div class="px-3 py-2 text-[13px] hover:bg-paper-100 rounded cursor-pointer flex items-center gap-2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/></svg>Edit</div>
+        <div class="px-3 py-2 text-[13px] hover:bg-paper-100 rounded cursor-pointer flex items-center gap-2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Duplicate</div>
+        <div class="rule-fade my-1"></div>
+        <div class="px-3 py-2 text-[13px] text-red-700 hover:bg-red-50 rounded cursor-pointer flex items-center gap-2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/></svg>Delete</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="popover" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Popover · Tooltip</h3><code>{ Popover, Tooltip }</code></div>
+    <p class="desc">Anchored floating panel (Popover) or hover-reveal label (Tooltip). Both ship with the editorial border + shadow.</p>
+    <p class="when"><strong>Use when:</strong> Popover for a small inline form (date picker, filter sub-panel). Tooltip for clarifying an icon button or a truncated cell value.</p>
+  </div>
+</section>
+
+<section id="tabs" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Tabs</h3><code>{ Tabs }</code></div>
+    <p class="desc">Hairline-underlined tab strip with the active tab carrying a brand-teal underline.</p>
+    <p class="when"><strong>Use when:</strong> grouping related views inside a single page (Overview / Activity / Documents on a stakeholder detail). For top-level navigation prefer separate routes.</p>
+    <div class="demo">
+      <div class="border-b border-ink/10 flex gap-6">
+        <div class="pb-2 border-b-2 border-brand-teal-500 text-sm font-medium text-ink-900">Overview</div>
+        <div class="pb-2 text-sm text-ink/55 cursor-pointer">Activity</div>
+        <div class="pb-2 text-sm text-ink/55 cursor-pointer">Documents</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== LAYOUT ============== -->
+<section id="page-header" class="anchor-target">
+  <h2>Layout &amp; headers</h2>
+  <p class="lead">The chrome that frames every top-level page. Shared shape, single import.</p>
+
+  <div class="component">
+    <div class="name"><h3>PageHeader</h3><code>{ PageHeader, OwnerCell }</code></div>
+    <p class="desc">Top of every list page. Kicker → gradient-em title → description → actions slot.</p>
+    <p class="when"><strong>Use when:</strong> the page is a list/dashboard/index. For entity detail pages use <code>PageHero</code> instead (it adds the icon stamp + status pills).</p>
+    <div class="demo">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <div class="eyebrow">Pipeline</div>
+          <div class="page-title mt-2">Leads <em>in flight</em></div>
+          <div class="text-[14px] text-ink/65 mt-2">Capture → qualified → opportunity → proposal → won.</div>
+        </div>
+        <button class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>New lead</button>
+      </div>
+      <div class="rule-fade mt-5"></div>
+    </div>
+  </div>
+</section>
+
+<section id="page-hero" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>PageHero</h3><code>{ PageHero }</code></div>
+    <p class="desc">For entity detail pages. Adds an icon stamp on the left + status pills under the title. The entity name in the title is wrapped in <code>&lt;em&gt;</code> so it picks up the brand gradient.</p>
+    <p class="when"><strong>Use when:</strong> any /thing/[id]/ route. For long-flow detail pages also render the multi-level <code>&lt;Breadcrumbs&gt;</code> above this hero.</p>
+    <div class="demo">
+      <div class="flex items-start gap-5">
+        <div class="w-14 h-14 rounded-xl bg-paper-200 ring-1 ring-ink/10 shadow-paper flex items-center justify-center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#444976" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zm14 10v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="flex-1">
+          <div class="eyebrow">Stakeholder</div>
+          <div class="page-title mt-1.5"><em>Acme Towers FZ-LLC</em></div>
+          <div class="mt-3 flex flex-wrap items-center gap-2">
+            <span class="badge-base badge-info">Developer</span>
+            <span class="badge-base badge-positive">● Active</span>
+          </div>
+          <div class="text-[13.5px] text-ink/65 mt-3">Anchor counterparty for the Marina Heights tower. Holds three active contracts.</div>
+        </div>
+      </div>
+      <div class="rule-fade mt-5"></div>
+    </div>
+  </div>
+</section>
+
+<section id="breadcrumbs" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Breadcrumbs</h3><code>{ Breadcrumbs }</code></div>
+    <p class="desc">Multi-level chevron-separated chain. First crumb gets a leading ArrowLeft icon; the last is the current page (aria-current, no link).</p>
+    <p class="when"><strong>Use when:</strong> on entity detail pages with parent context — Property → Project → Building → Unit, or Contract → Stakeholder. Hidden on top-level list pages.</p>
+    <div class="demo">
+      <div class="flex items-center gap-2 text-[12px] font-mono text-ink/65">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <a class="hover:text-brand-teal-700 underline-draw">Properties</a>
+        <span class="text-ink/30">/</span>
+        <a class="hover:text-brand-teal-700 underline-draw">Marina Portfolio</a>
+        <span class="text-ink/30">/</span>
+        <a class="hover:text-brand-teal-700 underline-draw">Marina Heights</a>
+        <span class="text-ink/30">/</span>
+        <span class="text-ink-900 font-medium">Unit 1402</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="shell" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>ShellLayout · SidebarNav</h3><code>{ ShellLayout, SidebarNav }</code></div>
+    <p class="desc">The dark-indigo sidebar + cream main canvas. The shell <em>frame</em> is in the package; the <em>nav items</em> are app-supplied so each Innexora product can have its own routes.</p>
+    <p class="when"><strong>Use when:</strong> wrapping the app's root (app)/layout.tsx. Pass your own <code>navItems={...}</code> array, plus optional <code>brand</code>, <code>user</code>, and <code>footer</code> slots.</p>
+    <div class="demo">
+      <div class="shell-mock">
+        <div class="side sidebar-surface">
+          <div class="brand">▲ Innexora</div>
+          <div class="group-label">Operations</div>
+          <div class="nav-item">▤ Home</div>
+          <div class="nav-item active">▣ Properties</div>
+          <div class="nav-item">⌧ Stakeholders</div>
+          <div class="nav-item">⚙ Work orders</div>
+          <div class="group-label">Pipeline</div>
+          <div class="nav-item">✦ Leads</div>
+          <div class="nav-item">$ Finances</div>
+        </div>
+        <div class="main">
+          <div class="eyebrow">Asset hierarchy</div>
+          <div class="page-title mt-1.5">Properties <em>register</em></div>
+          <div class="card p-4 mt-5 text-[12.5px] text-ink/55">Filter bar / table area lives here.</div>
+        </div>
+      </div>
+    </div>
+<pre class="code"><span class="k">import</span> { ShellLayout } <span class="k">from</span> <span class="s">"@innexora/ui"</span>;
+<span class="k">import</span> { navItems } <span class="k">from</span> <span class="s">"./nav-items"</span>; <span class="c">// app-side</span>
+
+<span class="t">&lt;ShellLayout</span>
+  brand=<span class="s">"Innexora Properties"</span>
+  navItems={navItems}
+  user={{ name: me.name, email: me.email }}
+<span class="t">&gt;</span>
+  {children}
+<span class="t">&lt;/ShellLayout&gt;</span></pre>
+  </div>
+</section>
+
+<!-- ============== CARDS ============== -->
+<section id="form-card" class="anchor-target">
+  <h2>Cards &amp; content blocks</h2>
+  <p class="lead">Every "thing on a card" pattern lives here. Forms, detail views, KPI tiles, tip strips, hero panes.</p>
+
+  <div class="component">
+    <div class="name"><h3>FormCard family</h3><code>{ FormCard, FormSection, FormSplitBody, FormActions, FormError }</code></div>
+    <p class="desc">The white-card scaffold every "New X / Edit X" form sits on. <code>FormSection</code> headers carry an icon + uppercase title + hairline underline. <code>FormSplitBody</code> stacks structured fields on the left and a Notes textarea on the right.</p>
+    <p class="when"><strong>Use when:</strong> any create or edit form. NEVER let bare inputs float on the cream canvas. <code>FormError</code> renders the red banner if the URL has <code>?error=…</code>.</p>
+    <div class="demo">
+      <div class="card p-6">
+        <div class="flex items-center gap-2 pb-3 border-b border-ink/10">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#282a73" stroke-width="2"><path d="M9 11H7a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2h-2M9 11V8a3 3 0 016 0v3"/></svg>
+          <div class="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-indigo-700">Agreement</div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div><label class="field-label">Title *</label><input class="input mt-1.5" placeholder="PM Master Agreement"></div>
+          <div><label class="field-label">Type</label><div class="input mt-1.5 flex items-center justify-between"><span class="text-sm">Property management</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+        </div>
+        <div class="mt-5 pt-4 border-t border-ink/10 flex justify-end gap-2">
+          <button class="btn-ghost">Cancel</button>
+          <button class="btn-primary">Save contract</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="detail-card" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>DetailCard family</h3><code>{ DetailCard, DetailSection, DetailGrid, DetailRow }</code></div>
+    <p class="desc">Read-only entity detail layout. Every <code>DetailSection</code> has a required icon header; every <code>DetailRow</code> has a required icon next to its label. Auto "—" for null values.</p>
+    <p class="when"><strong>Use when:</strong> the right column of an entity detail page (next to attachments / activity). Pass <code>span={2}</code> for full-width fields like Notes / Address / Description.</p>
+    <div class="demo">
+      <div class="card p-6">
+        <div class="flex items-center gap-2 pb-3 border-b border-ink/10">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#282a73" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          <div class="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-indigo-700">Property</div>
+        </div>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-3 mt-4">
+          <div><div class="field-label inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7"/></svg>Kind</div><div class="text-[14px] mt-1">Building</div></div>
+          <div><div class="field-label inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/></svg>Location</div><div class="text-[14px] mt-1">Dubai Marina, Dubai</div></div>
+          <div class="col-span-2"><div class="field-label inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Notes</div><div class="text-[14px] mt-1 text-ink/75">42-floor mixed-use tower; G + 4 podium parking; chiller plant rooftop.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kpi-tile" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>KpiTile</h3><code>{ KpiTile }</code></div>
+    <p class="desc">A single "big number" tile for dashboards. Icon + label + value, with optional tone (teal · indigo · warn · neutral) for the icon background.</p>
+    <p class="when"><strong>Use when:</strong> top of a dashboard or finances page. Lay out 3–4 across in a <code>.stagger</code> grid so they fade up on load.</p>
+    <div class="demo grid grid-cols-3 gap-3">
+      <div class="card p-4 stagger-card">
+        <div class="flex items-center justify-between">
+          <div class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/55">Revenue YTD</div>
+          <div class="w-7 h-7 rounded-md bg-brand-indigo-50 flex items-center justify-center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#282a73" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/></svg></div>
+        </div>
+        <div class="font-display text-[24px] font-semibold mt-2 tabular-nums">AED 4,219,000</div>
+      </div>
+      <div class="card p-4 stagger-card">
+        <div class="flex items-center justify-between">
+          <div class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/55">Collected YTD</div>
+          <div class="w-7 h-7 rounded-md bg-brand-teal-50 flex items-center justify-center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#01b6ad" stroke-width="2"><path d="M21 4H8a2 2 0 00-2 2v14M16 2v4M3 10h18"/></svg></div>
+        </div>
+        <div class="font-display text-[24px] font-semibold mt-2 tabular-nums">AED 3,402,000</div>
+      </div>
+      <div class="card p-4 stagger-card">
+        <div class="flex items-center justify-between">
+          <div class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/55">Outstanding</div>
+          <div class="w-7 h-7 rounded-md bg-amber-50 flex items-center justify-center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg></div>
+        </div>
+        <div class="font-display text-[24px] font-semibold mt-2 tabular-nums">AED 817,000</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tip-card" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>TipCard · TipStrip</h3><code>{ TipCard, TipStrip }</code></div>
+    <p class="desc">Quiet, warm-bordered explainer panel that sits below the page title. TipCard is a full panel; TipStrip is the single-line variant.</p>
+    <p class="when"><strong>Use when:</strong> orienting first-time users on what a page is for, or explaining a non-obvious mechanism (SLA inheritance, audit trail). Don't overuse — every page with a TipCard dilutes the others.</p>
+    <div class="demo">
+      <div class="rounded-lg border border-brass-200 bg-brass-50/40 px-4 py-3 flex items-start gap-3">
+        <div class="w-7 h-7 rounded-md bg-brass-100 flex items-center justify-center flex-shrink-0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E662E" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg></div>
+        <div>
+          <div class="font-display font-semibold text-[14px] text-ink-900">SLA inheritance</div>
+          <div class="text-[13px] text-ink/70 mt-1">Contracts hold the commercial terms <em>and</em> the SLA clock. Hours captured here flow into every work order linked to this contract.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="zen-strip" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>ZenStrip</h3><code>{ ZenStrip }</code></div>
+    <p class="desc">A horizontal "calm metric" band — usually three or four small mono-numbered cells separated by vertical rules. Used on dashboards as a calmer alternative to a row of KpiTiles.</p>
+    <div class="demo">
+      <div class="card p-5 flex items-center justify-around">
+        <div class="text-center"><div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/55">Open WO</div><div class="font-display text-[22px] font-semibold mt-1 tabular-nums">12</div></div>
+        <span class="vrule" style="height:32px"></span>
+        <div class="text-center"><div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/55">Past SLA</div><div class="font-display text-[22px] font-semibold mt-1 tabular-nums text-red-700">3</div></div>
+        <span class="vrule" style="height:32px"></span>
+        <div class="text-center"><div class="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/55">Closed today</div><div class="font-display text-[22px] font-semibold mt-1 tabular-nums">7</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="manager-hero" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>ManagerHero</h3><code>{ ManagerHero }</code></div>
+    <p class="desc">Dark hero pane (uses <code>.bg-hero-gradient</code>) for the home/landing dashboard. Holds the user greeting, a one-sentence pulse, and a row of quick-action buttons.</p>
+    <p class="when"><strong>Use when:</strong> the very top of <code>/home</code>. Don't reuse on internal pages — its presence signals "you've arrived".</p>
+    <div class="demo">
+      <div class="rounded-xl bg-hero-gradient p-7 text-white">
+        <div class="font-mono text-[11px] uppercase tracking-[0.22em] text-brand-teal-300">Tuesday · 10:42</div>
+        <div class="font-display text-[28px] font-semibold mt-2">Good morning, Ayman.</div>
+        <div class="text-[14px] text-white/70 mt-1">3 work orders past SLA need triage. The rest of the portfolio is steady.</div>
+        <div class="mt-5 flex gap-2"><button class="btn-primary">Open SLA queue</button><button class="btn-outline" style="color:#fff;background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.18)">Today's pulse</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TABLES ============== -->
+<section id="table" class="anchor-target">
+  <h2>Tables &amp; data</h2>
+  <p class="lead">Editorial table styling and a server-rendered pagination footer.</p>
+
+  <div class="component">
+    <div class="name"><h3>Table (.tbl)</h3><code>{ Table } + .tbl class</code></div>
+    <p class="desc">Editorial table — uppercase tracked-18% header with a hairline underline, hairline ink-tinted row separators, brand-teal hover wash. Numeric cells use <code>font-mono tabular-nums</code> so digits align across rows.</p>
+    <p class="when"><strong>Use when:</strong> any list page. Wrap in <code>&lt;div className="card overflow-hidden p-0"&gt;&lt;div className="overflow-x-auto"&gt;</code> for the canonical table-in-card pattern.</p>
+    <div class="demo">
+      <div class="card overflow-hidden p-0">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th><span class="inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H7a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2h-2"/><path d="M9 11V8a3 3 0 016 0v3"/></svg>Title</span></th>
+              <th><span class="inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Status</span></th>
+              <th><span class="inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>Priority</span></th>
+              <th class="text-right"><span class="inline-flex items-center gap-1.5"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>SLA</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="font-medium">Chiller maintenance · Tower 4</td><td><span class="badge-base badge-info">Assigned</span></td><td><span class="badge-base badge-warn">High</span></td><td class="text-right font-mono tabular-nums">2026-05-08</td></tr>
+            <tr><td class="font-medium">Lift inspection · Marina Heights</td><td><span class="badge-base badge-positive">In progress</span></td><td><span class="badge-base badge-neutral">Medium</span></td><td class="text-right font-mono tabular-nums">2026-05-12</td></tr>
+            <tr><td class="font-medium">Generator service</td><td><span class="badge-base badge-warn">Triaged</span></td><td><span class="badge-base badge-negative">Urgent</span></td><td class="text-right font-mono tabular-nums text-red-700 font-semibold">2026-05-04 (breached)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kanban" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>KanbanBoard</h3><code>&lt;KanbanBoard&lt;T&gt; /&gt;</code></div>
+    <p class="desc">Generic drag-and-drop board grouped by a stage column. Used in production for work-orders (six lifecycle stages) and leads (six pipeline stages). The card body is whatever you render via the <code>renderCard</code> prop, so any entity with a "stage" field can drop in.</p>
+    <p class="when"><strong>Use when:</strong> the entity has a small, ordered set of stages and the user's most common action is "move from one stage to the next." For pure list browsing (no drag), use the <code>.tbl</code> table instead — paired with <code>SegmentedControlLinks</code> to switch views.</p>
+    <p class="props">
+      <strong class="text-ink-900">API:</strong>
+      <ul>
+        <li><code>stages</code> — <code>{ key: string; label: string }[]</code> — column definitions in order</li>
+        <li><code>items</code> — <code>T[]</code> with <code>id: string</code> and <code>stage: string</code> (or whatever field <code>stageKey</code> points to)</li>
+        <li><code>renderCard</code> — <code>(item: T) =&gt; ReactNode</code> — your card body</li>
+        <li><code>onMove</code> — <code>(id: string, toStage: string) =&gt; void | Promise&lt;void&gt;</code> — server action to call</li>
+        <li><code>canMove</code> — <code>boolean</code> — gates the drag affordance (cursor-grab, draggable=true). Per-record server check still runs in <code>onMove</code>.</li>
+        <li><code>cardHref</code> — <code>(item: T) =&gt; string</code> — optional, makes each card a navigable link to the detail page</li>
+      </ul>
+    </p>
+
+    <div class="demo">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <!-- Column: Capture -->
+        <div class="rounded-lg border border-ink/10 bg-paper-100/70 p-3 min-h-[260px]">
+          <div class="flex items-center justify-between mb-3">
+            <div class="eyebrow text-brand-indigo-700">Capture</div>
+            <span class="font-mono text-[11px] tabular-nums text-ink/55">2</span>
+          </div>
+          <ul class="space-y-2">
+            <li class="card p-3 cursor-grab block text-sm">
+              <div class="font-medium text-ink-900">Marina Heights walk-in</div>
+              <div class="mt-1.5"><span class="badge-base badge-warn">High</span></div>
+              <div class="mt-2 text-[11.5px] text-ink/60 font-mono">Source · website</div>
+            </li>
+            <li class="card p-3 cursor-grab block text-sm">
+              <div class="font-medium text-ink-900">Tower 4 cold lead</div>
+              <div class="mt-1.5"><span class="badge-base badge-neutral">Low</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Column: Qualified (drop-target hover state) -->
+        <div class="rounded-lg p-3 min-h-[260px] border-2 border-brand-indigo-400 bg-brand-indigo-50/60 ring-2 ring-brand-indigo-200">
+          <div class="flex items-center justify-between mb-3">
+            <div class="eyebrow text-brand-indigo-700">Qualified <span class="ml-2 text-[10px] text-brand-indigo-700/60 normal-case tracking-normal">· drop here</span></div>
+            <span class="font-mono text-[11px] tabular-nums text-ink/55">3</span>
+          </div>
+          <ul class="space-y-2">
+            <li class="card p-3 cursor-grab block text-sm" style="opacity:0.6">
+              <div class="font-medium text-ink-900">Sky Gardens · 3-bed enquiry</div>
+              <div class="mt-1.5"><span class="badge-base badge-info">Medium</span></div>
+            </li>
+            <li class="card p-3 cursor-grab block text-sm">
+              <div class="font-medium text-ink-900">Acme HQ relocation</div>
+              <div class="mt-1.5"><span class="badge-base badge-warn">High</span></div>
+              <div class="mt-2 text-[11.5px] text-ink/60 font-mono">AED 1.2M est.</div>
+            </li>
+            <li class="card p-3 cursor-grab block text-sm">
+              <div class="font-medium text-ink-900">Penthouse · referral</div>
+              <div class="mt-1.5"><span class="badge-base badge-info">Medium</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Column: Opportunity -->
+        <div class="rounded-lg border border-ink/10 bg-paper-100/70 p-3 min-h-[260px]">
+          <div class="flex items-center justify-between mb-3">
+            <div class="eyebrow text-brand-indigo-700">Opportunity</div>
+            <span class="font-mono text-[11px] tabular-nums text-ink/55">1</span>
+          </div>
+          <ul class="space-y-2">
+            <li class="card p-3 cursor-grab block text-sm" style="box-shadow:0 0 0 1px rgba(220,38,38,0.35), 0 1px 2px rgba(14,19,48,0.04), 0 4px 16px rgba(14,19,48,0.06)">
+              <div class="font-medium text-ink-900">Generator service</div>
+              <div class="mt-1.5"><span class="badge-base badge-negative">Urgent</span></div>
+              <div class="mt-2 text-[11.5px] text-ink/60 font-mono">Tower 4 · ACME</div>
+              <div class="mt-2"><span class="badge-base badge-negative">● SLA breached</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Column: Won (empty) -->
+        <div class="rounded-lg border border-ink/10 bg-paper-100/70 p-3 min-h-[260px]">
+          <div class="flex items-center justify-between mb-3">
+            <div class="eyebrow text-brand-indigo-700">Won</div>
+            <span class="font-mono text-[11px] tabular-nums text-ink/55">0</span>
+          </div>
+          <ul class="space-y-2">
+            <li class="text-[11px] text-ink/40 italic px-1 py-2">No items</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/55 mt-5 mb-2">Visual states</p>
+    <div class="props">
+      <ul>
+        <li><strong>Resting column</strong> — paper-100/70 background, hairline ink/10 border</li>
+        <li><strong>Drop-target column</strong> — brand-indigo-400 border + brand-indigo-50 fill + brand-indigo-200 ring (so the user sees the receiving column the moment a drag enters)</li>
+        <li><strong>Card</strong> — uses <code>.card-interactive</code> with <code>cursor-grab</code> when <code>canMove</code> is true; <code>active:cursor-grabbing</code> on press</li>
+        <li><strong>Card with breach / warning ring</strong> — add <code>ring-1 ring-red-300</code> via the <code>renderCard</code> body (the package doesn't ship a ring prop, you decorate inside your card render)</li>
+        <li><strong>Empty column</strong> — italic "No items" placeholder so the column doesn't collapse</li>
+        <li><strong>Mobile</strong> — collapses to a horizontal scroll-snap row (<code>snap-x snap-mandatory</code>); each column becomes a snap-target so swipes feel decisive</li>
+      </ul>
+    </div>
+
+<pre class="code"><span class="k">import</span> { KanbanBoard, StatusBadge, priorityTone } <span class="k">from</span> <span class="s">"@innexora/ui"</span>;
+<span class="k">import</span> { moveWorkOrderToStatus } <span class="k">from</span> <span class="s">"./actions"</span>; <span class="c">// app-side</span>
+
+<span class="t">&lt;KanbanBoard</span>
+  stages={STAGES}
+  items={orders}
+  canMove={canUpdate}
+  cardHref={(wo) =&gt; <span class="t">`/work-orders/${wo.id}`</span>}
+  onMove={(id, toStage) =&gt; moveWorkOrderToStatus(id, toStage)}
+  renderCard={(wo) =&gt; (
+    <span class="t">&lt;&gt;</span>
+      <span class="t">&lt;div</span> className=<span class="s">"font-medium text-ink-900"</span><span class="t">&gt;</span>{wo.title}<span class="t">&lt;/div&gt;</span>
+      <span class="t">&lt;StatusBadge</span> tone={priorityTone(wo.priority)}<span class="t">&gt;</span>{wo.priority}<span class="t">&lt;/StatusBadge&gt;</span>
+    <span class="t">&lt;/&gt;</span>
+  )}
+<span class="t">/&gt;</span></pre>
+  </div>
+</section>
+
+<section id="pagination" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>Pagination</h3><code>{ Pagination }</code></div>
+    <p class="desc">Server-rendered pagination footer for any growable table. Pure server component — link-based navigation, no JS shipped. Editorial micro-typography matches the rest of the meta layer.</p>
+    <p class="when"><strong>Use when:</strong> the underlying query can grow past ~200 rows. Skip on bounded sets (settings, users). Pass <code>searchParams</code> so existing filters survive page navigation.</p>
+    <div class="demo">
+      <div class="card overflow-hidden p-0">
+        <div class="px-5 py-4 text-[13px] text-ink/55">[ table contents above ]</div>
+        <div class="flex items-center justify-between gap-3 flex-wrap px-4 py-3 border-t border-ink/10">
+          <div class="font-mono uppercase tracking-[0.14em] text-[11.5px] text-ink/65 tabular-nums">Showing <span class="text-ink-900 font-medium">1</span>–<span class="text-ink-900 font-medium">25</span> of <span class="text-ink-900 font-medium">1,247</span></div>
+          <div class="flex items-center gap-1.5">
+            <button class="inline-flex items-center gap-1 rounded-md border border-ink/10 bg-white px-2.5 py-1.5 text-[11px] font-mono uppercase tracking-[0.16em] text-ink/40 cursor-not-allowed">‹ Prev</button>
+            <span class="px-2 font-mono uppercase tracking-[0.14em] text-[11.5px] text-ink/55 tabular-nums">Page <span class="text-ink-900 font-medium">1</span> of <span class="text-ink-900 font-medium">50</span></span>
+            <button class="inline-flex items-center gap-1 rounded-md border border-ink/10 bg-white px-2.5 py-1.5 text-[11px] font-mono uppercase tracking-[0.16em] text-ink/80 hover:text-brand-teal-700">Next ›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FORM HELPERS ============== -->
+<section id="form-submit-ribbon" class="anchor-target">
+  <h2>Form helpers</h2>
+  <p class="lead">Behaviour primitives that wrap forms — sticky save bar, unsaved-changes guard, confirm-form.</p>
+
+  <div class="component">
+    <div class="name"><h3>FormSubmitRibbon</h3><code>{ FormSubmitRibbon }</code></div>
+    <p class="desc">Sticky bottom bar that tracks form-data dirty state. Shows "No changes" → "Unsaved changes" → spinning "Saving…", with the submit button disabled until something actually changes.</p>
+    <p class="when"><strong>Use when:</strong> any long edit form (Property edit, Contract edit, Settings). Wrap the form in this and the save button + dirty hint live in the bottom bar instead of inline.</p>
+    <div class="demo relative" style="min-height:80px">
+      <div class="absolute inset-x-4 bottom-0 bg-white border border-ink/10 shadow-paper rounded-lg flex items-center justify-between px-5 py-3">
+        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400"></span><span class="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/65">Unsaved changes</span></div>
+        <div class="flex items-center gap-2"><button class="btn-ghost">Discard</button><button class="btn-primary">Save changes</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="unsaved-guard" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>UnsavedChangesGuard</h3><code>{ UnsavedChangesGuard, useUnsavedChangesGuard }</code></div>
+    <p class="desc">Hook + component that wires the browser's "you have unsaved changes — leave?" dialog when the form is dirty. Bound to <code>FormSubmitRibbon</code>'s dirty state automatically; expose the hook for custom forms.</p>
+    <p class="when"><strong>Use when:</strong> any form where data loss on accidental navigation would be painful. Already wired into <code>FormSubmitRibbon</code> — only call the hook directly for hand-rolled forms.</p>
+    <div class="demo">
+      <div class="rounded-lg border border-ink/15 bg-white px-5 py-4">
+        <div class="font-display font-semibold text-[15px] text-ink-900">Leave site?</div>
+        <div class="text-[13px] text-ink/65 mt-1">Changes you made may not be saved.</div>
+        <div class="mt-4 flex justify-end gap-2 text-[13px]"><button class="btn-ghost">Cancel</button><button class="btn-outline">Leave</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="confirm-form" class="anchor-target">
+  <div class="component">
+    <div class="name"><h3>ConfirmForm</h3><code>{ ConfirmForm }</code></div>
+    <p class="desc">A small inline confirm-then-submit pattern. Click the button once to "arm" it (turns red); a second click within 3s submits the form. Friction without the heavyweight modal.</p>
+    <p class="when"><strong>Use when:</strong> destructive actions inside row context (Delete attachment, Cancel work order). For top-level destructive actions use <code>AlertDialog</code> instead.</p>
+  </div>
+</section>
+
+<!-- ============== UTILITY ============== -->
+<section id="local-clock" class="anchor-target">
+  <h2>Utility</h2>
+  <p class="lead">Small helpers that don't fit the other buckets.</p>
+
+  <div class="component">
+    <div class="name"><h3>LocalClock</h3><code>{ LocalClock }</code></div>
+    <p class="desc">Live-ticking clock in the user's local timezone. Hydrates client-side so server rendering doesn't lock the time.</p>
+    <p class="when"><strong>Use when:</strong> in the app shell header or footer as a quiet "now" anchor for the user.</p>
+    <div class="demo">
+      <div class="font-mono text-[12px] uppercase tracking-[0.18em] text-ink/65">Tuesday · 10:42:18 GST</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== REFERENCE ============== -->
+<section id="package-shape" class="anchor-target">
+  <h2>Package shape</h2>
+  <p class="lead">What gets shipped on the wire.</p>
+  <div class="component">
+<pre class="code"><span class="c">// Folder layout (innexora-ui/)</span>
+src/
+├── index.ts           <span class="c">// barrel — re-exports every public component</span>
+├── lib/
+│   ├── utils.ts       <span class="c">// cn (clsx + tailwind-merge)</span>
+│   └── format.ts      <span class="c">// formatAed, formatDate, etc.</span>
+├── primitives/
+│   ├── button.tsx · input.tsx · textarea.tsx · label.tsx
+│   ├── checkbox.tsx · avatar.tsx · badge.tsx · separator.tsx
+│   ├── skeleton.tsx · empty-state.tsx
+│   └── status-badge.tsx     <span class="c">// + tone helpers</span>
+├── selection/
+│   ├── pill-group.tsx · hidden-form-select.tsx
+│   ├── segmented-control.tsx · date-picker.tsx · calendar.tsx
+├── overlays/
+│   ├── dialog.tsx · alert-dialog.tsx · alert.tsx
+│   ├── dropdown-menu.tsx · popover.tsx · tabs.tsx · tooltip.tsx
+├── layout/
+│   ├── page-header.tsx · page-hero.tsx · breadcrumbs.tsx
+│   ├── shell-layout.tsx · sidebar-nav.tsx
+├── cards/
+│   ├── form-card.tsx · detail-card.tsx
+│   ├── kpi-tile.tsx · tip-card.tsx · zen-strip.tsx · manager-hero.tsx
+├── data/
+│   ├── pagination.tsx · table.tsx
+├── form-helpers/
+│   ├── form-submit-ribbon.tsx · unsaved-changes-guard.tsx · confirm-form.tsx
+├── utility/
+│   └── local-clock.tsx
+└── styles.css         <span class="c">// every utility class shipped to consumers</span>
+
+tailwind.preset.cjs    <span class="c">// theme.extend block</span>
+package.json           <span class="c">// peerDeps: react, next, lucide-react, tailwindcss</span></pre>
+  </div>
+</section>
+
+<section id="consumer-setup" class="anchor-target">
+  <h2>Consumer setup</h2>
+  <p class="lead">Three steps to drop <code>@innexora/ui</code> into a new project.</p>
+  <div class="component">
+<pre class="code"><span class="c">// 1. Install (GitHub-tagged version)</span>
+npm install github:KingPotato2023/innexora-ui#v0.1.0
+npm install -D tailwindcss lucide-react
+
+<span class="c">// 2. tailwind.config.ts</span>
+<span class="k">import</span> preset <span class="k">from</span> <span class="s">"@innexora/ui/tailwind"</span>;
+<span class="k">export default</span> {
+  presets: [preset],
+  content: [
+    <span class="s">"./app/**/*.{ts,tsx}"</span>,
+    <span class="s">"./components/**/*.{ts,tsx}"</span>,
+    <span class="s">"./node_modules/@innexora/ui/dist/**/*.{js,mjs}"</span>,
+  ],
+};
+
+<span class="c">// 3. app/globals.css (Next.js)</span>
+@import <span class="s">"@innexora/ui/styles.css"</span>;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+<span class="c">// 4. Use anywhere</span>
+<span class="k">import</span> { Button, PageHeader, Pagination, StatusBadge } <span class="k">from</span> <span class="s">"@innexora/ui"</span>;</pre>
+  </div>
+
+  <div class="component">
+    <div class="name"><h3>Updates propagate via version bump</h3></div>
+    <p class="desc">Whenever a component changes in <code>@innexora/ui</code>:</p>
+    <ol class="text-[13px] text-ink/75 space-y-1 ml-5 list-decimal">
+      <li>Edit the component in <code>innexora-ui/src/</code></li>
+      <li>Bump version in <code>package.json</code> (semver)</li>
+      <li><code>git tag v0.X.Y &amp;&amp; git push --tags</code></li>
+      <li>In each consumer app: <code>npm install github:KingPotato2023/innexora-ui#v0.X.Y</code></li>
+      <li>Deploy. Both apps pick up the change at the same time.</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer class="bg-ink-900 text-white/55 text-[12px] py-6 mt-10 text-center font-mono uppercase tracking-[0.14em]">
+  @innexora/ui · v0.1 plan · 2026-05-03
+</footer>
+
+</body>
+</html>

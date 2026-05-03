@@ -1,0 +1,7 @@
+node_modules
+*.log
+.DS_Store
+# dist/ is intentionally NOT ignored — committing the build output so
+# `npm install github:KingPotato2023/innexora-ui#vX.Y.Z` works without
+# a prepare-time rebuild on the consumer side. Bump version + rebuild
+# + commit before tagging a release.
