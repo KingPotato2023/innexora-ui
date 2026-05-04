@@ -1,6 +1,6 @@
 "use client";
 import { jsx, jsxs } from "react/jsx-runtime";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CalendarDays, Clock, X } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../overlays/popover";
@@ -44,7 +44,8 @@ function DatePicker({
   disabled,
   fromYear,
   toYear,
-  withTime = false
+  withTime = false,
+  onChange
 }) {
   const [date, setDate] = useState(parseIso(defaultValue));
   const [open, setOpen] = useState(false);
@@ -52,21 +53,31 @@ function DatePicker({
     setDate(parseIso(defaultValue));
   }, [defaultValue]);
   const value = !date ? "" : withTime ? toIsoDateTime(date) : toIsoDate(date);
+  const commit = useCallback(
+    (next) => {
+      setDate(next);
+      if (onChange) {
+        const v = !next ? "" : withTime ? toIsoDateTime(next) : toIsoDate(next);
+        onChange(v);
+      }
+    },
+    [onChange, withTime]
+  );
   const triggerLabel = !date ? placeholder ?? (withTime ? "Pick a date and time" : "Pick a date") : withTime ? `${formatDateDisplay(date)} \xB7 ${formatTimeDisplay(date)}` : formatDateDisplay(date);
   const setCalendarDay = (d) => {
     if (!d) {
-      setDate(void 0);
+      commit(void 0);
       return;
     }
     if (withTime) {
       const base = date ?? /* @__PURE__ */ new Date();
       const next = new Date(d);
       next.setHours(base.getHours(), base.getMinutes(), 0, 0);
-      setDate(next);
+      commit(next);
     } else {
       const next = new Date(d);
       next.setHours(0, 0, 0, 0);
-      setDate(next);
+      commit(next);
       setOpen(false);
     }
   };
@@ -78,7 +89,7 @@ function DatePicker({
     })();
     const next = new Date(base);
     next.setHours(Math.max(0, Math.min(23, h)));
-    setDate(next);
+    commit(next);
   };
   const setMinute = (m) => {
     const base = date ?? (() => {
@@ -88,7 +99,7 @@ function DatePicker({
     })();
     const next = new Date(base);
     next.setMinutes(Math.max(0, Math.min(59, m)));
-    setDate(next);
+    commit(next);
   };
   return /* @__PURE__ */ jsxs("div", { className: cn("relative", className), children: [
     /* @__PURE__ */ jsxs(Popover, { open, onOpenChange: setOpen, children: [
@@ -114,7 +125,7 @@ function DatePicker({
                   className: "rounded p-0.5 hover:bg-ink/[0.06] hover:text-ink/80",
                   onClick: (e) => {
                     e.stopPropagation();
-                    setDate(void 0);
+                    commit(void 0);
                   },
                   children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
                 }
@@ -166,7 +177,7 @@ function DatePicker({
             {
               type: "button",
               className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/55 hover:text-brand-teal-700",
-              onClick: () => setDate(void 0),
+              onClick: () => commit(void 0),
               children: "Clear"
             }
           ),
@@ -179,7 +190,7 @@ function DatePicker({
                 const t = /* @__PURE__ */ new Date();
                 if (!withTime) t.setHours(0, 0, 0, 0);
                 else t.setSeconds(0, 0);
-                setDate(t);
+                commit(t);
                 if (!withTime) setOpen(false);
               },
               children: withTime ? "Now" : "Today"

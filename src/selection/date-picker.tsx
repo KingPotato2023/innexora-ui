@@ -10,7 +10,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CalendarDays, Clock, X } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../overlays/popover";
@@ -62,6 +62,7 @@ export function DatePicker({
   fromYear,
   toYear,
   withTime = false,
+  onChange,
 }: {
   name: string;
   /** ISO string. Date-only mode: "yyyy-mm-dd". DateTime mode: "yyyy-mm-ddThh:mm". */
@@ -74,6 +75,14 @@ export function DatePicker({
   fromYear?: number;
   toYear?: number;
   withTime?: boolean;
+  /**
+   * Optional notification channel — fires with the formatted ISO string
+   * (or "" when cleared) on every value change. The picker still owns
+   * its own state and writes the hidden <input>; consumers (e.g. RHF
+   * `<Controller>`) pass `onChange` only to mirror the value into their
+   * own state for dirty / validation tracking.
+   */
+  onChange?: (value: string) => void;
 }) {
   const [date, setDate] = useState<Date | undefined>(parseIso(defaultValue));
   const [open, setOpen] = useState(false);
@@ -88,6 +97,24 @@ export function DatePicker({
     ? toIsoDateTime(date)
     : toIsoDate(date);
 
+  // Wrap setDate so every state-changing path also notifies a parent
+  // listener (when one is supplied). Memoised so identity-stable
+  // callbacks downstream don't churn.
+  const commit = useCallback(
+    (next: Date | undefined) => {
+      setDate(next);
+      if (onChange) {
+        const v = !next
+          ? ""
+          : withTime
+          ? toIsoDateTime(next)
+          : toIsoDate(next);
+        onChange(v);
+      }
+    },
+    [onChange, withTime],
+  );
+
   const triggerLabel = !date
     ? placeholder ?? (withTime ? "Pick a date and time" : "Pick a date")
     : withTime
@@ -96,18 +123,18 @@ export function DatePicker({
 
   const setCalendarDay = (d: Date | undefined) => {
     if (!d) {
-      setDate(undefined);
+      commit(undefined);
       return;
     }
     if (withTime) {
       const base = date ?? new Date();
       const next = new Date(d);
       next.setHours(base.getHours(), base.getMinutes(), 0, 0);
-      setDate(next);
+      commit(next);
     } else {
       const next = new Date(d);
       next.setHours(0, 0, 0, 0);
-      setDate(next);
+      commit(next);
       setOpen(false);
     }
   };
@@ -116,13 +143,13 @@ export function DatePicker({
     const base = date ?? (() => { const n = new Date(); n.setSeconds(0, 0); return n; })();
     const next = new Date(base);
     next.setHours(Math.max(0, Math.min(23, h)));
-    setDate(next);
+    commit(next);
   };
   const setMinute = (m: number) => {
     const base = date ?? (() => { const n = new Date(); n.setSeconds(0, 0); return n; })();
     const next = new Date(base);
     next.setMinutes(Math.max(0, Math.min(59, m)));
-    setDate(next);
+    commit(next);
   };
 
   return (
@@ -148,7 +175,7 @@ export function DatePicker({
                   className="rounded p-0.5 hover:bg-ink/[0.06] hover:text-ink/80"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setDate(undefined);
+                    commit(undefined);
                   }}
                 >
                   <X className="h-3.5 w-3.5" />
@@ -195,7 +222,7 @@ export function DatePicker({
             <button
               type="button"
               className="text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/55 hover:text-brand-teal-700"
-              onClick={() => setDate(undefined)}
+              onClick={() => commit(undefined)}
             >
               Clear
             </button>
@@ -206,7 +233,7 @@ export function DatePicker({
                 const t = new Date();
                 if (!withTime) t.setHours(0, 0, 0, 0);
                 else t.setSeconds(0, 0);
-                setDate(t);
+                commit(t);
                 if (!withTime) setOpen(false);
               }}
             >
