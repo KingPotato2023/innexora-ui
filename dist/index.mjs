@@ -48,6 +48,7 @@ import {
 } from "./selection/hidden-form-select";
 import { SegmentedControlLinks } from "./selection/segmented-control";
 import { DatePicker } from "./selection/date-picker";
+import { TimePicker } from "./selection/time-picker";
 import { Calendar } from "./selection/calendar";
 import {
   Dialog,
@@ -257,6 +258,7 @@ export {
   TabsList,
   TabsTrigger,
   Textarea,
+  TimePicker,
   TipCard,
   TipStrip,
   ZenStrip,

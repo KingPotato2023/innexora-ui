@@ -63,6 +63,7 @@ export {
 } from "./selection/hidden-form-select";
 export { SegmentedControlLinks } from "./selection/segmented-control";
 export { DatePicker } from "./selection/date-picker";
+export { TimePicker } from "./selection/time-picker";
 export { Calendar, type CalendarProps } from "./selection/calendar";
 
 // ─── Overlays ────────────────────────────────────────

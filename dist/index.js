@@ -122,6 +122,7 @@ __export(index_exports, {
   TabsList: () => import_tabs.TabsList,
   TabsTrigger: () => import_tabs.TabsTrigger,
   Textarea: () => import_textarea.Textarea,
+  TimePicker: () => import_time_picker.TimePicker,
   TipCard: () => import_tip_card.TipCard,
   TipStrip: () => import_tip_card.TipStrip,
   ZenStrip: () => import_zen_strip.ZenStrip,
@@ -167,6 +168,7 @@ var import_pill_group = require("./selection/pill-group");
 var import_hidden_form_select = require("./selection/hidden-form-select");
 var import_segmented_control = require("./selection/segmented-control");
 var import_date_picker = require("./selection/date-picker");
+var import_time_picker = require("./selection/time-picker");
 var import_calendar = require("./selection/calendar");
 var import_dialog = require("./overlays/dialog");
 var import_alert_dialog = require("./overlays/alert-dialog");
@@ -304,6 +306,7 @@ var import_greeting = require("./lib/greeting");
   TabsList,
   TabsTrigger,
   Textarea,
+  TimePicker,
   TipCard,
   TipStrip,
   ZenStrip,

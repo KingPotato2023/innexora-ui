@@ -14,6 +14,7 @@ export { PillButtons, PillGroup, PillOption } from './selection/pill-group.js';
 export { HiddenFormSelect, HiddenFormSelectOption } from './selection/hidden-form-select.js';
 export { SegmentedControlLinks } from './selection/segmented-control.js';
 export { DatePicker } from './selection/date-picker.js';
+export { TimePicker } from './selection/time-picker.js';
 export { Calendar, CalendarProps } from './selection/calendar.js';
 export { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from './overlays/dialog.js';
 export { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger } from './overlays/alert-dialog.js';
