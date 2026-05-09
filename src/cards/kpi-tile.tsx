@@ -1,5 +1,12 @@
 // Dashboard KPI tile with optional trend delta and href. Pure presentational —
 // callers compute the delta vs. prior period and pass it in.
+//
+// v0.1.6 polish — uses the .kpi-bezel double-bezel architecture from
+// styles.css (outer shell + inner core with concentric radii). Hover lifts
+// the whole tile and reveals a brand-gradient hairline along the inner
+// top edge; pressables (any tile with `href`) get a tactile scale on
+// active. The sparkline lays a soft gradient fill below the line so
+// values with shallow ranges still read as a trend.
 
 import * as React from "react";
 import Link from "next/link";
@@ -46,17 +53,10 @@ export function KpiTile({
   caption,
   sparkline,
 }: KpiTileProps) {
-  const body = (
-    <div className="card-interactive p-5 h-full flex flex-col">
+  const core = (
+    <div className="kpi-bezel__core flex h-full flex-col">
       <div className="flex items-center gap-2.5">
-        <span
-          className={
-            "inline-flex h-7 w-7 items-center justify-center rounded-md shrink-0 " +
-            ICON_TONE[tone]
-          }
-        >
-          {icon}
-        </span>
+        <span className={"kpi-bezel__icon " + ICON_TONE[tone]}>{icon}</span>
         <span className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-ink/55">
           {label}
         </span>
@@ -85,14 +85,17 @@ export function KpiTile({
 
   if (href) {
     return (
-      <Link href={href} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo-400 rounded-lg">
-        {body}
+      <Link href={href} className="kpi-bezel" data-pressable="">
+        {core}
       </Link>
     );
   }
-  return body;
+  return <div className="kpi-bezel">{core}</div>;
 }
 
+// Sparkline picks up `currentColor` from the SPARK_TONE class, so the
+// gradient fill stays in the same hue family as the stroke without
+// needing per-tone gradient defs.
 function Sparkline({
   points,
   className,
@@ -104,27 +107,35 @@ function Sparkline({
   const max = Math.max(...points);
   const range = max - min || 1;
   const stepX = 100 / (points.length - 1);
-  const coords = points
+  const linePoints = points
     .map((v, i) => {
       const x = i * stepX;
       const y = 22 - ((v - min) / range) * 20;
       return `${x.toFixed(2)},${y.toFixed(2)}`;
     })
     .join(" ");
+  const areaPoints = `0,24 ${linePoints} 100,24`;
   return (
     <svg
       viewBox="0 0 100 24"
       preserveAspectRatio="none"
-      className={"mt-3 h-6 w-full " + className}
+      className={"mt-3 h-7 w-full " + className}
       aria-hidden="true"
     >
+      <defs>
+        <linearGradient id="kpi-spark-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon points={areaPoints} fill="url(#kpi-spark-fill)" />
       <polyline
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        points={coords}
+        points={linePoints}
       />
     </svg>
   );

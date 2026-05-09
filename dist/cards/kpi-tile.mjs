@@ -25,15 +25,9 @@ function KpiTile({
   caption,
   sparkline
 }) {
-  const body = /* @__PURE__ */ jsxs("div", { className: "card-interactive p-5 h-full flex flex-col", children: [
+  const core = /* @__PURE__ */ jsxs("div", { className: "kpi-bezel__core flex h-full flex-col", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2.5", children: [
-      /* @__PURE__ */ jsx(
-        "span",
-        {
-          className: "inline-flex h-7 w-7 items-center justify-center rounded-md shrink-0 " + ICON_TONE[tone],
-          children: icon
-        }
-      ),
+      /* @__PURE__ */ jsx("span", { className: "kpi-bezel__icon " + ICON_TONE[tone], children: icon }),
       /* @__PURE__ */ jsx("span", { className: "text-[10.5px] font-semibold uppercase tracking-[0.18em] text-ink/55", children: label })
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "mt-4 flex items-baseline gap-2", children: [
@@ -44,9 +38,9 @@ function KpiTile({
     sparkline && sparkline.length > 1 && /* @__PURE__ */ jsx(Sparkline, { points: sparkline, className: SPARK_TONE[tone] })
   ] });
   if (href) {
-    return /* @__PURE__ */ jsx(Link, { href, className: "block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo-400 rounded-lg", children: body });
+    return /* @__PURE__ */ jsx(Link, { href, className: "kpi-bezel", "data-pressable": "", children: core });
   }
-  return body;
+  return /* @__PURE__ */ jsx("div", { className: "kpi-bezel", children: core });
 }
 function Sparkline({
   points,
@@ -56,29 +50,37 @@ function Sparkline({
   const max = Math.max(...points);
   const range = max - min || 1;
   const stepX = 100 / (points.length - 1);
-  const coords = points.map((v, i) => {
+  const linePoints = points.map((v, i) => {
     const x = i * stepX;
     const y = 22 - (v - min) / range * 20;
     return `${x.toFixed(2)},${y.toFixed(2)}`;
   }).join(" ");
-  return /* @__PURE__ */ jsx(
+  const areaPoints = `0,24 ${linePoints} 100,24`;
+  return /* @__PURE__ */ jsxs(
     "svg",
     {
       viewBox: "0 0 100 24",
       preserveAspectRatio: "none",
-      className: "mt-3 h-6 w-full " + className,
+      className: "mt-3 h-7 w-full " + className,
       "aria-hidden": "true",
-      children: /* @__PURE__ */ jsx(
-        "polyline",
-        {
-          fill: "none",
-          stroke: "currentColor",
-          strokeWidth: "1.5",
-          strokeLinecap: "round",
-          strokeLinejoin: "round",
-          points: coords
-        }
-      )
+      children: [
+        /* @__PURE__ */ jsx("defs", { children: /* @__PURE__ */ jsxs("linearGradient", { id: "kpi-spark-fill", x1: "0", x2: "0", y1: "0", y2: "1", children: [
+          /* @__PURE__ */ jsx("stop", { offset: "0%", stopColor: "currentColor", stopOpacity: "0.22" }),
+          /* @__PURE__ */ jsx("stop", { offset: "100%", stopColor: "currentColor", stopOpacity: "0" })
+        ] }) }),
+        /* @__PURE__ */ jsx("polygon", { points: areaPoints, fill: "url(#kpi-spark-fill)" }),
+        /* @__PURE__ */ jsx(
+          "polyline",
+          {
+            fill: "none",
+            stroke: "currentColor",
+            strokeWidth: "1.5",
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            points: linePoints
+          }
+        )
+      ]
     }
   );
 }

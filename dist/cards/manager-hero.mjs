@@ -19,10 +19,12 @@ function ManagerHero({
   now = /* @__PURE__ */ new Date(),
   briefingLabel = "Properties \xB7 Briefing"
 }) {
-  const { greeting, emoji } = getGreeting(now, userName);
+  const { greeting } = getGreeting(now, userName);
   const weekday = format(now, "EEEE, MMMM d, yyyy");
   const issueDate = format(now, "yyyy.MM.dd");
   const overdue = openRequests > 0 || activeWorkOrders > 0;
+  const firstName = userName.split(" ")[0] ?? "there";
+  const initials = userName.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((s) => s[0]?.toUpperCase() ?? "").join("") || "?";
   return /* @__PURE__ */ jsxs(
     "section",
     {
@@ -52,11 +54,11 @@ function ManagerHero({
             /* @__PURE__ */ jsxs("h1", { className: "mt-5 font-display font-semibold text-[36px] sm:text-[44px] leading-[1.06] tracking-[-0.022em] text-ink-900", children: [
               greeting.split(",")[0],
               ",",
-              /* @__PURE__ */ jsx("br", {}),
-              /* @__PURE__ */ jsx("span", { className: "display-em", children: userName.split(" ")[0] ?? "there" }),
-              ".",
               " ",
-              /* @__PURE__ */ jsx("span", { "aria-hidden": "true", className: "text-[30px] align-middle", children: emoji })
+              /* @__PURE__ */ jsx("span", { className: "hero-avatar-pill", "aria-hidden": "true", children: initials }),
+              " ",
+              /* @__PURE__ */ jsx("span", { className: "display-em", children: firstName }),
+              "."
             ] }),
             /* @__PURE__ */ jsxs("p", { className: "mt-3 text-sm text-ink/65", children: [
               /* @__PURE__ */ jsx("span", { className: "text-ink/80", children: weekday }),
@@ -66,19 +68,19 @@ function ManagerHero({
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "mt-5 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-paper-100 px-3 py-1.5 text-[11.5px] font-medium text-ink/75", children: [
-              /* @__PURE__ */ jsxs("span", { className: "relative flex h-1.5 w-1.5", children: [
-                /* @__PURE__ */ jsx("span", { className: "absolute inline-flex h-full w-full motion-safe:animate-dot-pulse rounded-full bg-brand-teal-400" }),
-                /* @__PURE__ */ jsx("span", { className: "relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-teal-500" })
+              /* @__PURE__ */ jsxs("span", { className: "live-beacon", children: [
+                /* @__PURE__ */ jsx("span", { className: "live-beacon__ring", "aria-hidden": "true" }),
+                /* @__PURE__ */ jsx("span", { className: "live-beacon__core", "aria-hidden": "true" })
               ] }),
               /* @__PURE__ */ jsxs("span", { children: [
                 /* @__PURE__ */ jsx("span", { className: "font-mono tabular-nums", children: propertyCount }),
                 /* @__PURE__ */ jsx("span", { className: "text-ink/50", children: " properties under management" })
               ] })
             ] }),
-            /* @__PURE__ */ jsxs("div", { className: "mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm", children: [
-              /* @__PURE__ */ jsx(HeroLink, { href: "/service-requests", label: "Open service requests" }),
-              /* @__PURE__ */ jsx(HeroLink, { href: "/work-orders", label: "View work orders" }),
-              /* @__PURE__ */ jsx(HeroLink, { href: "/properties", label: "Properties register" })
+            /* @__PURE__ */ jsxs("div", { className: "mt-7 flex flex-wrap items-center gap-3 text-sm", children: [
+              /* @__PURE__ */ jsx(CtaPill, { href: "/service-requests", primary: true, children: "Open service requests" }),
+              /* @__PURE__ */ jsx(CtaPill, { href: "/work-orders", children: "View work orders" }),
+              /* @__PURE__ */ jsx(CtaPill, { href: "/properties", children: "Properties register" })
             ] })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "relative bg-hero-gradient overflow-hidden", children: [
@@ -161,21 +163,19 @@ function ManagerHero({
     }
   );
 }
-function HeroLink({ href, label }) {
+function CtaPill({
+  href,
+  primary,
+  children
+}) {
   return /* @__PURE__ */ jsxs(
     Link,
     {
       href,
-      className: "group inline-flex items-center gap-1.5 text-ink/85 hover:text-ink transition-colors",
+      className: "cta-pill " + (primary ? "cta-pill--primary" : "cta-pill--ghost"),
       children: [
-        /* @__PURE__ */ jsx("span", { className: "underline-draw", children: label }),
-        /* @__PURE__ */ jsx(
-          ArrowUpRight,
-          {
-            className: "h-3.5 w-3.5 text-brand-teal-600 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
-            "aria-hidden": "true"
-          }
-        )
+        /* @__PURE__ */ jsx("span", { children }),
+        /* @__PURE__ */ jsx("span", { "aria-hidden": "true", className: "cta-pill__arrow", children: /* @__PURE__ */ jsx(ArrowUpRight, { className: "h-3.5 w-3.5" }) })
       ]
     }
   );

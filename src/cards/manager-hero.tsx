@@ -2,7 +2,16 @@
 // Split layout: an editorial greeting on the left beside a slow-drifting
 // brand-gradient pane on the right. The right pane carries hero-grade
 // stats in tabular numerals; the left pane carries the greeting + a
-// "live" beacon and three text-link CTAs into the most-used surfaces.
+// "live" beacon and CTAs into the most-used surfaces.
+//
+// v0.1.6 polish —
+//   - The H1 embeds a brass-pill monogram of the user's initials inline
+//     (`.hero-avatar-pill`), anchoring the brief to the user mid-sentence.
+//   - CTAs use the `.cta-pill` button-in-button architecture (trailing
+//     arrow translates diagonally on hover) instead of underline-draw
+//     text links. Magnetic 1-pixel lift via `--ease-drawer`.
+//   - The "live" indicator now uses the shared `.live-beacon` markup —
+//     ring expands and fades, core stays fixed.
 
 import { format } from "date-fns";
 import Link from "next/link";
@@ -37,10 +46,19 @@ export function ManagerHero({
   now = new Date(),
   briefingLabel = "Properties · Briefing",
 }: ManagerHeroProps) {
-  const { greeting, emoji } = getGreeting(now, userName);
+  const { greeting } = getGreeting(now, userName);
   const weekday = format(now, "EEEE, MMMM d, yyyy");
   const issueDate = format(now, "yyyy.MM.dd");
   const overdue = openRequests > 0 || activeWorkOrders > 0;
+  const firstName = userName.split(" ")[0] ?? "there";
+  const initials =
+    userName
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((s) => s[0]?.toUpperCase() ?? "")
+      .join("") || "?";
 
   return (
     <section
@@ -66,15 +84,11 @@ export function ManagerHero({
           </div>
 
           <h1 className="mt-5 font-display font-semibold text-[36px] sm:text-[44px] leading-[1.06] tracking-[-0.022em] text-ink-900">
-            {greeting.split(",")[0]},
-            <br />
-            <span className="display-em">
-              {userName.split(" ")[0] ?? "there"}
-            </span>
-            .{" "}
-            <span aria-hidden="true" className="text-[30px] align-middle">
-              {emoji}
-            </span>
+            {greeting.split(",")[0]},{" "}
+            <span className="hero-avatar-pill" aria-hidden="true">
+              {initials}
+            </span>{" "}
+            <span className="display-em">{firstName}</span>.
           </h1>
 
           <p className="mt-3 text-sm text-ink/65">
@@ -88,9 +102,9 @@ export function ManagerHero({
           </p>
 
           <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-paper-100 px-3 py-1.5 text-[11.5px] font-medium text-ink/75">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full motion-safe:animate-dot-pulse rounded-full bg-brand-teal-400" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-teal-500" />
+            <span className="live-beacon">
+              <span className="live-beacon__ring" aria-hidden="true" />
+              <span className="live-beacon__core" aria-hidden="true" />
             </span>
             <span>
               <span className="font-mono tabular-nums">{propertyCount}</span>
@@ -98,10 +112,12 @@ export function ManagerHero({
             </span>
           </div>
 
-          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm">
-            <HeroLink href="/service-requests" label="Open service requests" />
-            <HeroLink href="/work-orders" label="View work orders" />
-            <HeroLink href="/properties" label="Properties register" />
+          <div className="mt-7 flex flex-wrap items-center gap-3 text-sm">
+            <CtaPill href="/service-requests" primary>
+              Open service requests
+            </CtaPill>
+            <CtaPill href="/work-orders">View work orders</CtaPill>
+            <CtaPill href="/properties">Properties register</CtaPill>
           </div>
         </div>
 
@@ -171,17 +187,26 @@ export function ManagerHero({
   );
 }
 
-function HeroLink({ href, label }: { href: string; label: string }) {
+function CtaPill({
+  href,
+  primary,
+  children,
+}: {
+  href: string;
+  primary?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <Link
       href={href}
-      className="group inline-flex items-center gap-1.5 text-ink/85 hover:text-ink transition-colors"
+      className={
+        "cta-pill " + (primary ? "cta-pill--primary" : "cta-pill--ghost")
+      }
     >
-      <span className="underline-draw">{label}</span>
-      <ArrowUpRight
-        className="h-3.5 w-3.5 text-brand-teal-600 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-        aria-hidden="true"
-      />
+      <span>{children}</span>
+      <span aria-hidden="true" className="cta-pill__arrow">
+        <ArrowUpRight className="h-3.5 w-3.5" />
+      </span>
     </Link>
   );
 }
