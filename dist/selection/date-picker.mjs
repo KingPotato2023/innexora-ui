@@ -34,6 +34,13 @@ function formatDateDisplay(d) {
 function formatTimeDisplay(d) {
   return d.toLocaleTimeString(void 0, { hour: "2-digit", minute: "2-digit" });
 }
+const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function formatDateStable(d) {
+  return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]} ${d.getFullYear()}`;
+}
+function formatTimeStable(d) {
+  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+}
 function DatePicker({
   name,
   defaultValue,
@@ -49,6 +56,8 @@ function DatePicker({
 }) {
   const [date, setDate] = useState(parseIso(defaultValue));
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   useEffect(() => {
     setDate(parseIso(defaultValue));
   }, [defaultValue]);
@@ -63,7 +72,9 @@ function DatePicker({
     },
     [onChange, withTime]
   );
-  const triggerLabel = !date ? placeholder ?? (withTime ? "Pick a date and time" : "Pick a date") : withTime ? `${formatDateDisplay(date)} \xB7 ${formatTimeDisplay(date)}` : formatDateDisplay(date);
+  const fmtDate = mounted ? formatDateDisplay : formatDateStable;
+  const fmtTime = mounted ? formatTimeDisplay : formatTimeStable;
+  const triggerLabel = !date ? placeholder ?? (withTime ? "Pick a date and time" : "Pick a date") : withTime ? `${fmtDate(date)} \xB7 ${fmtTime(date)}` : fmtDate(date);
   const setCalendarDay = (d) => {
     if (!d) {
       commit(void 0);
@@ -117,19 +128,7 @@ function DatePicker({
           children: [
             /* @__PURE__ */ jsx("span", { className: "truncate", children: triggerLabel }),
             /* @__PURE__ */ jsxs("span", { className: "flex items-center gap-1 shrink-0 text-ink/45", children: [
-              date && /* @__PURE__ */ jsx(
-                "button",
-                {
-                  type: "button",
-                  "aria-label": "Clear",
-                  className: "rounded p-0.5 hover:bg-ink/[0.06] hover:text-ink/80",
-                  onClick: (e) => {
-                    e.stopPropagation();
-                    commit(void 0);
-                  },
-                  children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
-                }
-              ),
+              date && /* @__PURE__ */ jsx("span", { "aria-hidden": "true", className: "w-[18px]" }),
               withTime ? /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx(CalendarDays, { className: "h-4 w-4" })
             ] })
           ]
@@ -208,6 +207,16 @@ function DatePicker({
         ] })
       ] })
     ] }),
+    date && !disabled && /* @__PURE__ */ jsx(
+      "button",
+      {
+        type: "button",
+        "aria-label": "Clear",
+        className: "absolute end-8 top-1/2 -translate-y-1/2 rounded p-0.5 text-ink/45 hover:bg-ink/[0.06] hover:text-ink/80",
+        onClick: () => commit(void 0),
+        children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
+      }
+    ),
     /* @__PURE__ */ jsx(
       "input",
       {

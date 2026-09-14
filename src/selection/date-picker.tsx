@@ -51,6 +51,19 @@ function formatTimeDisplay(d: Date): string {
   return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
 }
 
+// Server and browser carry different locale data (Node rendered "1 Sep 2026",
+// Chrome en-GB "1 Sept 2026"), so a pre-filled picker failed hydration. The
+// first render uses this fixed format; the viewer's locale takes over on mount.
+const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function formatDateStable(d: Date): string {
+  return `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function formatTimeStable(d: Date): string {
+  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+}
+
 export function DatePicker({
   name,
   defaultValue,
@@ -86,6 +99,9 @@ export function DatePicker({
 }) {
   const [date, setDate] = useState<Date | undefined>(parseIso(defaultValue));
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     setDate(parseIso(defaultValue));
@@ -115,11 +131,13 @@ export function DatePicker({
     [onChange, withTime],
   );
 
+  const fmtDate = mounted ? formatDateDisplay : formatDateStable;
+  const fmtTime = mounted ? formatTimeDisplay : formatTimeStable;
   const triggerLabel = !date
     ? placeholder ?? (withTime ? "Pick a date and time" : "Pick a date")
     : withTime
-    ? `${formatDateDisplay(date)} · ${formatTimeDisplay(date)}`
-    : formatDateDisplay(date);
+    ? `${fmtDate(date)} · ${fmtTime(date)}`
+    : fmtDate(date);
 
   const setCalendarDay = (d: Date | undefined) => {
     if (!d) {
@@ -168,19 +186,10 @@ export function DatePicker({
           >
             <span className="truncate">{triggerLabel}</span>
             <span className="flex items-center gap-1 shrink-0 text-ink/45">
-              {date && (
-                <button
-                  type="button"
-                  aria-label="Clear"
-                  className="rounded p-0.5 hover:bg-ink/[0.06] hover:text-ink/80"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    commit(undefined);
-                  }}
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              )}
+              {/* room for the clear button, which sits OVER the trigger: a
+                  <button> inside the trigger <button> is invalid HTML, and the
+                  parser split it apart and broke hydration */}
+              {date && <span aria-hidden="true" className="w-[18px]" />}
               {withTime ? <Clock className="h-4 w-4" /> : <CalendarDays className="h-4 w-4" />}
             </span>
           </button>
@@ -251,6 +260,18 @@ export function DatePicker({
           </div>
         </PopoverContent>
       </Popover>
+      {date && !disabled && (
+        <button
+          type="button"
+          aria-label="Clear"
+          // inset-inline-end 32px = the trigger's 12px padding + 16px icon + 4px gap,
+          // so it lands on the spacer in either reading direction
+          className="absolute end-8 top-1/2 -translate-y-1/2 rounded p-0.5 text-ink/45 hover:bg-ink/[0.06] hover:text-ink/80"
+          onClick={() => commit(undefined)}
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      )}
       <input
         type="hidden"
         name={name}

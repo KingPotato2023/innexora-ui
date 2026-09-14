@@ -27,11 +27,10 @@ var import_react_day_picker = require("react-day-picker");
 var import_lucide_react = require("lucide-react");
 var import_select = require("../overlays/select");
 var import_utils = require("../lib/utils");
-function weekStart(d) {
+function weekStart(d, weekStartsOn) {
   const dt = new Date(d);
-  const day = dt.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  dt.setDate(dt.getDate() + diff);
+  const diff = (dt.getDay() - weekStartsOn + 7) % 7;
+  dt.setDate(dt.getDate() - diff);
   dt.setHours(0, 0, 0, 0);
   return dt;
 }
@@ -55,7 +54,7 @@ function BrandedDropdown(props) {
       import_select.SelectTrigger,
       {
         "aria-label": props["aria-label"],
-        className: "h-7 min-w-[88px] gap-1 rounded-md border border-ink/12 bg-white px-2 text-[13px] font-semibold text-ink-900 hover:border-ink/25 focus:ring-2 focus:ring-brand-indigo-400/35 focus:border-brand-indigo-500",
+        className: "h-7 min-w-[88px] w-auto gap-1 rounded-md border border-ink/12 bg-white px-2 text-[13px] font-semibold text-ink-900 hover:border-ink/25 focus:ring-2 focus:ring-brand-indigo-400/35 focus:border-brand-indigo-500",
         children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_select.SelectValue, {})
       }
     ),
@@ -86,7 +85,7 @@ function Calendar({
   ...props
 }) {
   const now = /* @__PURE__ */ new Date();
-  const wkStart = weekStart(now);
+  const wkStart = weekStart(now, props.weekStartsOn ?? props.locale?.options?.weekStartsOn ?? 0);
   const wkEnd = new Date(wkStart);
   wkEnd.setDate(wkEnd.getDate() + 6);
   return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(

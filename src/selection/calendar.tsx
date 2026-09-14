@@ -12,11 +12,13 @@ import {
 } from "../overlays/select";
 import { cn } from "../lib/utils";
 
-function weekStart(d: Date): Date {
+// The "this week" band must start on the same weekday as the grid's rows.
+// It was hard-wired to Monday while the grid starts on Sunday by default, so
+// the band ran Mon..Sun and broke across two rows.
+function weekStart(d: Date, weekStartsOn: number): Date {
   const dt = new Date(d);
-  const day = dt.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  dt.setDate(dt.getDate() + diff);
+  const diff = (dt.getDay() - weekStartsOn + 7) % 7;
+  dt.setDate(dt.getDate() - diff);
   dt.setHours(0, 0, 0, 0);
   return dt;
 }
@@ -42,7 +44,7 @@ function BrandedDropdown(props: DropdownProps) {
     <Select value={currentValue} onValueChange={handleChange} disabled={props.disabled}>
       <SelectTrigger
         aria-label={props["aria-label"]}
-        className="h-7 min-w-[88px] gap-1 rounded-md border border-ink/12 bg-white px-2 text-[13px] font-semibold text-ink-900 hover:border-ink/25 focus:ring-2 focus:ring-brand-indigo-400/35 focus:border-brand-indigo-500"
+        className="h-7 min-w-[88px] w-auto gap-1 rounded-md border border-ink/12 bg-white px-2 text-[13px] font-semibold text-ink-900 hover:border-ink/25 focus:ring-2 focus:ring-brand-indigo-400/35 focus:border-brand-indigo-500"
       >
         <SelectValue />
       </SelectTrigger>
@@ -75,7 +77,7 @@ export function Calendar({
   ...props
 }: CalendarProps) {
   const now = new Date();
-  const wkStart = weekStart(now);
+  const wkStart = weekStart(now, props.weekStartsOn ?? props.locale?.options?.weekStartsOn ?? 0);
   const wkEnd = new Date(wkStart);
   wkEnd.setDate(wkEnd.getDate() + 6);
 
