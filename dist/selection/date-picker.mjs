@@ -89,6 +89,9 @@ function DatePicker({
     ...minDay ? [{ before: minDay }] : [],
     ...maxDay ? [{ after: maxDay }] : []
   ];
+  const dayKey = (d) => d.getFullYear() * 1e4 + (d.getMonth() + 1) * 100 + d.getDate();
+  const todayKey = dayKey(/* @__PURE__ */ new Date());
+  const todayInRange = (!minDay || todayKey >= dayKey(minDay)) && (!maxDay || todayKey <= dayKey(maxDay));
   const clear = () => {
     commit(void 0);
     triggerRef.current?.focus();
@@ -207,7 +210,8 @@ function DatePicker({
               "button",
               {
                 type: "button",
-                className: FOOTER_BTN + " text-brand-teal-700 hover:text-brand-teal-800",
+                disabled: !todayInRange,
+                className: FOOTER_BTN + " text-brand-teal-700 hover:text-brand-teal-800 disabled:cursor-not-allowed disabled:text-ink/35",
                 onClick: () => {
                   const t = /* @__PURE__ */ new Date();
                   if (!withTime) t.setHours(0, 0, 0, 0);

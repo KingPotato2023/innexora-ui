@@ -174,6 +174,9 @@ export function DatePicker({
     ...(minDay ? [{ before: minDay }] : []),
     ...(maxDay ? [{ after: maxDay }] : []),
   ];
+  const dayKey = (d: Date) => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const todayKey = dayKey(new Date());
+  const todayInRange = (!minDay || todayKey >= dayKey(minDay)) && (!maxDay || todayKey <= dayKey(maxDay));
 
   const clear = () => {
     commit(undefined);
@@ -304,7 +307,9 @@ export function DatePicker({
             )}
             <button
               type="button"
-              className={FOOTER_BTN + " text-brand-teal-700 hover:text-brand-teal-800"}
+              // Today/Now obeys min/max like the days do: it set a From after the To
+              disabled={!todayInRange}
+              className={FOOTER_BTN + " text-brand-teal-700 hover:text-brand-teal-800 disabled:cursor-not-allowed disabled:text-ink/35"}
               onClick={() => {
                 const t = new Date();
                 if (!withTime) t.setHours(0, 0, 0, 0);
