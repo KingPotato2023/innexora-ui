@@ -1,6 +1,6 @@
 "use client";
 import { jsx, jsxs } from "react/jsx-runtime";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CalendarDays, Clock, X } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../overlays/popover";
@@ -41,6 +41,7 @@ function formatDateStable(d) {
 function formatTimeStable(d) {
   return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }
+const FOOTER_BTN = "-mx-2 rounded-md px-2 py-1.5 text-[11.5px] font-mono uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal-500/35 [@media(pointer:coarse)]:min-h-[44px]";
 function DatePicker({
   name,
   defaultValue,
@@ -52,11 +53,17 @@ function DatePicker({
   fromYear,
   toYear,
   withTime = false,
-  onChange
+  onChange,
+  min,
+  max,
+  triggerClassName,
+  ariaLabel,
+  formatLabel
 }) {
   const [date, setDate] = useState(parseIso(defaultValue));
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const triggerRef = useRef(null);
   useEffect(() => setMounted(true), []);
   useEffect(() => {
     setDate(parseIso(defaultValue));
@@ -74,10 +81,21 @@ function DatePicker({
   );
   const fmtDate = mounted ? formatDateDisplay : formatDateStable;
   const fmtTime = mounted ? formatTimeDisplay : formatTimeStable;
-  const triggerLabel = !date ? placeholder ?? (withTime ? "Pick a date and time" : "Pick a date") : withTime ? `${fmtDate(date)} \xB7 ${fmtTime(date)}` : fmtDate(date);
+  const triggerLabel = !date ? placeholder ?? (withTime ? "Pick a date and time" : "Pick a date") : formatLabel ? formatLabel(date) : withTime ? `${fmtDate(date)} \xB7 ${fmtTime(date)}` : fmtDate(date);
+  const clearable = !!date && !disabled && !required;
+  const minDay = parseIso(min);
+  const maxDay = parseIso(max);
+  const disabledDays = [
+    ...minDay ? [{ before: minDay }] : [],
+    ...maxDay ? [{ after: maxDay }] : []
+  ];
+  const clear = () => {
+    commit(void 0);
+    triggerRef.current?.focus();
+  };
   const setCalendarDay = (d) => {
     if (!d) {
-      commit(void 0);
+      if (!withTime) setOpen(false);
       return;
     }
     if (withTime) {
@@ -113,110 +131,116 @@ function DatePicker({
     commit(next);
   };
   return /* @__PURE__ */ jsxs("div", { className: cn("relative", className), children: [
-    /* @__PURE__ */ jsxs(Popover, { open, onOpenChange: setOpen, children: [
-      /* @__PURE__ */ jsx(PopoverTrigger, { asChild: true, children: /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+      /* @__PURE__ */ jsxs(Popover, { open, onOpenChange: setOpen, children: [
+        /* @__PURE__ */ jsx(PopoverTrigger, { asChild: true, children: /* @__PURE__ */ jsxs(
+          "button",
+          {
+            ref: triggerRef,
+            type: "button",
+            id,
+            disabled,
+            "aria-label": ariaLabel ? `${ariaLabel}: ${triggerLabel}` : void 0,
+            className: cn(
+              "input flex items-center justify-between gap-2 text-left",
+              !date && "text-ink/45",
+              disabled && "cursor-not-allowed opacity-60",
+              triggerClassName
+            ),
+            children: [
+              /* @__PURE__ */ jsx("span", { dir: "auto", className: "min-w-0 truncate", children: triggerLabel }),
+              /* @__PURE__ */ jsx("span", { "aria-hidden": "true", className: "flex shrink-0 items-center text-ink/45", children: clearable ? /* @__PURE__ */ jsx("span", { className: "block h-4 w-8" }) : withTime ? /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx(CalendarDays, { className: "h-4 w-4" }) })
+            ]
+          }
+        ) }),
+        /* @__PURE__ */ jsxs(PopoverContent, { align: "start", collisionPadding: 12, className: "p-3", children: [
+          /* @__PURE__ */ jsx(
+            Calendar,
+            {
+              mode: "single",
+              selected: date,
+              onSelect: setCalendarDay,
+              captionLayout: "dropdown",
+              startMonth: new Date(fromYear ?? (/* @__PURE__ */ new Date()).getFullYear() - 10, 0),
+              endMonth: new Date(toYear ?? (/* @__PURE__ */ new Date()).getFullYear() + 10, 11),
+              defaultMonth: date ?? maxDay ?? /* @__PURE__ */ new Date(),
+              disabled: disabledDays.length ? disabledDays : void 0
+            }
+          ),
+          withTime && /* @__PURE__ */ jsxs("div", { className: "mt-3 flex items-center justify-center gap-2 border-t border-ink/10 pt-3", children: [
+            /* @__PURE__ */ jsx(Clock, { className: "h-3.5 w-3.5 text-ink/45" }),
+            /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.14em] text-ink/55 font-mono mr-1", children: "Time" }),
+            /* @__PURE__ */ jsx(
+              TimeSpinner,
+              {
+                value: date?.getHours() ?? 0,
+                max: 23,
+                onChange: setHour,
+                ariaLabel: "Hours"
+              }
+            ),
+            /* @__PURE__ */ jsx("span", { className: "text-ink/55 font-mono", children: ":" }),
+            /* @__PURE__ */ jsx(
+              TimeSpinner,
+              {
+                value: date?.getMinutes() ?? 0,
+                max: 59,
+                onChange: setMinute,
+                ariaLabel: "Minutes"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "mt-3 flex items-center justify-between gap-2 border-t border-ink/10 pt-3", children: [
+            !required ? /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                className: FOOTER_BTN + " text-ink/65 hover:text-brand-teal-700",
+                onClick: () => {
+                  commit(void 0);
+                  if (!withTime) setOpen(false);
+                },
+                children: "Clear"
+              }
+            ) : /* @__PURE__ */ jsx("span", {}),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                className: FOOTER_BTN + " text-brand-teal-700 hover:text-brand-teal-800",
+                onClick: () => {
+                  const t = /* @__PURE__ */ new Date();
+                  if (!withTime) t.setHours(0, 0, 0, 0);
+                  else t.setSeconds(0, 0);
+                  commit(t);
+                  if (!withTime) setOpen(false);
+                },
+                children: withTime ? "Now" : "Today"
+              }
+            ),
+            withTime && /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                className: FOOTER_BTN + " text-brand-indigo-700 hover:text-brand-indigo-800",
+                onClick: () => setOpen(false),
+                children: "Done"
+              }
+            )
+          ] })
+        ] })
+      ] }),
+      clearable && /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
-          id,
-          disabled,
-          className: cn(
-            "input flex items-center justify-between gap-2 text-left",
-            !date && "text-ink/45",
-            disabled && "cursor-not-allowed opacity-60"
-          ),
-          children: [
-            /* @__PURE__ */ jsx("span", { className: "truncate", children: triggerLabel }),
-            /* @__PURE__ */ jsxs("span", { className: "flex items-center gap-1 shrink-0 text-ink/45", children: [
-              date && /* @__PURE__ */ jsx("span", { "aria-hidden": "true", className: "w-[18px]" }),
-              withTime ? /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx(CalendarDays, { className: "h-4 w-4" })
-            ] })
-          ]
+          "aria-label": ariaLabel ? `Clear ${ariaLabel}` : "Clear date",
+          className: "group absolute inset-y-0 end-0 flex w-11 items-center justify-center rounded-e-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-teal-500/35",
+          onClick: clear,
+          children: /* @__PURE__ */ jsx("span", { className: "flex h-7 w-7 items-center justify-center rounded-md text-ink/60 transition-colors group-hover:bg-ink/[0.06] group-hover:text-ink-900", children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" }) })
         }
-      ) }),
-      /* @__PURE__ */ jsxs(PopoverContent, { align: "start", className: "p-3", children: [
-        /* @__PURE__ */ jsx(
-          Calendar,
-          {
-            mode: "single",
-            selected: date,
-            onSelect: setCalendarDay,
-            captionLayout: "dropdown",
-            startMonth: new Date(fromYear ?? (/* @__PURE__ */ new Date()).getFullYear() - 10, 0),
-            endMonth: new Date(toYear ?? (/* @__PURE__ */ new Date()).getFullYear() + 10, 11),
-            defaultMonth: date ?? /* @__PURE__ */ new Date()
-          }
-        ),
-        withTime && /* @__PURE__ */ jsxs("div", { className: "mt-3 flex items-center justify-center gap-2 border-t border-ink/10 pt-3", children: [
-          /* @__PURE__ */ jsx(Clock, { className: "h-3.5 w-3.5 text-ink/45" }),
-          /* @__PURE__ */ jsx("span", { className: "text-[11px] uppercase tracking-[0.14em] text-ink/55 font-mono mr-1", children: "Time" }),
-          /* @__PURE__ */ jsx(
-            TimeSpinner,
-            {
-              value: date?.getHours() ?? 0,
-              max: 23,
-              onChange: setHour,
-              ariaLabel: "Hours"
-            }
-          ),
-          /* @__PURE__ */ jsx("span", { className: "text-ink/55 font-mono", children: ":" }),
-          /* @__PURE__ */ jsx(
-            TimeSpinner,
-            {
-              value: date?.getMinutes() ?? 0,
-              max: 59,
-              onChange: setMinute,
-              ariaLabel: "Minutes"
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxs("div", { className: "mt-3 flex items-center justify-between gap-2 border-t border-ink/10 pt-3", children: [
-          /* @__PURE__ */ jsx(
-            "button",
-            {
-              type: "button",
-              className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/55 hover:text-brand-teal-700",
-              onClick: () => commit(void 0),
-              children: "Clear"
-            }
-          ),
-          /* @__PURE__ */ jsx(
-            "button",
-            {
-              type: "button",
-              className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-brand-teal-700 hover:text-brand-teal-800",
-              onClick: () => {
-                const t = /* @__PURE__ */ new Date();
-                if (!withTime) t.setHours(0, 0, 0, 0);
-                else t.setSeconds(0, 0);
-                commit(t);
-                if (!withTime) setOpen(false);
-              },
-              children: withTime ? "Now" : "Today"
-            }
-          ),
-          withTime && /* @__PURE__ */ jsx(
-            "button",
-            {
-              type: "button",
-              className: "text-[11.5px] font-mono uppercase tracking-[0.14em] text-brand-indigo-700 hover:text-brand-indigo-800",
-              onClick: () => setOpen(false),
-              children: "Done"
-            }
-          )
-        ] })
-      ] })
+      )
     ] }),
-    date && !disabled && /* @__PURE__ */ jsx(
-      "button",
-      {
-        type: "button",
-        "aria-label": "Clear",
-        className: "absolute end-8 top-1/2 -translate-y-1/2 rounded p-0.5 text-ink/45 hover:bg-ink/[0.06] hover:text-ink/80",
-        onClick: () => commit(void 0),
-        children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
-      }
-    ),
     /* @__PURE__ */ jsx(
       "input",
       {

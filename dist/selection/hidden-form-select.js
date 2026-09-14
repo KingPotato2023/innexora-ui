@@ -34,7 +34,10 @@ function HiddenFormSelect({
   disabled,
   ariaInvalid,
   className,
-  onChange
+  onChange,
+  id,
+  ariaLabel,
+  ariaLabelledby
 }) {
   const [value, setValue] = (0, import_react.useState)(defaultValue);
   (0, import_react.useEffect)(() => {
@@ -51,8 +54,11 @@ function HiddenFormSelect({
       /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         import_select.SelectTrigger,
         {
+          id,
           className,
           "aria-invalid": ariaInvalid ? true : void 0,
+          "aria-label": ariaLabel,
+          "aria-labelledby": ariaLabelledby,
           children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_select.SelectValue, { placeholder })
         }
       ),

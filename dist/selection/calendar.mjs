@@ -37,7 +37,7 @@ function BrandedDropdown(props) {
       SelectTrigger,
       {
         "aria-label": props["aria-label"],
-        className: "h-7 min-w-[88px] w-auto gap-1 rounded-md border border-ink/12 bg-white px-2 text-[13px] font-semibold text-ink-900 hover:border-ink/25 focus:ring-2 focus:ring-brand-indigo-400/35 focus:border-brand-indigo-500",
+        className: "h-7 [@media(pointer:coarse)]:h-11 min-w-[88px] w-auto gap-1 rounded-md border border-ink/12 bg-white px-2 text-[13px] font-semibold text-ink-900 hover:border-ink/25 focus:ring-2 focus:ring-brand-indigo-400/35 focus:border-brand-indigo-500",
         children: /* @__PURE__ */ jsx(SelectValue, {})
       }
     ),
@@ -68,7 +68,8 @@ function Calendar({
   ...props
 }) {
   const now = /* @__PURE__ */ new Date();
-  const wkStart = weekStart(now, props.weekStartsOn ?? props.locale?.options?.weekStartsOn ?? 0);
+  const firstDay = props.ISOWeek || props.broadcastCalendar ? 1 : props.weekStartsOn ?? props.locale?.options?.weekStartsOn ?? 0;
+  const wkStart = weekStart(now, firstDay);
   const wkEnd = new Date(wkStart);
   wkEnd.setDate(wkEnd.getDate() + 6);
   return /* @__PURE__ */ jsx(
@@ -94,8 +95,9 @@ function Calendar({
         weekday: "flex-1 h-8 inline-flex items-center justify-center text-xs uppercase tracking-wider font-semibold text-ink/45",
         weeks: "",
         week: "flex w-full mt-1",
-        day: "flex-1 h-9 p-0 text-center relative",
-        day_button: "inline-flex items-center justify-center w-9 h-9 rounded-md text-[12px] text-ink-900 hover:bg-brand-teal-50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo-400",
+        // 36px days for a mouse, 44px on a touch screen
+        day: "flex-1 h-9 [@media(pointer:coarse)]:h-11 p-0 text-center relative",
+        day_button: "inline-flex items-center justify-center w-9 h-9 [@media(pointer:coarse)]:w-11 [@media(pointer:coarse)]:h-11 rounded-md text-[12px] text-ink-900 hover:bg-brand-teal-50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo-400",
         outside: "[&>button]:text-ink/30",
         disabled: "[&>button]:text-ink/20 [&>button]:cursor-not-allowed [&>button]:hover:bg-transparent",
         today: "[&>button]:font-semibold [&>button]:text-brand-teal-700 [&>button]:ring-2 [&>button]:ring-brand-teal-400 [&>button]:ring-inset",

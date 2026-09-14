@@ -10,7 +10,7 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CalendarDays, Clock, X } from "lucide-react";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../overlays/popover";
@@ -64,6 +64,10 @@ function formatTimeStable(d: Date): string {
   return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }
 
+// Popover footer actions. At least 44px tall on a touch screen.
+const FOOTER_BTN =
+  "-mx-2 rounded-md px-2 py-1.5 text-[11.5px] font-mono uppercase tracking-[0.14em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal-500/35 [@media(pointer:coarse)]:min-h-[44px]";
+
 export function DatePicker({
   name,
   defaultValue,
@@ -76,6 +80,11 @@ export function DatePicker({
   toYear,
   withTime = false,
   onChange,
+  min,
+  max,
+  triggerClassName,
+  ariaLabel,
+  formatLabel,
 }: {
   name: string;
   /** ISO string. Date-only mode: "yyyy-mm-dd". DateTime mode: "yyyy-mm-ddThh:mm". */
@@ -96,10 +105,25 @@ export function DatePicker({
    * own state for dirty / validation tracking.
    */
   onChange?: (value: string) => void;
+  /** Earliest selectable day, "yyyy-mm-dd". Earlier days are struck out. */
+  min?: string;
+  /** Latest selectable day, "yyyy-mm-dd". */
+  max?: string;
+  /** Classes for the trigger button itself (height, text size). `className` styles the wrapper. */
+  triggerClassName?: string;
+  /** The field's name for assistive tech; the trigger is announced as "<ariaLabel>: <value>". */
+  ariaLabel?: string;
+  /**
+   * Formats the trigger label. Pass one that prints the same text on server and
+   * browser (e.g. built from date parts) to match the rest of an app; without it
+   * the label is "d Mon yyyy" until mount, then the viewer's locale.
+   */
+  formatLabel?: (date: Date) => string;
 }) {
   const [date, setDate] = useState<Date | undefined>(parseIso(defaultValue));
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => setMounted(true), []);
 
@@ -135,13 +159,33 @@ export function DatePicker({
   const fmtTime = mounted ? formatTimeDisplay : formatTimeStable;
   const triggerLabel = !date
     ? placeholder ?? (withTime ? "Pick a date and time" : "Pick a date")
+    : formatLabel
+    ? formatLabel(date)
     : withTime
     ? `${fmtDate(date)} · ${fmtTime(date)}`
     : fmtDate(date);
 
+  // A required field offers no way back to empty; a disabled one offers nothing.
+  const clearable = !!date && !disabled && !required;
+
+  const minDay = parseIso(min);
+  const maxDay = parseIso(max);
+  const disabledDays = [
+    ...(minDay ? [{ before: minDay }] : []),
+    ...(maxDay ? [{ after: maxDay }] : []),
+  ];
+
+  const clear = () => {
+    commit(undefined);
+    // the clear button unmounts with the value: keep focus in the field
+    triggerRef.current?.focus();
+  };
+
   const setCalendarDay = (d: Date | undefined) => {
     if (!d) {
-      commit(undefined);
+      // react-day-picker reports a tap on the selected day as a deselect. That
+      // tap means "this one", not "clear": clearing has its own buttons.
+      if (!withTime) setOpen(false);
       return;
     }
     if (withTime) {
@@ -172,29 +216,44 @@ export function DatePicker({
 
   return (
     <div className={cn("relative", className)}>
+      {/* The trigger and its clear button share this box, so padding a consumer
+          puts on the wrapper cannot move the button off its spot. */}
+      <div className="relative">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <button
+            ref={triggerRef}
             type="button"
             id={id}
             disabled={disabled}
+            aria-label={ariaLabel ? `${ariaLabel}: ${triggerLabel}` : undefined}
             className={cn(
               "input flex items-center justify-between gap-2 text-left",
               !date && "text-ink/45",
               disabled && "cursor-not-allowed opacity-60",
+              triggerClassName,
             )}
           >
-            <span className="truncate">{triggerLabel}</span>
-            <span className="flex items-center gap-1 shrink-0 text-ink/45">
-              {/* room for the clear button, which sits OVER the trigger: a
+            {/* dir="auto": a Latin date inside a right-to-left page kept its
+                words but lost their order ("Sept 2026 14") */}
+            <span dir="auto" className="min-w-0 truncate">{triggerLabel}</span>
+            <span aria-hidden="true" className="flex shrink-0 items-center text-ink/45">
+              {/* With a value, the clear button stands here OVER the trigger: a
                   <button> inside the trigger <button> is invalid HTML, and the
-                  parser split it apart and broke hydration */}
-              {date && <span aria-hidden="true" className="w-[18px]" />}
-              {withTime ? <Clock className="h-4 w-4" /> : <CalendarDays className="h-4 w-4" />}
+                  parser split it apart and broke hydration. The spacer keeps the
+                  label clear of it (12px padding + 32px = the button's 44px). */}
+              {clearable ? (
+                <span className="block h-4 w-8" />
+              ) : withTime ? (
+                <Clock className="h-4 w-4" />
+              ) : (
+                <CalendarDays className="h-4 w-4" />
+              )}
             </span>
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="p-3">
+        {/* collisionPadding: a calendar near the screen edge stops 12px short of it */}
+        <PopoverContent align="start" collisionPadding={12} className="p-3">
           <Calendar
             mode="single"
             selected={date}
@@ -202,7 +261,8 @@ export function DatePicker({
             captionLayout="dropdown"
             startMonth={new Date(fromYear ?? new Date().getFullYear() - 10, 0)}
             endMonth={new Date(toYear ?? new Date().getFullYear() + 10, 11)}
-            defaultMonth={date ?? new Date()}
+            defaultMonth={date ?? maxDay ?? new Date()}
+            disabled={disabledDays.length ? disabledDays : undefined}
           />
 
           {withTime && (
@@ -228,16 +288,23 @@ export function DatePicker({
           )}
 
           <div className="mt-3 flex items-center justify-between gap-2 border-t border-ink/10 pt-3">
+            {!required ? (
+              <button
+                type="button"
+                className={FOOTER_BTN + " text-ink/65 hover:text-brand-teal-700"}
+                onClick={() => {
+                  commit(undefined);
+                  if (!withTime) setOpen(false);
+                }}
+              >
+                Clear
+              </button>
+            ) : (
+              <span />
+            )}
             <button
               type="button"
-              className="text-[11.5px] font-mono uppercase tracking-[0.14em] text-ink/55 hover:text-brand-teal-700"
-              onClick={() => commit(undefined)}
-            >
-              Clear
-            </button>
-            <button
-              type="button"
-              className="text-[11.5px] font-mono uppercase tracking-[0.14em] text-brand-teal-700 hover:text-brand-teal-800"
+              className={FOOTER_BTN + " text-brand-teal-700 hover:text-brand-teal-800"}
               onClick={() => {
                 const t = new Date();
                 if (!withTime) t.setHours(0, 0, 0, 0);
@@ -251,7 +318,7 @@ export function DatePicker({
             {withTime && (
               <button
                 type="button"
-                className="text-[11.5px] font-mono uppercase tracking-[0.14em] text-brand-indigo-700 hover:text-brand-indigo-800"
+                className={FOOTER_BTN + " text-brand-indigo-700 hover:text-brand-indigo-800"}
                 onClick={() => setOpen(false)}
               >
                 Done
@@ -260,18 +327,22 @@ export function DatePicker({
           </div>
         </PopoverContent>
       </Popover>
-      {date && !disabled && (
+      {clearable && (
         <button
           type="button"
-          aria-label="Clear"
-          // inset-inline-end 32px = the trigger's 12px padding + 16px icon + 4px gap,
-          // so it lands on the spacer in either reading direction
-          className="absolute end-8 top-1/2 -translate-y-1/2 rounded p-0.5 text-ink/45 hover:bg-ink/[0.06] hover:text-ink/80"
-          onClick={() => commit(undefined)}
+          aria-label={ariaLabel ? `Clear ${ariaLabel}` : "Clear date"}
+          // A 44px-wide, full-height target at the trigger's inline end, so a tap
+          // anywhere on the right of the field clears instead of opening the
+          // calendar; inset-inline-end keeps it there in right-to-left pages.
+          className="group absolute inset-y-0 end-0 flex w-11 items-center justify-center rounded-e-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-teal-500/35"
+          onClick={clear}
         >
-          <X className="h-3.5 w-3.5" />
+          <span className="flex h-7 w-7 items-center justify-center rounded-md text-ink/60 transition-colors group-hover:bg-ink/[0.06] group-hover:text-ink-900">
+            <X className="h-4 w-4" />
+          </span>
         </button>
       )}
+      </div>
       <input
         type="hidden"
         name={name}

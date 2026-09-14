@@ -31,6 +31,9 @@ export function HiddenFormSelect({
   ariaInvalid,
   className,
   onChange,
+  id,
+  ariaLabel,
+  ariaLabelledby,
 }: {
   name: string;
   defaultValue?: string;
@@ -40,6 +43,10 @@ export function HiddenFormSelect({
   ariaInvalid?: boolean;
   className?: string;
   onChange?: (next: string) => void;
+  /** Id for the trigger, so a <label htmlFor> names it and a click on the label opens it. */
+  id?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
 }) {
   const [value, setValue] = useState(defaultValue);
 
@@ -59,8 +66,11 @@ export function HiddenFormSelect({
     <>
       <Select value={internal} onValueChange={handleChange} disabled={disabled}>
         <SelectTrigger
+          id={id}
           className={className}
           aria-invalid={ariaInvalid ? true : undefined}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledby}
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
