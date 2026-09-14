@@ -204,17 +204,29 @@ export function DatePicker({
     }
   };
 
+  // The time spinners start from today when nothing is picked, and must not step
+  // outside min/max either (they set 14 Sep 01:04 against max 1 Sep). A date-only
+  // bound covers its whole day; a bound with a time is exact.
+  const lowest = minDay;
+  const highest = maxDay && max && !/[T\s]\d/.test(max)
+    ? new Date(maxDay.getFullYear(), maxDay.getMonth(), maxDay.getDate(), 23, 59)
+    : maxDay;
+  const inBounds = (d: Date) => {
+    if (lowest && d < lowest) return new Date(lowest);
+    if (highest && d > highest) return new Date(highest);
+    return d;
+  };
+  const spinnerBase = () => date ?? inBounds((() => { const n = new Date(); n.setSeconds(0, 0); return n; })());
+
   const setHour = (h: number) => {
-    const base = date ?? (() => { const n = new Date(); n.setSeconds(0, 0); return n; })();
-    const next = new Date(base);
+    const next = new Date(spinnerBase());
     next.setHours(Math.max(0, Math.min(23, h)));
-    commit(next);
+    commit(inBounds(next));
   };
   const setMinute = (m: number) => {
-    const base = date ?? (() => { const n = new Date(); n.setSeconds(0, 0); return n; })();
-    const next = new Date(base);
+    const next = new Date(spinnerBase());
     next.setMinutes(Math.max(0, Math.min(59, m)));
-    commit(next);
+    commit(inBounds(next));
   };
 
   return (

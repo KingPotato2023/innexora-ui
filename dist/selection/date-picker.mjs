@@ -113,25 +113,27 @@ function DatePicker({
       setOpen(false);
     }
   };
+  const lowest = minDay;
+  const highest = maxDay && max && !/[T\s]\d/.test(max) ? new Date(maxDay.getFullYear(), maxDay.getMonth(), maxDay.getDate(), 23, 59) : maxDay;
+  const inBounds = (d) => {
+    if (lowest && d < lowest) return new Date(lowest);
+    if (highest && d > highest) return new Date(highest);
+    return d;
+  };
+  const spinnerBase = () => date ?? inBounds((() => {
+    const n = /* @__PURE__ */ new Date();
+    n.setSeconds(0, 0);
+    return n;
+  })());
   const setHour = (h) => {
-    const base = date ?? (() => {
-      const n = /* @__PURE__ */ new Date();
-      n.setSeconds(0, 0);
-      return n;
-    })();
-    const next = new Date(base);
+    const next = new Date(spinnerBase());
     next.setHours(Math.max(0, Math.min(23, h)));
-    commit(next);
+    commit(inBounds(next));
   };
   const setMinute = (m) => {
-    const base = date ?? (() => {
-      const n = /* @__PURE__ */ new Date();
-      n.setSeconds(0, 0);
-      return n;
-    })();
-    const next = new Date(base);
+    const next = new Date(spinnerBase());
     next.setMinutes(Math.max(0, Math.min(59, m)));
-    commit(next);
+    commit(inBounds(next));
   };
   return /* @__PURE__ */ jsxs("div", { className: cn("relative", className), children: [
     /* @__PURE__ */ jsxs("div", { className: "relative", children: [
